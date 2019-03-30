@@ -4,17 +4,20 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 import lexico.Buffer;
+import lexico.characterDiscover;
 
 public class AutomatosTeste {
-	int count;
 	private Buffer buffer;
 	private LinkedList<String> palavras_reservadas; //lista encadeada para palavras reservadas
+	private characterDiscover charDiscover;
 	
 	public AutomatosTeste(Buffer buffer) {
 		this.buffer = buffer;
 		
 		this.palavras_reservadas = new LinkedList<String>();
 		this.inicializaPalavrasReservadas();
+		
+		this.charDiscover = new characterDiscover();
 	}
 	
 	public void inicializaPalavrasReservadas() {
@@ -55,23 +58,23 @@ public class AutomatosTeste {
 	//AUTOMATOS ENTRAM AQUI:
 	public String automatoOperadorAritmetico() {
 		int state = 0;
-		
-		//roda enquanto n�o for o fim do script/arquivo
+
+		//roda enquanto nï¿½o for o fim do script/arquivo
 		while(!this.buffer.isFimScript()) {
-			char c = buffer.lookAhead();
-			
+			char c = buffer.charAtual();
+
 			switch(state) {
 			case 0:
 				if(c == '+') { //SOMA
 					this.consumirCaractere();
 					if (this.buffer.isFimScript() == true) {
                         return "OPERADOR ARITMETICO SOMA";
-                    } else state = 1; //vai pro estado 1 para verificar se � incremento
+                    } else state = 1; //vai pro estado 1 para verificar se ï¿½ incremento
 				} else if(c == '-') { //SUBTRACAO
 					this.consumirCaractere();
 					if (this.buffer.isFimScript() == true) {
                         return "OPERADOR ARITMETICO SUBTRACAO";
-                    } else state = 2; //vai pro estado 2 para verificar se � decremento
+                    } else state = 2; //vai pro estado 2 para verificar se ï¿½ decremento
 				} else if(c == '*') {
 					this.consumirCaractere();
 					return "OPERADOR ARITMETICO MULTIPLICACAO";
@@ -86,7 +89,7 @@ public class AutomatosTeste {
 				if(c == '+') {
 					return "OPERADOR ARITMETICO INCREMENTO";
 				} else {
-					//significa que n�o � um operador aritmetico de incremento
+					//significa que nï¿½o ï¿½ um operador aritmetico de incremento
 					this.buffer.setPosicaoAtual(this.buffer.getPosicaoAtual()-1);
 					return "OPERADOR ARITMETICO SOMA";
 				}
@@ -108,5 +111,238 @@ public class AutomatosTeste {
 		return "TOKEN INDEFINIDO";
 	}
 	
+	public String automatoOperadorRelacional() {
+		int state = 0;
+		
+		//roda enquanto n�o for o fim do script/arquivo
+		while(!this.buffer.isFimScript()) {
+			char c = buffer.charAtual();
+			
+			switch(state) {
+			case 0:
+				if(c == '!') { //
+					this.consumirCaractere();
+					if (this.buffer.isFimScript() == true) {
+                        return "OPERADOR L�GICO NEGADO";
+                    } 
+					//agora ele precisa verificar se � operador relacional: !=
+					state = 1;
+				} else if(c == '=') { //
+					this.consumirCaractere();
+					if (this.buffer.isFimScript() == true) {
+                        return "OPERADOR RELACIONAL ATRIBUI��O";
+                    } 
+					//
+					state = 2; 
+				} else if(c == '<') {
+					this.consumirCaractere();
+					if (this.buffer.isFimScript() == true) {
+                        return "OPERADOR RELACIONAL MENOR";
+                    }
+					//
+					state = 3; 
+				} else if(c == '>') {
+					this.consumirCaractere();
+					if (this.buffer.isFimScript() == true) {
+                        return "OPERADOR RELACIONAL MAIOR";
+                    }
+					//
+					state = 4; 
+				}
+				
+				else state = -1;
+				
+				break;
+			case 1:
+				this.consumirCaractere();
+				if(c == '=') {
+					return "OPERADOR RELACIONAL DIFERENTE";
+				} else {
+					this.buffer.setPosicaoAtual(this.buffer.getPosicaoAtual()-1);
+					return "OPERADOR L�GICO NEGADO";
+				}
+			case 2: 
+				this.consumirCaractere();
+				if(c == '=') {
+					return "OPERADOR RELACIONAL IGUAL";
+				} else {
+					this.buffer.setPosicaoAtual(this.buffer.getPosicaoAtual()-1);
+					return "OPERADOR RELACIONAL ATRIBUI��O";
+				}
+			case 3: 
+				this.consumirCaractere();
+				if(c == '=') {
+					return "OPERADOR RELACIONAL MENOR IGUAL QUE";
+				} else {
+					this.buffer.setPosicaoAtual(this.buffer.getPosicaoAtual()-1);
+					return "OPERADOR RELACIONAL MENOR";
+				}
+			case 4: 
+				this.consumirCaractere();
+				if(c == '=') {
+					return "OPERADOR RELACIONAL MAIOR IGUAL QUE";
+				} else {
+					this.buffer.setPosicaoAtual(this.buffer.getPosicaoAtual()-1);
+					return "OPERADOR RELACIONAL MAIOR";
+				}
+			default:
+				//TOKEN INDEFINIDO
+				return "TOKEN INDEFINIDO";
+			}
+		}
+		return "TOKEN INDEFINIDO";
+	}
+
+	public String automatoOperadorLogico() {
+		int state = 0;
+		
+		//roda enquanto n�o for o fim do script/arquivo
+		while(!this.buffer.isFimScript()) {
+			char c = buffer.charAtual();
+			
+			switch(state) {
+			case 0:
+				if(c == '!') { //
+					this.consumirCaractere();
+					if (this.buffer.isFimScript() == true) {
+                        return "OPERADOR LOGICO NEGADO";
+                    } 
+					//agora ele precisa verificar se � operador relacional: !=
+					state = 1;
+				} else if(c == '&') { //
+					this.consumirCaractere();
+					if (this.buffer.isFimScript() == true) {
+                        return "SIMBOLO";
+                    } 
+					//verifica se � operador l�gico AND (&&)
+					state = 2; 
+				} else if(c == '|') {
+					this.consumirCaractere();
+					if (this.buffer.isFimScript() == true) {
+                        return "SIMBOLO";
+                    }
+					//verifica se � operador l�gico or (||)
+					state = 3; 
+				} else state = -1;
+				
+				break;
+			case 1:
+				this.consumirCaractere();
+				if(c == '=') {
+					return "OPERADOR RELACIONAL DIFERENTE";
+				} else {
+					this.buffer.setPosicaoAtual(this.buffer.getPosicaoAtual()-1);
+					return "OPERADOR L�GICO NEGADO";
+				}
+			case 2: 
+				this.consumirCaractere();
+				if(c == '&') {
+					return "OPERADOR L�GICO E/AND";
+				} else {
+					this.buffer.setPosicaoAtual(this.buffer.getPosicaoAtual()-1);
+					return "OPERADOR L�GICO MAL FORMADO (???)";
+				}
+			case 3: 
+				this.consumirCaractere();
+				if(c == '|') {
+					return "OPERADOR L�GICO OU/OR";
+				} else {
+					this.buffer.setPosicaoAtual(this.buffer.getPosicaoAtual()-1);
+					return "OPERADOR L�GICO MAL FORMADO (???)";
+				}
+			default:
+				//TOKEN INDEFINIDO
+				return "TOKEN INDEFINIDO";
+			}
+		} 
+		
+		return "TOKEN INDEFINIDO";
+	}
 	
+	public String automatoDelimitador() {
+		int state = 0;
+		
+		//roda enquanto n�o for o fim do script/arquivo
+		while(!this.buffer.isFimScript()) {
+			char c = buffer.charAtual();
+			
+			switch(state) {
+			case 0:
+				if (c == ';') {
+					consumirCaractere();
+					return "DELIMITADOR PONTO VIRGULA";
+				} else if (c == '.') {
+					consumirCaractere();
+					return "DELIMITADOR PONTO";
+				} else if (c == '(') {
+					consumirCaractere();
+					return "DELIMITADOR ABRE PARENTESES";
+				} else if (c == ')') {
+					consumirCaractere();
+					return "DELIMITADOR FECHA PARENTESES";
+				} else if (c == '{') {
+					consumirCaractere();
+					return "DELIMITADOR ABRE CHAVE";
+				} else if (c == '}') {
+					consumirCaractere();
+					return "DELIMITADOR FECHA CHAVE";
+				} else if (c == ',') {
+					consumirCaractere();
+					return "DELIMITADOR VIRGULA";
+				} else if (c == ']') {
+					consumirCaractere();
+					return "DELIMITADOR FECHA COLCHETE";
+				} else if (c == '[') {
+					consumirCaractere();
+					return "DELIMITADOR ABRE COLCHETE";
+				} else {
+					state = -1;
+				}
+				break;
+			default:
+				//TOKEN INDEFINIDO
+				return "TOKEN INDEFINIDO";
+			}
+		} 
+		
+		return "TOKEN INDEFINIDO";
+	}
+	
+	public String automatoCadeiaCaractere() {
+		int state = 0;
+		int verifica = 0;
+
+		//roda enquanto nao for fim do script/arquivo
+		while(!this.buffer.isFimScript()) {
+			char c = buffer.charAtual();
+			System.out.println("C = " + c);
+			switch(state) {
+			case 0:
+				if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+					this.consumirCaractere();
+					if(c == '\\') {
+						state = 1;
+					}
+				} else if(c == '"') {
+					return "CADEIA DE CARACTERE";
+				}
+				else break;
+			case 1:
+				if(c == '"') { 
+					this.consumirCaractere();
+					state = 0;
+					return "CADEIA DE CARACTERE";
+				}
+				break;
+			case 2:
+				
+				break;
+			default:
+				//TOKEN INDEFINIDO
+				return "TOKEN INDEFINIDO";
+			}
+		} 
+		
+		return "TOKEN INDEFINIDO";
+	}
 }

@@ -39,8 +39,12 @@ public class Buffer {
 	/* 
 	 * Para retornar um caractere anterior!!!!
 	 */
-	public void charAnterior() {
-		this.posicaoAtual--; //ainda n sei se funciona assim!!!
+	public char charAnterior() {
+		char charAnterior;
+		
+		charAnterior = this.script.charAt(this.posicaoAtual-1);
+		
+		return charAnterior;
 	}
 	
 	/* 
@@ -61,7 +65,7 @@ public class Buffer {
 	/*
 	 * 
 	 * */
-	public char lookAhead(){
+	public char charAtual(){
 		//System.out.println("Entrou: "+this.script.charAt(posicaoAtual));
 		if(this.isFimScript()){
 			return (Character) null;  //caso tenha chegado no final do script

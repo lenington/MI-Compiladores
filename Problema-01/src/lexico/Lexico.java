@@ -31,7 +31,7 @@ public class Lexico {
 		
 		//roda enquanto nao for o fim do script/arquivo
 		while(!this.buffer.isFimScript()) {
-			c = this.buffer.lookAhead(); 
+			c = this.buffer.charAtual(); 
 			
 			if ((Character) c == null) {
 				break; //finalizado!
@@ -48,13 +48,23 @@ public class Lexico {
 			} else if(c == '"') {
 				//chama funcao de automato de cadeia de caracteres...
 				this.buffer.charSeguinte();
-				continue;
+				token = this.automatos.automatoCadeiaCaractere();
+				if(!token.equals("TOKEN INDEFINIDO")) System.out.println(token);
 			} else {
 				//chama as outras funcoes de automatos...
 				
 				//testando...
 				token = this.automatos.automatoOperadorAritmetico();
-				System.out.println(token);
+				if(!token.equals("TOKEN INDEFINIDO")) System.out.println(token);
+				
+				token = this.automatos.automatoOperadorLogico();
+				if(!token.equals("TOKEN INDEFINIDO")) System.out.println(token);
+				
+				token = this.automatos.automatoOperadorRelacional();
+				if(!token.equals("TOKEN INDEFINIDO")) System.out.println(token);
+				
+				token = this.automatos.automatoDelimitador();
+				if(!token.equals("TOKEN INDEFINIDO")) System.out.println(token);
 				
 				if(!this.buffer.isFimScript()) {
 					//this.buffer.charSeguinte();
