@@ -19,7 +19,7 @@ public class analisadorLexico {
 		}
 		
 		aut.setCounter(i);
-		System.out.println(aut.automatoIndentificador(line));
+		System.out.println(aut.automatoOperadorRelacional(line));
 		texto.close();
 		
 	}
