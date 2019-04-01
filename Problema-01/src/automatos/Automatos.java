@@ -1,12 +1,13 @@
 package automatos;
 
+import java.util.Scanner;
 
 public class Automatos {
 	int count;
 	
-	public String automatoComentarios(String line) {
+	public String automatoComentarios(String line, Scanner leitor_arquivo) {
 		int state = -1;
-
+		int line_tamanho = line.length() - 1;
 		if (line.charAt(this.count) == '/')
 			state = 0;
 
@@ -30,19 +31,32 @@ public class Automatos {
 				return "comentario de linha";
 			case 3:
 				this.count++;
-				if (line.charAt(this.count) == '*')
-					state = 4;
-				else
-					state = 3;
+				if (line.charAt(this.count) == '*') state = 4;
+				else state = 3;
+				
+				if (this.count == line_tamanho) {
+					if (leitor_arquivo.hasNextLine()) {
+						line = leitor_arquivo.nextLine();
+						line_tamanho = line.length() - 1;
+						this.count = -1;
+					}
+				}
 				break;
 			case 4:
 				this.count++;
-				if (line.charAt(this.count) == '/')
-					state = 5;
-				else if (line.charAt(this.count) == '*')
-					state = 4;
-				else
-					state = 3;
+				if (line.charAt(this.count) == '*') state = 4;
+				else if (line.charAt(this.count) == '/') state = 5;
+				else state = 3;
+				
+				if (this.count == line_tamanho) {
+					if (leitor_arquivo.hasNextLine()) {
+						line = leitor_arquivo.nextLine();
+						line_tamanho = line.length() - 1;
+						this.count = -1;
+					}
+					
+				}
+
 				break;
 			case 5:
 				return "comentario de bloco";
@@ -126,8 +140,8 @@ public class Automatos {
 	
 	//AUTOMATOS LENINGTON:
 	/*
-	 * Por enquanto ele verifica se tem operações separadas apenas
-	 * Ex: +, ++, -, --, *, /, +1, -1... mas n verifica se tem um número antes
+	 * Por enquanto ele verifica se tem operacoes separadas apenas
+	 * Ex: +, ++, -, --, *, /, +1, -1... mas n verifica se tem um numero antes
 	 */
 	public String automatoOperadorAritmetico(String line) {
 		int state = 0;
@@ -144,22 +158,22 @@ public class Automatos {
 				System.out.println(char_line);
 				if (char_line == '+') {
 					if (line.charAt(1+this.count) == '+') {
-						return "operador aritmético de incremento";
+						return "operador aritmï¿½tico de incremento";
 					} else {
-						//verifica se tem um número...
-						return "operador aritmético de adição";
+						//verifica se tem um nï¿½mero...
+						return "operador aritmï¿½tico de adiï¿½ï¿½o";
 					} 
 				} else if (char_line == '-') { 
 					if (line.charAt(1+this.count) == '-') {
-						return "operador aritmético de decremento";
+						return "operador aritmï¿½tico de decremento";
 					} else {
-						//verifica se tem um número...
-						return "operador aritmético de subtração";
+						//verifica se tem um nï¿½mero...
+						return "operador aritmï¿½tico de subtraï¿½ï¿½o";
 					} 
 				} else if (char_line == '*') {
-					return "operador aritmético de multiplicação";
+					return "operador aritmï¿½tico de multiplicaï¿½ï¿½o";
 				} else if (char_line == '/') {
-					return "operador aritmético de divisão";
+					return "operador aritmï¿½tico de divisï¿½o";
 				} else {
 					state = 1;
 				}
@@ -205,13 +219,13 @@ public class Automatos {
 					if (line.charAt(1+this.count) == '=') {
 						return "operador relacional igual";
 					} else {
-						return "operador relacional atribuição";
+						return "operador relacional atribuiï¿½ï¿½o";
 					} 
 				} else if (char_line == '!') { 
 					if (line.charAt(1+this.count) == '=') {
 						return "operador relacional diferente";
 					} else {
-						return "operador lógico falso";
+						return "operador lï¿½gico falso";
 					} 
 				} else {
 					state = 1;
@@ -243,16 +257,16 @@ public class Automatos {
 				char_line = line.charAt(this.count);
 				System.out.println(char_line);
 				if (char_line == '!') {
-					return "operador lógico falso";
+					return "operador lï¿½gico falso";
 				} else if (char_line == '&') {
 					if (line.charAt(1+this.count) == '&') {
-						return "operador lógico 'e'";
+						return "operador lï¿½gico 'e'";
 					} else {
 						//
 					} 
 				} else if (char_line == '|') { 
 					if (line.charAt(1+this.count) == '|') {
-						return "operador lógico 'ou'";
+						return "operador lï¿½gico 'ou'";
 					} else {
 						//
 					} 
@@ -269,13 +283,6 @@ public class Automatos {
 		}
 	}	
 	
-	
-	
-	public String automatoOp_Relacional (String line) {
-		
-		
-		return " ";
-	}
 	
 	public int getCounter() {
 		return count;

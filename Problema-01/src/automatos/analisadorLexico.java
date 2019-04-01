@@ -14,12 +14,12 @@ public class analisadorLexico {
 		Automatos aut = new Automatos();
 		
 		Scanner texto = new Scanner(new FileReader("teste.entrada"));
-		while(texto.hasNextLine()) {
-			 line = texto.nextLine();
+		aut.setCounter(i);
+		if (texto.hasNextLine()) {
+			line = texto.nextLine();
+			System.out.println(aut.automatoComentarios(line, texto));
 		}
 		
-		aut.setCounter(i);
-		System.out.println(aut.automatoOperadorRelacional(line));
 		texto.close();
 		
 	}
