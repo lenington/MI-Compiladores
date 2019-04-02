@@ -17,7 +17,7 @@ public class analisadorLexico {
 		aut.setCounter(i);
 		if (texto.hasNextLine()) {
 			line = texto.nextLine();
-			System.out.println(aut.automatoComentarios(line, texto));
+			System.out.println(aut.automatoCadeiaCaractere(line));
 		}
 		
 		texto.close();

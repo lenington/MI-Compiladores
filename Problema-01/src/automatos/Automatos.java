@@ -283,6 +283,41 @@ public class Automatos {
 		}
 	}	
 	
+	public String automatoCadeiaCaractere(String line) {
+		int state = 0;
+		
+		if (line.charAt(this.count) == '"')
+			state = 1;
+		
+		while (true) {
+			switch(state) {
+			case 1:
+				this.count++;
+				if (line.charAt(this.count) == '"') state = 5;
+				else if (line.charAt(this.count) == '\\') state = 3;
+				else state = 2;
+				break;
+			case 2:
+				this.count++;
+				if (line.charAt(this.count) == '\\') state = 3;
+				else if (line.charAt(this.count) == '"') state = 5;
+				else state = 2;
+				break;
+			case 3:
+				this.count++;
+				if (line.charAt(this.count) == '"') state = 4;
+				else return "error"; //por enquanto tratarei como erro
+				break;
+			case 4:
+				this.count++;
+				if (line.charAt(this.count) == '"') state = 5;
+				else state = 2;
+				break;
+			case 5:
+				return "validado";
+			}
+		}
+	}
 	
 	public int getCounter() {
 		return count;
