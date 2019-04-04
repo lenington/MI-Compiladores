@@ -1,51 +1,58 @@
 package automatos;
 
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Automatos {
 	int count;
+	LinkedList<String> palavras_reservadas; //lista encadeada para palavras reservadas
+	public Automatos() {
+		palavras_reservadas = new LinkedList<String>();
+		palavras_reservadas.add("programa");
+		palavras_reservadas.add("constantes");
+		palavras_reservadas.add("variaveis");
+		palavras_reservadas.add("metodo");
+		palavras_reservadas.add("resultado");
+		palavras_reservadas.add("principal");
+		palavras_reservadas.add("se");
+		palavras_reservadas.add("entao");
+		palavras_reservadas.add("senao");
+		palavras_reservadas.add("enquanto");
+		palavras_reservadas.add("leia");
+    	palavras_reservadas.add("escreva");
+		palavras_reservadas.add("vazio");
+		palavras_reservadas.add("inteiro");
+		palavras_reservadas.add("real");
+		palavras_reservadas.add("boleano");
+		palavras_reservadas.add("texto");
+		palavras_reservadas.add("verdadeiro");
+		palavras_reservadas.add("falso");
+	}
 	
-	public String automatoComentarios(String line, Scanner leitor_arquivo) {
-		int state = -1;
+	public boolean palavrasReservadas(String palavra) {
+		if (palavras_reservadas.contains(palavra))
+			return true;
+		return false;
+	}
+	
+	
+	
+	public String automatoComentarios(String line, Scanner leitor_arquivo, int state) {
 		int line_tamanho = line.length() - 1;
-		if (line.charAt(this.count) == '/')
-			state = 0;
 
 		while (true) {
 			switch (state) {
-			case 0:
-				this.count++;
-				if (line.charAt(this.count) == '/')
-					state = 1;
-				else
-					state = 3;
-				break;
-			case 1:
+			case 1: //nesse estado ja se sabe que é comentario de linha, assim so precisa achar o fim
 				this.count++;
 				if (this.count < line.length())
 					state = 1;
 				else
-					state = 2;
+					return "comentario de linha";
 				break;
 			case 2:
-				return "comentario de linha";
-			case 3:
 				this.count++;
-				if (line.charAt(this.count) == '*') state = 4;
-				else state = 3;
-				
-				if (this.count == line_tamanho) {
-					if (leitor_arquivo.hasNextLine()) {
-						line = leitor_arquivo.nextLine();
-						line_tamanho = line.length() - 1;
-						this.count = -1;
-					}
-				}
-				break;
-			case 4:
-				this.count++;
-				if (line.charAt(this.count) == '*') state = 4;
-				else if (line.charAt(this.count) == '/') state = 5;
+				if (line.charAt(this.count) == '*') state = 2;
+				else if (line.charAt(this.count) == '/') state = 4;
 				else state = 3;
 				
 				if (this.count == line_tamanho) {
@@ -56,9 +63,13 @@ public class Automatos {
 					}
 					
 				}
-
 				break;
-			case 5:
+			case 3:
+				this.count++;
+				if (line.charAt(this.count) == '*') state = 2;
+				else state = 3;
+				
+			case 4:
 				return "comentario de bloco";
 
 			}
