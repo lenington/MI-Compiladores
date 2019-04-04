@@ -5,16 +5,16 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /*
- * Classe responsável por ler o arquivo principal e fazer toda a manipulação
+ * Classe responsavel por ler o arquivo principal e fazer toda a manipulacao
  * 
  * 
  */
 public class Buffer {
 	
 	private String script; //todo o script do arquivo de entrada
-	private int linhaAtual; //linha atual do código
-	private int posicaoAtual; //posição atual na linha do código
-	private int tamanhoCodigo; //tamanho do código
+	private int linhaAtual; //linha atual do codigo
+	private int posicaoAtual; //posicao atual na linha do codigo
+	private int tamanhoCodigo; //tamanho do codigo
 	
 	public Buffer(String arquivo) throws FileNotFoundException {
 		this.linhaAtual = 0;
@@ -22,15 +22,15 @@ public class Buffer {
 		
 		//leitura do arquivo
 		Scanner scan = new Scanner(new File(arquivo));
-		this.script = scan.useDelimiter("\\Z").next(); //lê imediatamente todo o arquivo
+		this.script = scan.useDelimiter("\\Z").next(); //lï¿½ imediatamente todo o arquivo
 		
-		this.tamanhoCodigo = this.script.length(); //tamanho do código inteiro
+		this.tamanhoCodigo = this.script.length(); //tamanho do cï¿½digo inteiro
 		
 		scan.close();
 	}
 	
 	/* 
-	 * Retorna true se a posição atual for igual ao tamanho total do código
+	 * Retorna true se a posiï¿½ï¿½o atual for igual ao tamanho total do cï¿½digo
 	 */
 	public boolean isFimScript() {
 		return (this.tamanhoCodigo == this.posicaoAtual);
@@ -44,13 +44,13 @@ public class Buffer {
 	}
 	
 	/* 
-	 * Retorna o próximo caractere do código
+	 * Retorna o proximo caractere do codigo
 	 */
 	public char charSeguinte() {
 		char charSeguinte;
-		//verifica se está no final da linha atual
+		//verifica se esta no final da linha atual
 		if(this.script.charAt(this.posicaoAtual) == '\n') {
-			this.setLinhaAtual(); //incrementa a variável linha atual
+			this.setLinhaAtual(); //incrementa a variavel linha atual
 		}
 		
 		charSeguinte = this.script.charAt(this.posicaoAtual++);

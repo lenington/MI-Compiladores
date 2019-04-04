@@ -46,57 +46,7 @@ public class AutomatosTeste {
 	}
 	
 	/*
-	 * Retorna verdadeiro se o caractere informado percente ao alfabeto [a-z] [A-Z]
-	 * Em lower case ASCII: a = 97, b = 98, ..., z = 122
-     * Em upper case ASCII: A = 65, B = 66, ..., Z = 90
-	 * */
-	public boolean isLetra(char c){
-        int ascii = (int) c; //transforma para ascii
-        
-        if ((ascii >= 65 && ascii <= 90) ||
-    	    (ascii >= 97 && ascii <= 122)) {
-        	return true;
-        } else return false;
-    }
-	
-	/*
-	 * Retorna verdadeiro se o caractere informado percente ao conjunto de digitos [0-9]
-	 * Em ASCII: 0 = 48, 1 = 49, ..., 9 = 57
-	 * */
-	public boolean isDigito(char c) {
-        int ascii = (int) c; //transforma para ascii
-        
-        if (ascii >= 48 && ascii <= 57) {
-        	return true;
-        } else return false;
-	}
-	
-	/*
-	 * Retorna verdadeiro se o caractere informado percente ao conjunto de simbolos 
-	 * ASCII 34 = " (aspas dupla)
-	 * */
-	public boolean isSimbolo(Character c){
-    	int ascii = (int) c;
-    	
-    	if (ascii >= 32 && ascii <= 126 && ascii != 34) {
-    		return true;
-    	} else return false;
-    }
-	
-	/*
-	 * Retorna verdadeiro se o caractere atual for um espaço: 
-	 * ASCII = 9 equivale a \t
-	 * ASCII = 32 equivale a espaço
-	 */
-	public boolean isEspaco(char c) {
-		int ascii = (int) c;
-		if(ascii == 9 || ascii == 32) { 
-			return true;
-		} else return false;
-	}
-	
-	/*
-	 * Pega o próximo caractere e armazena no lexema
+	 * Pega o proximo caractere e armazena no lexema
 	 * */
 	private void consumirCaractere(){
     	char c = this.buffer.charSeguinte();
@@ -106,7 +56,7 @@ public class AutomatosTeste {
 	public String automatoOperadorAritmetico() {
 		int state = 0;
 		
-		//roda enquanto não for o fim do script/arquivo
+		//roda enquanto nï¿½o for o fim do script/arquivo
 		while(!this.buffer.isFimScript()) {
 			char c = buffer.lookAhead();
 			
@@ -115,39 +65,39 @@ public class AutomatosTeste {
 				if(c == '+') { //SOMA
 					this.consumirCaractere();
 					if (this.buffer.isFimScript() == true) {
-                        return "OPERADOR ARITMÉTICO SOMA";
-                    } else state = 1; //vai pro estado 1 para verificar se é incremento
-				} else if(c == '-') { //SUBTRAÇÃO
+                        return "OPERADOR ARITMETICO SOMA";
+                    } else state = 1; //vai pro estado 1 para verificar se ï¿½ incremento
+				} else if(c == '-') { //SUBTRACAO
 					this.consumirCaractere();
 					if (this.buffer.isFimScript() == true) {
-                        return "OPERADOR ARITMÉTICO SUBTRAÇÃO";
-                    } else state = 2; //vai pro estado 2 para verificar se é decremento
+                        return "OPERADOR ARITMETICO SUBTRACAO";
+                    } else state = 2; //vai pro estado 2 para verificar se ï¿½ decremento
 				} else if(c == '*') {
 					this.consumirCaractere();
-					return "OPERADOR ARITMÉTICO MULTIPLICAÇÃO";
+					return "OPERADOR ARITMETICO MULTIPLICACAO";
 				} else if(c == '/') {
 					this.consumirCaractere();
-					return "OPERADOR ARITMÉTICO DIVISÃO";
+					return "OPERADOR ARITMETICO DIVISAO";
 				} else state = -1;
 				
 				break;
 			case 1:
 				this.consumirCaractere();
 				if(c == '+') {
-					return "OPERADOR ARITMÉTICO INCREMENTO";
+					return "OPERADOR ARITMETICO INCREMENTO";
 				} else {
-					//significa que não é um operador aritmetico de incremento
+					//significa que nï¿½o ï¿½ um operador aritmetico de incremento
 					this.buffer.setPosicaoAtual(this.buffer.getPosicaoAtual()-1);
-					return "OPERADOR ARITMÉTICO SOMA";
+					return "OPERADOR ARITMETICO SOMA";
 				}
 			case 2: 
 				this.consumirCaractere();
 				if(c == '-') {
-					return "OPERADOR ARITMÉTICO DECREMENTO";
+					return "OPERADOR ARITMETICO DECREMENTO";
 				} else {
-					//significa que não é um operador aritmetico de subtração
+					//significa que nao eh um operador aritmetico de subtracao
 					this.buffer.setPosicaoAtual(this.buffer.getPosicaoAtual()-1);
-					return "OPERADOR ARITMÉTICO SUBTRAÇÃO";
+					return "OPERADOR ARITMETICO SUBTRACAO";
 				}
 			default:
 				//TOKEN INDEFINIDO

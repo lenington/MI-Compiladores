@@ -9,9 +9,10 @@ public class Lexico {
 	
 	private Buffer buffer;
 	private AutomatosTeste automatos;
+	private characterDiscover charDiscover;
 	
 	private List<String> listaTokens; //lista de todos os tokens do script
-	private List<String> listaErros; //lista de todos os erros léxicos do script
+	private List<String> listaErros; //lista de todos os erros lï¿½xicos do script
 
 	
 	public Lexico(Buffer buffer) {
@@ -21,13 +22,14 @@ public class Lexico {
 		this.listaErros = new ArrayList<String>();
 		
 		this.automatos = new AutomatosTeste(buffer); //inicializa os automatos
+		this.charDiscover = new characterDiscover();
 	}
 	
 	public void rodarAutomatos() {
 		char c = ' ';
 		String token = "";
 		
-		//roda enquanto não for o fim do script/arquivo
+		//roda enquanto nao for o fim do script/arquivo
 		while(!this.buffer.isFimScript()) {
 			c = this.buffer.lookAhead(); 
 			
@@ -35,20 +37,20 @@ public class Lexico {
 				break; //finalizado!
 			}
 			
-			if(this.automatos.isLetra(c)) {
-				//chama função de automato identificador...
+			if(this.charDiscover.isLetra(c)) {
+				//chama funcao de automato identificador...
 				this.buffer.charSeguinte();
 				continue;
-			} else if(this.automatos.isDigito(c) ) {
-				//chama função de automato numero...
+			} else if(this.charDiscover.isDigito(c) ) {
+				//chama funcao de automato numero...
 				this.buffer.charSeguinte();
 				continue;
 			} else if(c == '"') {
-				//chama função de automato de cadeia de caracteres...
+				//chama funcao de automato de cadeia de caracteres...
 				this.buffer.charSeguinte();
 				continue;
 			} else {
-				//chama as outras funções de automatos...
+				//chama as outras funcoes de automatos...
 				
 				//testando...
 				token = this.automatos.automatoOperadorAritmetico();
