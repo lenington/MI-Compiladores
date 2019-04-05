@@ -4,48 +4,18 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 import lexico.Buffer;
+import lexico.PalavrasReservadas;
 import lexico.characterDiscover;
 
 public class AutomatosTeste {
 	private Buffer buffer;
-	private LinkedList<String> palavras_reservadas; //lista encadeada para palavras reservadas
+	private PalavrasReservadas palavra; //classe com a lista de palavras reservadas para ser utilizada no automato de idetificador
 	private characterDiscover charDiscover;
 	
 	public AutomatosTeste(Buffer buffer) {
-		this.buffer = buffer;
-		
-		this.palavras_reservadas = new LinkedList<String>();
-		this.inicializaPalavrasReservadas();
-		
+		this.buffer = buffer;		
+		palavra = new PalavrasReservadas();
 		this.charDiscover = new characterDiscover();
-	}
-	
-	public void inicializaPalavrasReservadas() {
-		palavras_reservadas.add("programa");
-		palavras_reservadas.add("constantes");
-		palavras_reservadas.add("variaveis");
-		palavras_reservadas.add("metodo");
-		palavras_reservadas.add("resultado");
-		palavras_reservadas.add("principal");
-		palavras_reservadas.add("se");
-		palavras_reservadas.add("entao");
-		palavras_reservadas.add("senao");
-		palavras_reservadas.add("enquanto");
-		palavras_reservadas.add("leia");
-    	palavras_reservadas.add("escreva");
-		palavras_reservadas.add("vazio");
-		palavras_reservadas.add("inteiro");
-		palavras_reservadas.add("real");
-		palavras_reservadas.add("boleano");
-		palavras_reservadas.add("texto");
-		palavras_reservadas.add("verdadeiro");
-		palavras_reservadas.add("falso");
-	}
-	
-	public boolean palavrasReservadas(String palavra) {
-		if (palavras_reservadas.contains(palavra))
-			return true;
-		return false;
 	}
 	
 	/*
@@ -369,6 +339,8 @@ public class AutomatosTeste {
 		return "TOKEN INDEFINIDO aqui";
 	}
 	
+	
+	
 	public String automatoComentarios() {
 		int state = 0;
 		char  c;
@@ -403,22 +375,39 @@ public class AutomatosTeste {
 					return "comentario de bloco";
 				else {
 					state = 2;
-
 					if (buffer.temProximoChar() == false)
 						if (buffer.temProximaLinha()) 
 							buffer.lerLinha();
 						else 
 							return "error! comentario de bloco nao foi formando completamente";
-				}
-				
+				}				
 			break;
 			}
 			
 			
 			
 		}
-		
 		return "error";
+	}
+	
+	
+	public String automatoIdentificador() {
+		int state = 0;
+		char c;
+		while (buffer.temProximoChar()) {
+			c = buffer.lerChar();
+			
+			switch(state) {
+			case 0:
+				if (charDiscover.isLetra(c) || charDiscover.isDigito(c) || c == '_')
+					state = 0; //falta concatenar a string
+				else if (c == ' ' || c == ';')
+					return "identificador identificado kk";
+				break;
+			}
+		}
+		
+		return "identificador identificado k";
 	}
 }
 

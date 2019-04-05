@@ -54,10 +54,9 @@ public class Lexico {
 			}
 			
 			else if(this.charDiscover.isLetra(c)) {
-				//chama funcao de automato identificador...
-				//this.buffer.charSeguinte();
-				continue;
-			} else if(this.charDiscover.isDigito(c) ) {
+				System.out.println(automatos.automatoIdentificador());
+			} 
+			else if(this.charDiscover.isDigito(c) ) {
 				//chama funcao de automato numero...
 				//this.buffer.charSeguinte();
 				continue;
