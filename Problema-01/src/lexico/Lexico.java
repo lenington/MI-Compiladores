@@ -29,7 +29,7 @@ public class Lexico {
 		char c = ' ';
 		String token = "";
 		String linha;
-		
+		char proximo_caractere;
 		
 		//roda enquanto nao for o fim do script/arquivo
 		while(buffer.temProximaLinha()) {
@@ -37,7 +37,23 @@ public class Lexico {
 			while(buffer.temProximoChar()) {
 			c = buffer.lerChar();
 			
-			if(this.charDiscover.isLetra(c)) {
+			if (c == ' ') {
+				
+			}
+				
+			else if (c == '/') {
+				if (buffer.possoVerProximo()) {
+					proximo_caractere = buffer.verProximo();
+					if (proximo_caractere == '*' || proximo_caractere == '/')
+						System.out.println(automatos.automatoComentarios());
+					else 
+						System.out.println("entrou no else");
+						//ir tratar o / como divisao
+											
+				}
+			}
+			
+			else if(this.charDiscover.isLetra(c)) {
 				//chama funcao de automato identificador...
 				//this.buffer.charSeguinte();
 				continue;

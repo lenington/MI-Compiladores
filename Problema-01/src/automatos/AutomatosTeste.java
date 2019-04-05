@@ -1,6 +1,7 @@
 package automatos;
 
 import java.util.LinkedList;
+import java.util.Scanner;
 
 import lexico.Buffer;
 import lexico.characterDiscover;
@@ -307,6 +308,11 @@ public class AutomatosTeste {
 		return "TOKEN INDEFINIDO";
 	}
 	*/
+	
+	
+	/*
+	 * Automato responsavel pela leitura da cadeia de caractere
+	 * */
 	public String automatoCadeiaCaractere() {
 		int state = 0;
 		char c;
@@ -322,7 +328,7 @@ public class AutomatosTeste {
 					
 				} 
 				else if(c == '"') {
-					state = 4;
+					return "cadeia de cactere";
 				}
 				break;
 			case 1:
@@ -355,8 +361,6 @@ public class AutomatosTeste {
 					state = 1;
 				}
 				break;
-			case 4:
-				return "cadeia caractere validada";
 			default:
 				//TOKEN INDEFINIDO
 				return "TOKEN INDEFINIDO";
@@ -364,4 +368,57 @@ public class AutomatosTeste {
 		} 
 		return "TOKEN INDEFINIDO aqui";
 	}
+	
+	public String automatoComentarios() {
+		int state = 0;
+		char  c;
+		while(buffer.temProximoChar()) {
+			c = buffer.lerChar();
+			switch(state) {
+			case 0:
+				if (c == '/') state = 1; //entao vou tratar o caso do cometario de linha
+				else state = 2;
+				break;
+			case 1:
+				if (buffer.temProximoChar())
+					state = 1;
+				else
+					return "eh um comentario de linha";
+				//aqui eu ainda tenho que concatenar o comentario de linha
+				break;
+			case 2:
+				if (c == '*')
+					state = 3;
+				else
+					state = 2; //senao ele permance nesse estado concatenando caractere
+				
+				if (buffer.temProximoChar() == false)
+					if (buffer.temProximaLinha()) 
+						buffer.lerLinha();
+					else 
+						return "error! comentario de bloco nao foi formando completamente";
+				break;
+			case 3:
+				if (c == '\\')
+					return "comentario de bloco";
+				else {
+					state = 2;
+
+					if (buffer.temProximoChar() == false)
+						if (buffer.temProximaLinha()) 
+							buffer.lerLinha();
+						else 
+							return "error! comentario de bloco nao foi formando completamente";
+				}
+				
+			break;
+			}
+			
+			
+			
+		}
+		
+		return "error";
+	}
 }
+

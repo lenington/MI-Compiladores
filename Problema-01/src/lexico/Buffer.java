@@ -57,13 +57,13 @@ public class Buffer {
 	}
 	
 	public boolean possoVerProximo() {
-		if ((count_coluna+1) > tamanho_char)
+		if (count_coluna > tamanho_char)
 			return false;
 		return true;
 	}
 	
 	public char verProximo() {
-		return linha.charAt(count_coluna+1);
+		return linha.charAt(count_coluna);
 	}
 	
 	
