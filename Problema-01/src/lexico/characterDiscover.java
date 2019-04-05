@@ -41,15 +41,21 @@ public class characterDiscover {
     }
 	
 	/*
-	 * Retorna verdadeiro se o caractere atual for um espa�o: 
+	 * Retorna verdadeiro se o caractere atual for um espaco: 
 	 * ASCII = 9 equivale a \t
-	 * ASCII = 32 equivale a espa�o
+	 * ASCII = 32 equivale a espaco
 	 */
 	public boolean isEspaco(char c) {
 		int ascii = (int) c;
 		if(ascii == 9 || ascii == 32) { 
 			return true;
 		} else return false;
+	}
+	
+	public boolean isDelimitador(char c) {
+		if (c == ';' || c == ',' || c == '(' || c == ')' || c == '[' || c == ']' || c == '{' || c == '}' || c == '.' || c == '/')
+			return true;
+		return false;
 	}
 
 }

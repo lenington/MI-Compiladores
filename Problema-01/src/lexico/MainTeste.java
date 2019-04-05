@@ -15,7 +15,8 @@ public class MainTeste {
 	
 	private static void testarArquivo(String arquivo) throws FileNotFoundException{
 		Buffer buffer = new Buffer(arquivo);
-        Lexico lexico = new Lexico(buffer);
+		Lexico lexico = new Lexico(buffer);
+        
         lexico.rodarAutomatos();
 	}
 }

@@ -1,20 +1,19 @@
 package automatos;
 
-import java.util.LinkedList;
-import java.util.Scanner;
 
 import lexico.Buffer;
-import lexico.PalavrasReservadas;
+import lexico.ConcatenadorString;
 import lexico.characterDiscover;
 
 public class AutomatosTeste {
 	private Buffer buffer;
-	private PalavrasReservadas palavra; //classe com a lista de palavras reservadas para ser utilizada no automato de idetificador
 	private characterDiscover charDiscover;
+	private ConcatenadorString concatenarString;
 	
-	public AutomatosTeste(Buffer buffer) {
-		this.buffer = buffer;		
-		palavra = new PalavrasReservadas();
+	
+	public AutomatosTeste(Buffer buffer, ConcatenadorString concatenarString) {
+		this.buffer = buffer;
+		this.concatenarString = concatenarString;
 		this.charDiscover = new characterDiscover();
 	}
 	
@@ -289,6 +288,7 @@ public class AutomatosTeste {
 		//roda enquanto nao for fim do script/arquivo
 			while(buffer.temProximoChar()) {
 			c = buffer.lerChar();
+			concatenarString.concatenar_String(c);
 			switch(state) {
 			case 0:
 				if (c == '\\')
@@ -346,6 +346,7 @@ public class AutomatosTeste {
 		char  c;
 		while(buffer.temProximoChar()) {
 			c = buffer.lerChar();
+			concatenarString.concatenar_String(c);
 			switch(state) {
 			case 0:
 				if (c == '/') state = 1; //entao vou tratar o caso do cometario de linha
@@ -371,7 +372,7 @@ public class AutomatosTeste {
 						return "error! comentario de bloco nao foi formando completamente";
 				break;
 			case 3:
-				if (c == '\\')
+				if (c == '/')
 					return "comentario de bloco";
 				else {
 					state = 2;
@@ -399,10 +400,15 @@ public class AutomatosTeste {
 			
 			switch(state) {
 			case 0:
-				if (charDiscover.isLetra(c) || charDiscover.isDigito(c) || c == '_')
-					state = 0; //falta concatenar a string
-				else if (c == ' ' || c == ';')
-					return "identificador identificado kk";
+				if (charDiscover.isLetra(c) || charDiscover.isDigito(c) || c == '_') {
+					state = 0;
+					concatenarString.concatenar_String(c);
+				}
+				if (buffer.temProximoChar()) {
+					c = buffer.verProximo();
+					if (charDiscover.isDelimitador(c) || charDiscover.isEspaco(c))
+						return "identificador identificado";
+				}
 				break;
 			}
 		}
@@ -410,4 +416,3 @@ public class AutomatosTeste {
 		return "identificador identificado k";
 	}
 }
-

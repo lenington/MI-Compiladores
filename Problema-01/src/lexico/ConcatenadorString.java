@@ -6,7 +6,7 @@ package lexico;
  * */
 public class ConcatenadorString {
 	
-	String token;
+	private String token;
 	
 	/*
 	 * Construtor
