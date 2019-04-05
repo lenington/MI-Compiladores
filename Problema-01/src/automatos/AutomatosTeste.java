@@ -1,7 +1,6 @@
 package automatos;
 
 import java.util.LinkedList;
-import java.util.Scanner;
 
 import lexico.Buffer;
 import lexico.characterDiscover;
@@ -59,7 +58,7 @@ public class AutomatosTeste {
 	public String automatoOperadorAritmetico() {
 		int state = 0;
 
-		//roda enquanto nï¿½o for o fim do script/arquivo
+		//roda enquanto nao for o fim do script/arquivo
 		while(!this.buffer.isFimScript()) {
 			char c = buffer.charAtual();
 
@@ -123,7 +122,7 @@ public class AutomatosTeste {
 				if(c == '!') { //
 					this.consumirCaractere();
 					if (this.buffer.isFimScript() == true) {
-                        return "OPERADOR L�GICO NEGADO";
+                        return "OPERADOR LOGICO NEGADO";
                     } 
 					//agora ele precisa verificar se � operador relacional: !=
 					state = 1;
@@ -310,39 +309,64 @@ public class AutomatosTeste {
 	
 	public String automatoCadeiaCaractere() {
 		int state = 0;
-		int verifica = 0;
-
+		
 		//roda enquanto nao for fim do script/arquivo
-		while(!this.buffer.isFimScript()) {
+			while(this.buffer.isFimLinha() == false && this.buffer.isFimScript() == false) {
 			char c = buffer.charAtual();
-			System.out.println("C = " + c);
+			System.out.println(state);
 			switch(state) {
 			case 0:
-				if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
-					this.consumirCaractere();
-					if(c == '\\') {
-						state = 1;
-					}
-				} else if(c == '"') {
-					return "CADEIA DE CARACTERE";
+				if (c == '\\')
+					state = 2;
+				else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+					state = 1;
+					
+				} 
+				else if(c == '"') {
+					state = 4;
 				}
-				else break;
+				this.consumirCaractere();
+				break;
 			case 1:
-				if(c == '"') { 
-					this.consumirCaractere();
-					state = 0;
-					return "CADEIA DE CARACTERE";
+				if (c == '\\')
+					state = 2;
+				else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+					state = 1;				
 				}
+				else if (c == '"') {
+					state = 4;
+				}
+				this.consumirCaractere();
 				break;
 			case 2:
-				
+				if (c == '"') {
+					state = 3;
+				}
+				else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+					state = 1;
+				}
+				this.consumirCaractere();
 				break;
+			case 3:
+				if (c == '"') {
+					return "cadeia caractere validada";
+				}
+				else if (c == '\\') {
+					state = 2;
+				}
+				else if (this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+					state = 1;
+				}
+				this.consumirCaractere();
+				break;
+			case 4:
+				return "cadeia caractere validada";
 			default:
 				//TOKEN INDEFINIDO
 				return "TOKEN INDEFINIDO";
 			}
 		} 
-		
-		return "TOKEN INDEFINIDO";
+		this.buffer.charSeguinte();
+		return "TOKEN INDEFINIDO aqui";
 	}
 }

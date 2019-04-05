@@ -12,7 +12,7 @@ public class Lexico {
 	private characterDiscover charDiscover;
 	
 	private List<String> listaTokens; //lista de todos os tokens do script
-	private List<String> listaErros; //lista de todos os erros l�xicos do script
+	private List<String> listaErros; //lista de todos os erros lexicos do script
 
 	
 	public Lexico(Buffer buffer) {
@@ -30,7 +30,7 @@ public class Lexico {
 		String token = "";
 		
 		//roda enquanto nao for o fim do script/arquivo
-		while(!this.buffer.isFimScript()) {
+		while(this.buffer.isFimScript() != true) {
 			c = this.buffer.charAtual(); 
 			
 			if ((Character) c == null) {
@@ -45,11 +45,10 @@ public class Lexico {
 				//chama funcao de automato numero...
 				this.buffer.charSeguinte();
 				continue;
-			} else if(c == '"') {
-				//chama funcao de automato de cadeia de caracteres...
+			} else if(c == '"') { //chama funcao de automato de cadeia de caracteres...
 				this.buffer.charSeguinte();
 				token = this.automatos.automatoCadeiaCaractere();
-				if(!token.equals("TOKEN INDEFINIDO")) System.out.println(token);
+				System.out.println(token);
 			} else {
 				//chama as outras funcoes de automatos...
 				

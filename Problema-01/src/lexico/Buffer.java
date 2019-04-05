@@ -30,12 +30,17 @@ public class Buffer {
 	}
 	
 	/* 
-	 * Retorna true se a posi��o atual for igual ao tamanho total do c�digo
+	 * Retorna true se a posicao atual for igual ao tamanho total do c�digo
 	 */
 	public boolean isFimScript() {
-		return (this.tamanhoCodigo == this.posicaoAtual);
+		return ((this.tamanhoCodigo-1) == this.posicaoAtual);
 	}
 	
+	public boolean isFimLinha() {
+		if(this.script.charAt(this.posicaoAtual) == '\n')
+			return true;
+		return false;
+	}
 	/* 
 	 * Para retornar um caractere anterior!!!!
 	 */
