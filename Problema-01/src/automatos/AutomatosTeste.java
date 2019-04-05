@@ -50,12 +50,12 @@ public class AutomatosTeste {
 	/*
 	 * Pega o proximo caractere e armazena no lexema
 	 * */
-	private void consumirCaractere(){
-    	char c = this.buffer.charSeguinte();
-    }
+	//private void consumirCaractere(){
+    //	char c = this.buffer.charSeguinte();
+    //}
 	
 	//AUTOMATOS ENTRAM AQUI:
-	public String automatoOperadorAritmetico() {
+	/*public String automatoOperadorAritmetico() {
 		int state = 0;
 
 		//roda enquanto nao for o fim do script/arquivo
@@ -262,8 +262,8 @@ public class AutomatosTeste {
 		int state = 0;
 		
 		//roda enquanto n�o for o fim do script/arquivo
-		while(!this.buffer.isFimScript()) {
-			char c = buffer.charAtual();
+		while(!this.buffer.temProximoChar()) {
+			char c = buffer.lerChar();
 			
 			switch(state) {
 			case 0:
@@ -306,14 +306,13 @@ public class AutomatosTeste {
 		
 		return "TOKEN INDEFINIDO";
 	}
-	
+	*/
 	public String automatoCadeiaCaractere() {
 		int state = 0;
-		
+		char c;
 		//roda enquanto nao for fim do script/arquivo
-			while(this.buffer.isFimLinha() == false && this.buffer.isFimScript() == false) {
-			char c = buffer.charAtual();
-			System.out.println(state);
+			while(buffer.temProximoChar()) {
+			c = buffer.lerChar();
 			switch(state) {
 			case 0:
 				if (c == '\\')
@@ -325,18 +324,17 @@ public class AutomatosTeste {
 				else if(c == '"') {
 					state = 4;
 				}
-				this.consumirCaractere();
 				break;
 			case 1:
 				if (c == '\\')
 					state = 2;
+				else if (c == '"') {
+					return "cadeia caractere valida";
+				}
 				else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
 					state = 1;				
 				}
-				else if (c == '"') {
-					state = 4;
-				}
-				this.consumirCaractere();
+		
 				break;
 			case 2:
 				if (c == '"') {
@@ -345,7 +343,6 @@ public class AutomatosTeste {
 				else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
 					state = 1;
 				}
-				this.consumirCaractere();
 				break;
 			case 3:
 				if (c == '"') {
@@ -357,7 +354,6 @@ public class AutomatosTeste {
 				else if (this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
 					state = 1;
 				}
-				this.consumirCaractere();
 				break;
 			case 4:
 				return "cadeia caractere validada";
@@ -366,7 +362,6 @@ public class AutomatosTeste {
 				return "TOKEN INDEFINIDO";
 			}
 		} 
-		this.buffer.charSeguinte();
 		return "TOKEN INDEFINIDO aqui";
 	}
 }
