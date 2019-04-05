@@ -406,7 +406,7 @@ public class AutomatosTeste {
 				}
 				if (buffer.temProximoChar()) {
 					c = buffer.verProximo();
-					if (charDiscover.isDelimitador(c) || charDiscover.isEspaco(c))
+					if (charDiscover.isLetra(c) == false && charDiscover.isDigito(c) == false && c != '_')
 						return "identificador identificado";
 				}
 				break;
