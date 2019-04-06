@@ -33,7 +33,7 @@ public class Lexico {
 			//esse if trata o / que pode levar ao automato de comentarios ou de operador arimetico
 			if (c == '/') {
 				concatenarString.concatenar_String(c);
-				if (buffer.possoVerProximo()) {
+				if (buffer.temProximoChar()) {
 					proximo_caractere = buffer.verProximo();
 					if (proximo_caractere == '*' || proximo_caractere == '/') {
 						System.out.println(automatos.automatoComentarios() + ": " + concatenarString.getStringConcatenada());

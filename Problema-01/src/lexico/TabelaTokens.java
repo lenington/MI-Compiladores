@@ -19,7 +19,7 @@ public class TabelaTokens {
 	public TabelaTokens(String nome_arquivo) {
 		
 		file = new File(nome_arquivo);
-		saida = "LINHA		TOKEN		VALOR";
+		saida = "LINHA		LEXAMA		DESCRICAO";
 		conjunto_token = new LinkedList<Tokens>();
 		
 		/*
@@ -32,8 +32,8 @@ public class TabelaTokens {
 	 * Esse metodo vai receber os dados para serem salvos 
 	 * no arquivo de token
 	 * */
-	public void guardarTokens(int linha, String token, String descricao) {
-		conjunto_token.add(new Tokens(linha, token, descricao));
+	public void guardarTokens(int linha, String lexama, String classificacao) {
+		conjunto_token.add(new Tokens(linha, lexama, classificacao));
 		
 	}
 	

@@ -298,14 +298,14 @@ public class AutomatosTeste {
 					
 				} 
 				else if(c == '"') {
-					return "cadeia de cactere";
+					return "CADEIA DE CARACTERE";
 				}
 				break;
 			case 1:
 				if (c == '\\')
 					state = 2;
 				else if (c == '"') {
-					return "cadeia caractere valida";
+					return "CADEIA DE CARACTERE";
 				}
 				else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
 					state = 1;				
@@ -322,7 +322,7 @@ public class AutomatosTeste {
 				break;
 			case 3:
 				if (c == '"') {
-					return "cadeia caractere validada";
+					return "CADEIA DE CARACTERE";
 				}
 				else if (c == '\\') {
 					state = 2;
@@ -336,7 +336,7 @@ public class AutomatosTeste {
 				return "TOKEN INDEFINIDO";
 			}
 		} 
-		return "TOKEN INDEFINIDO aqui";
+		return "ERROR! CADEIA DE CARACTERE MAL FORMADA";
 	}
 	
 	
@@ -356,7 +356,7 @@ public class AutomatosTeste {
 				if (buffer.temProximoChar())
 					state = 1;
 				else
-					return "eh um comentario de linha";
+					return "COMENTARIO DE LINHA";
 				//aqui eu ainda tenho que concatenar o comentario de linha
 				break;
 			case 2:
@@ -369,18 +369,18 @@ public class AutomatosTeste {
 					if (buffer.temProximaLinha()) 
 						buffer.lerLinha();
 					else 
-						return "error! comentario de bloco nao foi formando completamente";
+						return "ERRO! COMENTARIO DE BLOCO MAL FORMADO";
 				break;
 			case 3:
 				if (c == '/')
-					return "comentario de bloco";
+					return "COMENTARIO DE BLOCO";
 				else {
 					state = 2;
 					if (buffer.temProximoChar() == false)
 						if (buffer.temProximaLinha()) 
 							buffer.lerLinha();
 						else 
-							return "error! comentario de bloco nao foi formando completamente";
+							return "ERRO! COMENTARIO DE BLOCO MAL FORMADO";
 				}				
 			break;
 			}
@@ -407,12 +407,12 @@ public class AutomatosTeste {
 				if (buffer.temProximoChar()) {
 					c = buffer.verProximo();
 					if (charDiscover.isLetra(c) == false && charDiscover.isDigito(c) == false && c != '_')
-						return "identificador identificado";
+						return "IDENTIFICADOR";
 				}
 				break;
 			}
 		}
 		
-		return "identificador identificado k";
+		return "IDENTIFICADOR";
 	}
 }

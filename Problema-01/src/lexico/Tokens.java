@@ -3,24 +3,24 @@ package lexico;
 public class Tokens {
 	
 	private int linha;
-	private String token;
-	private String descricao;
+	private String lexama;
+	private String classificacao;
 	
-	public Tokens(int linha, String token, String descricao) {
+	public Tokens(int linha, String lexama, String classificacao) {
 		this.linha = linha;
-		this.token = token;
-		this.descricao = descricao;
+		this.lexama = lexama;
+		this.classificacao = classificacao;
 	}
 
 	public int getLinha() {
 		return linha;
 	}
 	
-	public String getToken() {
-		return token;
+	public String getLexama() {
+		return lexama;
 	}
 	
-	public String getDescricao() {
-		return descricao;
+	public String getClassificacao() {
+		return classificacao;
 	}
 }
