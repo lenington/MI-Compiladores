@@ -3,6 +3,7 @@ package lexico;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
 
 /*
  * Classe responsavel por estruturar as listas  de tokens
@@ -12,12 +13,14 @@ public class TabelaTokens {
 	
 	private File file;
 	private String saida;
+	private LinkedList<Tokens> conjunto_token;
 	
 	
 	public TabelaTokens(String nome_arquivo) {
 		
 		file = new File(nome_arquivo);
 		saida = "LINHA		TOKEN		VALOR";
+		conjunto_token = new LinkedList<Tokens>();
 		
 		/*
 		 * Inicializar o arquivo de saida dos tokens
@@ -29,7 +32,8 @@ public class TabelaTokens {
 	 * Esse metodo vai receber os dados para serem salvos 
 	 * no arquivo de token
 	 * */
-	public void guardarTokens() {
+	public void guardarTokens(int linha, String token, String descricao) {
+		conjunto_token.add(new Tokens(linha, token, descricao));
 		
 	}
 	
