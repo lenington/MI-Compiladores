@@ -73,7 +73,7 @@ public class Buffer {
 	 * apenas retorna o charAtual
 	 * */
 	public char lerCharAtual() {
-		return linha.charAt(count_coluna);
+		return linha.charAt(count_coluna-1);
 	}
 	
 	/*

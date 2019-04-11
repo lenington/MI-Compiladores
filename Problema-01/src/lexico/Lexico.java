@@ -43,16 +43,13 @@ public class Lexico {
 							tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), classificacao);
 						}
 						else {
-							System.out.println("Operador arimetico: /"); //tratar o / como divisao		
+							System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorAritmetico() + ": " + concatenarString.getStringConcatenada());
 						}
 						concatenarString.zerar_StringConcatenada();
 					}
-				}
-				
-				
-				else if(this.charDiscover.isLetra(c)) {
+				} else if(this.charDiscover.isLetra(c)) {
 					concatenarString.concatenar_String(c);
-					String a = automatos.automatoIdentificador();
+					automatos.automatoIdentificador();
 					if (palavra.ehPalavraReservada(concatenarString.getStringConcatenada())) {
 						System.out.println(buffer.getLinha() + ", eh palavra reservada: " + concatenarString.getStringConcatenada());
 						tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), "palavra reservada");
@@ -62,13 +59,10 @@ public class Lexico {
 						tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), "identificador");
 					} 
 					concatenarString.zerar_StringConcatenada();
-					
 				}  
-				
-				
-				
-				else if(this.charDiscover.isDigito(c) ) {
-						
+				else if(this.charDiscover.isDigito(c) || c == '-') {
+					concatenarString.concatenar_String(c);
+					
 				} else if(c == '"') { //chama funcao de automato de cadeia de caracteres...
 					concatenarString.concatenar_String(c);
 					System.out.println(buffer.getLinha() + ","+this.automatos.automatoCadeiaCaractere() + ": " + concatenarString.getStringConcatenada());
@@ -76,7 +70,22 @@ public class Lexico {
 					
 				} else if(this.charDiscover.isDelimitador(c)) {
 					System.out.println(buffer.getLinha() + ", DELIMITADOR: " + c);
-				} else {
+					concatenarString.zerar_StringConcatenada();
+				} else if(c == '!' || c == '&' || c == '|') {
+					concatenarString.concatenar_String(c);
+					System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorLogico() + ": " + concatenarString.getStringConcatenada());
+					concatenarString.zerar_StringConcatenada();
+				} else if(c == '=' || c == '>' || c == '<') {
+					concatenarString.concatenar_String(c);
+					System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorRelacional() + ": " + concatenarString.getStringConcatenada());
+					concatenarString.zerar_StringConcatenada();
+				} else if(c == '+' || c == '-' || c == '*') {
+					concatenarString.concatenar_String(c);
+					System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorAritmetico() + ": " + concatenarString.getStringConcatenada());
+					concatenarString.zerar_StringConcatenada();
+				}
+				
+				else {
 					//chama as outras funcoes de automatos...
 					
 					//testando...
