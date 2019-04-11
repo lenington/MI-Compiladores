@@ -226,57 +226,56 @@ public class AutomatosTeste {
 		} 
 		
 		return "TOKEN INDEFINIDO";
-	}
+	}*/
 	
 	public String automatoDelimitador() {
 		int state = 0;
-		
-		//roda enquanto n�o for o fim do script/arquivo
-		while(!this.buffer.temProximoChar()) {
-			char c = buffer.lerChar();
+		char c;
+		//roda enquanto nao for fim do script/arquivo
+		while(buffer.temProximoChar()) {
+			c = buffer.lerChar();
+			concatenarString.concatenar_String(c);
 			
 			switch(state) {
 			case 0:
 				if (c == ';') {
-					consumirCaractere();
+					
 					return "DELIMITADOR PONTO VIRGULA";
 				} else if (c == '.') {
-					consumirCaractere();
+					
 					return "DELIMITADOR PONTO";
 				} else if (c == '(') {
-					consumirCaractere();
+					
 					return "DELIMITADOR ABRE PARENTESES";
 				} else if (c == ')') {
-					consumirCaractere();
+					
 					return "DELIMITADOR FECHA PARENTESES";
 				} else if (c == '{') {
-					consumirCaractere();
+					
 					return "DELIMITADOR ABRE CHAVE";
 				} else if (c == '}') {
-					consumirCaractere();
+					
 					return "DELIMITADOR FECHA CHAVE";
 				} else if (c == ',') {
-					consumirCaractere();
+					
 					return "DELIMITADOR VIRGULA";
 				} else if (c == ']') {
-					consumirCaractere();
+					
 					return "DELIMITADOR FECHA COLCHETE";
 				} else if (c == '[') {
-					consumirCaractere();
+					
 					return "DELIMITADOR ABRE COLCHETE";
 				} else {
-					state = -1;
+					return "TOKEN INDEFINIDO";
 				}
-				break;
 			default:
 				//TOKEN INDEFINIDO
 				return "TOKEN INDEFINIDO";
 			}
 		} 
-		
 		return "TOKEN INDEFINIDO";
 	}
-	*/
+	
 	
 	
 	/*
@@ -286,60 +285,50 @@ public class AutomatosTeste {
 		int state = 0;
 		char c;
 		//roda enquanto nao for fim do script/arquivo
-			while(buffer.temProximoChar()) {
-			c = buffer.lerChar();
-			concatenarString.concatenar_String(c);
-			switch(state) {
+		while(buffer.temProximoChar()) {
+		c = buffer.lerChar();
+		concatenarString.concatenar_String(c);
+		switch(state) {
 			case 0:
-				if (c == '\\')
+				if (c == '\\') {
 					state = 2;
-				else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+				} else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
 					state = 1;
-					
-				} 
-				else if(c == '"') {
+				} else if(c == '"') {
 					return "CADEIA DE CARACTERE";
 				}
 				break;
 			case 1:
-				if (c == '\\')
+				if (c == '\\') {
 					state = 2;
-				else if (c == '"') {
+				} else if (c == '"') {
 					return "CADEIA DE CARACTERE";
-				}
-				else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+				} else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
 					state = 1;				
 				}
-		
 				break;
 			case 2:
 				if (c == '"') {
 					state = 3;
-				}
-				else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+				} else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
 					state = 1;
 				}
 				break;
 			case 3:
 				if (c == '"') {
 					return "CADEIA DE CARACTERE";
-				}
-				else if (c == '\\') {
+				} else if (c == '\\') {
 					state = 2;
-				}
-				else if (this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+				} else if (this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
 					state = 1;
 				}
 				break;
 			default:
-				//TOKEN INDEFINIDO
 				return "TOKEN INDEFINIDO";
 			}
 		} 
 		return "ERROR! CADEIA DE CARACTERE MAL FORMADA";
 	}
-	
-	
 	
 	public String automatoComentarios() {
 		int state = 0;
@@ -384,26 +373,29 @@ public class AutomatosTeste {
 				}				
 			break;
 			}
-			
-			
-			
 		}
 		return "error";
 	}
 	
 	
 	public String automatoIdentificador() {
-		int state = 0;
+		int state = -1;
 		char c;
+		
+		c = buffer.lerCharAtual();
+		if (charDiscover.isLetra(c) || charDiscover.isDigito(c) || c == '_')
+			state = 0;
+		else return "IDENTIFICADOR";
+		
 		while (buffer.temProximoChar()) {
 			c = buffer.lerChar();
-			
 			switch(state) {
 			case 0:
 				if (charDiscover.isLetra(c) || charDiscover.isDigito(c) || c == '_') {
 					state = 0;
 					concatenarString.concatenar_String(c);
 				}
+				
 				if (buffer.temProximoChar()) {
 					c = buffer.verProximo();
 					if (charDiscover.isLetra(c) == false && charDiscover.isDigito(c) == false && c != '_')
