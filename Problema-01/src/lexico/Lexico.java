@@ -23,13 +23,13 @@ public class Lexico {
 	
 	public void rodarAutomatos() {
 		char c = ' ';
-		String classificacao = "";
+		String classificacao;
 		char proximo_caractere;
 		
 		//roda enquanto nao for o fim do script/arquivo
 		while(buffer.temProximaLinha()) {
 			buffer.lerLinha();
-			while(buffer.temProximoChar()) {
+			while(buffer.temProximoChar()) { //roda enquanto nao encontrar o final da linha
 			c = buffer.lerChar();
 			
 			//esse if trata o / que pode levar ao automato de comentarios ou de operador arimetico
