@@ -47,7 +47,9 @@ public class Lexico {
 						}
 						concatenarString.zerar_StringConcatenada();
 					}
-				} else if(this.charDiscover.isLetra(c)) {
+				} 
+				
+				else if(this.charDiscover.isLetra(c)) {
 					concatenarString.concatenar_String(c);
 					automatos.automatoIdentificador();
 					if (palavra.ehPalavraReservada(concatenarString.getStringConcatenada())) {
@@ -59,27 +61,39 @@ public class Lexico {
 						tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), "identificador");
 					} 
 					concatenarString.zerar_StringConcatenada();
-				}  
-				else if(this.charDiscover.isDigito(c) || c == '-') {
+				}
+				
+				
+				else if(this.charDiscover.isDigito(c)) {
 					concatenarString.concatenar_String(c);
 					
-				} else if(c == '"') { //chama funcao de automato de cadeia de caracteres...
+				} 
+				
+				else if(c == '"') { //chama funcao de automato de cadeia de caracteres...
 					concatenarString.concatenar_String(c);
 					System.out.println(buffer.getLinha() + ","+this.automatos.automatoCadeiaCaractere() + ": " + concatenarString.getStringConcatenada());
 					concatenarString.zerar_StringConcatenada();
 					
-				} else if(this.charDiscover.isDelimitador(c)) {
+				} 
+				
+				else if(this.charDiscover.isDelimitador(c)) {
 					System.out.println(buffer.getLinha() + ", DELIMITADOR: " + c);
 					concatenarString.zerar_StringConcatenada();
-				} else if(c == '!' || c == '&' || c == '|') {
+				} 
+				
+				else if(c == '!' || c == '&' || c == '|') {
 					concatenarString.concatenar_String(c);
 					System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorLogico() + ": " + concatenarString.getStringConcatenada());
 					concatenarString.zerar_StringConcatenada();
-				} else if(c == '=' || c == '>' || c == '<') {
+				} 
+				
+				else if(c == '=' || c == '>' || c == '<') {
 					concatenarString.concatenar_String(c);
 					System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorRelacional() + ": " + concatenarString.getStringConcatenada());
 					concatenarString.zerar_StringConcatenada();
-				} else if(c == '+' || c == '-' || c == '*') {
+				} 
+				
+				else if(c == '+' || c == '-' || c == '*') {
 					concatenarString.concatenar_String(c);
 					System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorAritmetico() + ": " + concatenarString.getStringConcatenada());
 					concatenarString.zerar_StringConcatenada();
