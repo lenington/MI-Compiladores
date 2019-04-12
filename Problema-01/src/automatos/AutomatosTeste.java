@@ -382,7 +382,7 @@ public class AutomatosTeste {
 		int state = -1;
 		char c;
 		
-		c = buffer.lerCharAtual();
+		c = buffer.verProximo();
 		if (charDiscover.isLetra(c) || charDiscover.isDigito(c) || c == '_')
 			state = 0;
 		else return "IDENTIFICADOR";
