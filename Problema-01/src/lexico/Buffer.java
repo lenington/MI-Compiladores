@@ -89,6 +89,9 @@ public class Buffer {
 		return linha.charAt(count_coluna-1);
 	}
 	
+	public void backChar() {
+		this.count_coluna--;
+	}
 	
 	public void closeFile() {
 		scan.close();

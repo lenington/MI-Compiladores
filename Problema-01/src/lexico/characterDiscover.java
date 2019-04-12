@@ -22,7 +22,6 @@ public class characterDiscover {
 	 * */
 	public boolean isDigito(char c) {
         int ascii = (int) c; //transforma para ascii
-        
         if (ascii >= 48 && ascii <= 57) {
         	return true;
         } else return false;

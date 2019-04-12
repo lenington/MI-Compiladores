@@ -19,16 +19,14 @@ public class AutomatosTeste {
 	
 	//AUTOMATOS ENTRAM AQUI:
 	public String automatoOperadorAritmetico() {
-		int state = 0;
+		int state = -1;
 		char c = buffer.lerCharAtual();
 		if(c == '+') { 
 			 state = 0;
 		} else if(c == '-') {
 			state = 1; 
-		} else if(c == '*') {
-			return "OPERADOR ARITMETICO MULTIPLICACAO";
-		} else if(c == '/') {
-			return "OPERADOR ARITMETICO DIVISAO";
+		} else if(c == '*' || c == '/') {
+			return "OPERADOR ARITMETICO";
 		} 
 		
 		//roda enquanto nao for o fim do script/arquivo
@@ -38,16 +36,18 @@ public class AutomatosTeste {
 			case 0:
 				if(c == '+') {
 					concatenarString.concatenar_String(c);
-					return "OPERADOR ARITMETICO INCREMENTO";
+					return "OPERADOR ARITMETICO";
 				} else {
-					return "OPERADOR ARITMETICO SOMA";
+					this.buffer.backChar();
+					return "OPERADOR ARITMETICO";
 				}
 			case 1: 
 				if(c == '-') {
 					concatenarString.concatenar_String(c);
-					return "OPERADOR ARITMETICO DECREMENTO";
+					return "OPERADOR ARITMETICO";
 				} else {
-					return "OPERADOR ARITMETICO SUBTRACAO";
+					this.buffer.backChar();
+					return "OPERADOR ARITMETICO";
 				}
 			default:
 				return "TOKEN INDEFINIDO";
@@ -325,7 +325,7 @@ public class AutomatosTeste {
 	
 	public String automatoNumero() {
 		int state = -1;
-		int block_ponto = 0; //variavel de controle para verificar se ja tem um ponto no numero
+		int ponto = 0; //variavel de controle para verificar se ja tem um ponto no numero
 		
 		char c = buffer.lerCharAtual();
 		if(c == '-' || this.charDiscover.isEspaco(c)) { //numero negativo 
@@ -344,34 +344,41 @@ public class AutomatosTeste {
 				} else if(this.charDiscover.isDigito(c)) {
 					concatenarString.concatenar_String(c);
 					state = 1;
-				} break;
+				} 				
+				break;
 			case 1: 
 				if(buffer.temProximoChar()) {
 					if(this.charDiscover.isDigito(c)) {
 						concatenarString.concatenar_String(c);
-						//System.out.println(c);
-					} else if(c == '.' && block_ponto == 0) {
-						block_ponto = 1; //bloqueia o ponto
+						
+					} else if(c == '.' && ponto <= 1) {
 						concatenarString.concatenar_String(c);
-						state = 2; 
+						if(ponto == 1 || !charDiscover.isDigito(buffer.verProximo())) { 
+							//significa que ele ja tem um ponto no número
+							return "NUMERO MAL FORMADO";
+						}
+						
+						ponto++; 
+						
 					} 
+					state = 2; 
 					
 					if(buffer.verProximo() != '.' && !charDiscover.isDigito(buffer.verProximo())) {
 						return "NUMERO";
-					}
+					} 
 				} 
 				break;
 			case 2:
 				if(this.charDiscover.isDigito(c)) {
 					concatenarString.concatenar_String(c);
 					state = 1;
-				} else return "NUMERO";
+				} 
 				break;
 			default:
 				return "TOKEN INDEFINIDO";
 			}
 		} 
-		return "TOKEN INDEFINIDOooo";
+		return "TOKEN INDEFINIDO";
 	}
 	
 }

@@ -62,10 +62,10 @@ public class Lexico {
 					} 
 					concatenarString.zerar_StringConcatenada();
 				}
-				
-				else if(this.charDiscover.isDigito(c) ) {
+
+				else if(this.charDiscover.isDigito(c)) {
 					concatenarString.concatenar_String(c);
-					System.out.println(buffer.getLinha() + ", "+this.automatos.automatoNumero() + ": " + concatenarString.getStringConcatenada());
+					System.out.println(buffer.getLinha() + ", " + automatos.automatoNumero() + ": " + concatenarString.getStringConcatenada());
 					concatenarString.zerar_StringConcatenada();
 				} else if(c == '"') { //chama funcao de automato de cadeia de caracteres...
 					concatenarString.concatenar_String(c);
@@ -93,27 +93,23 @@ public class Lexico {
 				
 				else if(c == '+' || c == '-' || c == '*') {
 					concatenarString.concatenar_String(c);
-					System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorAritmetico() + ": " + concatenarString.getStringConcatenada());
+					//verifica se eh numero ou operador aritmetico para numeros negativos
+					if (c == '-' && buffer.temProximoChar()) {
+						proximo_caractere = buffer.verProximo();
+						//verifica se o proximo eh numero ou espaco
+						if (charDiscover.isDigito(proximo_caractere) || charDiscover.isEspaco(proximo_caractere)) {
+							classificacao = automatos.automatoNumero();
+							System.out.println(buffer.getLinha() + ", " + classificacao + ": " + concatenarString.getStringConcatenada());
+						} else {System.out.println(c);
+							System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorAritmetico() + 
+									": " + concatenarString.getStringConcatenada());
+						}
+					} else {System.out.println(c);
+						System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorAritmetico() + 
+								": " + concatenarString.getStringConcatenada());
+					}
 					concatenarString.zerar_StringConcatenada();
 				}
-				
-				else {
-					//chama as outras funcoes de automatos...
-					
-					//testando...
-					//token = this.automatos.automatoOperadorAritmetico();
-					//if(!token.equals("TOKEN INDEFINIDO")) System.out.println(token);
-					
-					//token = this.automatos.automatoOperadorLogico();
-					//if(!token.equals("TOKEN INDEFINIDO")) System.out.println(token);
-					
-					//token = this.automatos.automatoOperadorRelacional();
-					//if(!token.equals("TOKEN INDEFINIDO")) System.out.println(token);
-					
-					//token = this.automatos.automatoDelimitador();
-					//if(!token.equals("TOKEN INDEFINIDO")) System.out.println(token);
-					
-				} 
 			}
 		}
 	}
