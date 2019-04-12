@@ -293,40 +293,6 @@ public class AutomatosTeste {
 		return "error";
 	}
 	
-	public String automatoNumero() {
-		int state = 0;
-		char c = buffer.lerCharAtual();
-		if(c == '-') { //numero negativo 
-			 state = 0;
-		} else if(this.charDiscover.isDigito(c)) {
-			state = 1; 
-		} else if(this.charDiscover.isEspaco(c)) {
-			state = 2;
-		} 
-		
-		//roda enquanto nao for o fim do script/arquivo
-		while(this.buffer.temProximoChar()) {
-			c = buffer.lerChar(); 
-			concatenarString.concatenar_String(c);
-			switch(state) {
-			case 0:
-				if(this.charDiscover.isEspaco(c)) {
-					
-				}
-				return "";
-			case 1: 
-				if(c == '-') {
-					return "";
-				} else {
-					return "";
-				}
-			default:
-				return "TOKEN INDEFINIDO";
-			}
-		} 
-		return "TOKEN INDEFINIDO";
-	}
-	
 	public String automatoIdentificador() {
 		int state = -1;
 		char c;
@@ -356,4 +322,56 @@ public class AutomatosTeste {
 		
 		return "IDENTIFICADOR";
 	}
+	
+	public String automatoNumero() {
+		int state = -1;
+		int block_ponto = 0; //variavel de controle para verificar se ja tem um ponto no numero
+		
+		char c = buffer.lerCharAtual();
+		if(c == '-' || this.charDiscover.isEspaco(c)) { //numero negativo 
+			 state = 0;
+		} else if(this.charDiscover.isDigito(c)) {
+			state = 1; 
+		} 
+		
+		//roda enquanto nao for o fim do script/arquivo
+		while(this.buffer.temProximoChar()) {
+			c = buffer.lerChar();  
+			switch(state) {
+			case 0:
+				if(this.charDiscover.isEspaco(c)) {
+					state = 0;
+				} else if(this.charDiscover.isDigito(c)) {
+					concatenarString.concatenar_String(c);
+					state = 1;
+				} break;
+			case 1: 
+				if(buffer.temProximoChar()) {
+					if(this.charDiscover.isDigito(c)) {
+						concatenarString.concatenar_String(c);
+						//System.out.println(c);
+					} else if(c == '.' && block_ponto == 0) {
+						block_ponto = 1; //bloqueia o ponto
+						concatenarString.concatenar_String(c);
+						state = 2; 
+					} 
+					
+					if(buffer.verProximo() != '.' && !charDiscover.isDigito(buffer.verProximo())) {
+						return "NUMERO";
+					}
+				} 
+				break;
+			case 2:
+				if(this.charDiscover.isDigito(c)) {
+					concatenarString.concatenar_String(c);
+					state = 1;
+				} else return "NUMERO";
+				break;
+			default:
+				return "TOKEN INDEFINIDO";
+			}
+		} 
+		return "TOKEN INDEFINIDOooo";
+	}
+	
 }

@@ -63,13 +63,11 @@ public class Lexico {
 					concatenarString.zerar_StringConcatenada();
 				}
 				
-				
-				else if(this.charDiscover.isDigito(c)) {
+				else if(this.charDiscover.isDigito(c) ) {
 					concatenarString.concatenar_String(c);
-					
-				} 
-				
-				else if(c == '"') { //chama funcao de automato de cadeia de caracteres...
+					System.out.println(buffer.getLinha() + ", "+this.automatos.automatoNumero() + ": " + concatenarString.getStringConcatenada());
+					concatenarString.zerar_StringConcatenada();
+				} else if(c == '"') { //chama funcao de automato de cadeia de caracteres...
 					concatenarString.concatenar_String(c);
 					System.out.println(buffer.getLinha() + ","+this.automatos.automatoCadeiaCaractere() + ": " + concatenarString.getStringConcatenada());
 					concatenarString.zerar_StringConcatenada();
