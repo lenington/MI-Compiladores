@@ -19,12 +19,9 @@ public class TabelaTokens {
 		
 		file = new File(nome_arquivo);
 		conjunto_token = new LinkedList<Tokens>();
-		
-		/*
-		 * Inicializar o arquivo de saida dos tokens
-		 * Inicializar estrutura de dados que guarda os tokens
-		 * */
 	}
+	
+	
 	
 	/*
 	 * Esse metodo vai receber os dados para serem salvos 

@@ -13,13 +13,13 @@ public class Lexico {
 	private PalavrasReservadas palavra;
 	private TabelaTokens tabelaTokens;
 	
-	public Lexico(Buffer buffer) {
+	public Lexico(Buffer buffer, String arquivo_saida) {
 		this.buffer = buffer; 
 		this.palavra = new PalavrasReservadas();
 		this.concatenarString = new ConcatenadorString();
 		this.automatos = new AutomatosTeste(buffer, concatenarString); //inicializa os automatos
 		this.charDiscover = new characterDiscover();
-		this.tabelaTokens = new TabelaTokens("teste.saida");
+		this.tabelaTokens = new TabelaTokens(arquivo_saida);
 		
 	}
 	
@@ -119,9 +119,9 @@ public class Lexico {
 					}
 					concatenarString.zerar_StringConcatenada();
 				}
+				
+				
 			}
 		}
-		
-
 	}
 }
