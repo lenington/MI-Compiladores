@@ -12,14 +12,12 @@ import java.util.LinkedList;
 public class TabelaTokens {
 	
 	private File file;
-	private String saida;
 	private LinkedList<Tokens> conjunto_token;
 	
 	
 	public TabelaTokens(String nome_arquivo) {
 		
 		file = new File(nome_arquivo);
-		saida = "LINHA		LEXAMA		DESCRICAO";
 		conjunto_token = new LinkedList<Tokens>();
 		
 		/*
@@ -41,17 +39,24 @@ public class TabelaTokens {
 	 * Metodo responsavel por salvar no arquivo os tokens
 	 * */
 	public void salvarTokens() throws IOException {
+		int tam_conjuntoToken = tamanhoTabela();
 		FileWriter writer = new FileWriter(file);
-		writer.write(saida);
+		writer.write("Linha	|	Lexama	|		Classificacao\n");
+		for (int i = 0; i < tam_conjuntoToken; i++) {
+		writer.write(conjunto_token.get(i).getLinha() + 
+				"		" +conjunto_token.get(i).getLexama()+
+				"				"+conjunto_token.get(i).getClassificacao() + "\n");
 		writer.flush();
-		writer.close();
+		}
+		writer.write("\n\n\n\nColocar aqui nessa parte os erros!");
+		writer.flush();
 		
+		writer.close();
 	}
 	
-	/*
-	 * Chamar esse metodo para salvar os presentes no programa
-	 * */
-	public void errorTokens() {
-		
+	public int tamanhoTabela() {
+		return conjunto_token.size();
 	}
+	
+	
 }
