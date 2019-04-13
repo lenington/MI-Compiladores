@@ -1,6 +1,7 @@
 package lexico;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class MainTeste {
 	public static void main(String[] args) {
@@ -13,7 +14,7 @@ public class MainTeste {
 
     }
 	
-	private static void testarArquivo(String arquivo) throws FileNotFoundException{
+	private static void testarArquivo(String arquivo) throws IOException{
 		Buffer buffer = new Buffer(arquivo);
 		Lexico lexico = new Lexico(buffer);
         

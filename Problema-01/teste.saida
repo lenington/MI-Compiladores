@@ -1,0 +1,20 @@
+Linha	|	Lexama	|		Classificacao
+2		//aqui tem um comentario				COMENTARIO DE LINHA
+3		/*e aqui um comentario de bloco*/				COMENTARIO DE BLOCO
+4		palavra				identificador
+4		naoreservada				identificador
+5		se				palavra reservada
+5		enquanto				palavra reservada
+6		se				palavra reservada
+6		enquanto				palavra reservada
+7		f				identificador
+8		se				palavra reservada
+9		f				identificador
+9		c				identificador
+10		variaveis				palavra reservada
+11		f				identificador
+
+
+
+
+Colocar aqui nessa parte os erros!

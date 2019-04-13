@@ -1,5 +1,7 @@
 package lexico;
 
+import java.io.IOException;
+
 import automatos.AutomatosTeste;
 
 public class Lexico {
@@ -21,7 +23,7 @@ public class Lexico {
 		
 	}
 	
-	public void rodarAutomatos() {
+	public void rodarAutomatos() throws IOException {
 		char c = ' ';
 		String classificacao;
 		char proximo_caractere;
@@ -112,5 +114,7 @@ public class Lexico {
 				}
 			}
 		}
+		
+		tabelaTokens.salvarTokens();
 	}
 }
