@@ -1,0 +1,16 @@
+Linha	|	Lexama	|		Classificacao
+1		se				palavra_reservada
+1		enquanto				palavra_reservada
+2		12.2				numero
+3		1111				numero
+3		;				delimitador
+3		.				delimitador
+4		)				delimitador
+5		(				delimitador
+6		=				operador_relacional
+6		+				operador_aritmetico
+
+
+
+
+Colocar aqui nessa parte os erros!
