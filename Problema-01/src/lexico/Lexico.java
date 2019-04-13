@@ -23,7 +23,14 @@ public class Lexico {
 		
 	}
 	
-	public void rodarAutomatos() throws IOException {
+	
+	public void saveTokensInFile() throws IOException {
+		this.tabelaTokens.salvarTokens();
+	}
+	
+	
+	
+	public void rodarAutomatos(){
 		char c = ' ';
 		String classificacao;
 		char proximo_caractere;
@@ -115,6 +122,6 @@ public class Lexico {
 			}
 		}
 		
-		tabelaTokens.salvarTokens();
+
 	}
 }

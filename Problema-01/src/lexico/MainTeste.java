@@ -19,5 +19,6 @@ public class MainTeste {
 		Lexico lexico = new Lexico(buffer);
         
         lexico.rodarAutomatos();
+        lexico.saveTokensInFile();
 	}
 }
