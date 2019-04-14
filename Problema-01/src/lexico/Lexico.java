@@ -51,7 +51,9 @@ public class Lexico {
 							tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), classificacao);
 						}
 						else {
-							System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorAritmetico() + ": " + concatenarString.getStringConcatenada());
+							classificacao = automatos.automatoOperadorAritmetico();
+							System.out.println(buffer.getLinha() + ", "+classificacao + ": " + concatenarString.getStringConcatenada());
+							tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), classificacao);
 						}
 						concatenarString.zerar_StringConcatenada();
 					}
@@ -73,29 +75,39 @@ public class Lexico {
 
 				else if(this.charDiscover.isDigito(c)) {
 					concatenarString.concatenar_String(c);
-					System.out.println(buffer.getLinha() + ", " + automatos.automatoNumero() + ": " + concatenarString.getStringConcatenada());
+					classificacao = automatos.automatoNumero();
+					System.out.println(buffer.getLinha() + ", " + classificacao + ": " + concatenarString.getStringConcatenada());
+					tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), classificacao);
 					concatenarString.zerar_StringConcatenada();
 				} else if(c == '"') { //chama funcao de automato de cadeia de caracteres...
 					concatenarString.concatenar_String(c);
-					System.out.println(buffer.getLinha() + ","+this.automatos.automatoCadeiaCaractere() + ": " + concatenarString.getStringConcatenada());
+					classificacao = this.automatos.automatoCadeiaCaractere();
+					System.out.println(buffer.getLinha() + ","+ classificacao + ": " + concatenarString.getStringConcatenada());
+					tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), classificacao);
 					concatenarString.zerar_StringConcatenada();
 					
 				} 
 				
 				else if(this.charDiscover.isDelimitador(c)) {
+					
 					System.out.println(buffer.getLinha() + ", Delimitador: " + c);
+					tabelaTokens.guardarTokens(buffer.getLinha(), Character.toString(c), "Delimitador");
 					concatenarString.zerar_StringConcatenada();
 				} 
 				
 				else if(c == '!' || c == '&' || c == '|') {
 					concatenarString.concatenar_String(c);
-					System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorLogico() + ": " + concatenarString.getStringConcatenada());
+					classificacao = automatos.automatoOperadorLogico();
+					System.out.println(buffer.getLinha() + ", "+classificacao + ": " + concatenarString.getStringConcatenada());
+					tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), classificacao);
 					concatenarString.zerar_StringConcatenada();
 				} 
 				
 				else if(c == '=' || c == '>' || c == '<') {
 					concatenarString.concatenar_String(c);
-					System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorRelacional() + ": " + concatenarString.getStringConcatenada());
+					classificacao = automatos.automatoOperadorRelacional();
+					System.out.println(buffer.getLinha() + ", "+classificacao + ": " + concatenarString.getStringConcatenada());
+					tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), classificacao);
 					concatenarString.zerar_StringConcatenada();
 				} 
 				
@@ -108,13 +120,17 @@ public class Lexico {
 						if (charDiscover.isDigito(proximo_caractere) || charDiscover.isEspaco(proximo_caractere)) {
 							classificacao = automatos.automatoNumero();
 							System.out.println(buffer.getLinha() + ", " + classificacao + ": " + concatenarString.getStringConcatenada());
+							tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), classificacao);
 						} else {
+							classificacao = automatos.automatoOperadorAritmetico();
 							System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorAritmetico() + 
 									": " + concatenarString.getStringConcatenada());
 						}
 					} else {
-						System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorAritmetico() + 
+						classificacao = automatos.automatoOperadorAritmetico();
+						System.out.println(buffer.getLinha() + ", "+classificacao + 
 								": " + concatenarString.getStringConcatenada());
+						tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), classificacao);
 					}
 					concatenarString.zerar_StringConcatenada();
 				}
@@ -122,6 +138,7 @@ public class Lexico {
 				else if(this.charDiscover.isSimbolo(c)) { 
 					concatenarString.concatenar_String(c);
 					System.out.println(buffer.getLinha() + ", Simbolo: " + concatenarString.getStringConcatenada());
+					tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), "Simbolo");
 					concatenarString.zerar_StringConcatenada();
 				}
 				

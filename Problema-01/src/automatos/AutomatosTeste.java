@@ -249,7 +249,7 @@ public class AutomatosTeste {
 			break;
 			}
 		}
-		return "error";
+		return "ERRO!";
 	}
 	
 	public String automatoIdentificador() {
