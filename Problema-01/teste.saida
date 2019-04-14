@@ -1,18 +1,15 @@
 Linha	|	Lexama	|		Classificacao
-2		//aqui tem um comentario				COMENTARIO DE LINHA
-3		/*e aqui um comentario de bloco*/				COMENTARIO DE BLOCO
-4		palavra				identificador
-4		naoreservada				identificador
+1		real				palavra reservada
+1		f				identificador
+1		a				identificador
+3		texto				palavra reservada
+3		msg				identificador
 5		se				palavra reservada
-5		enquanto				palavra reservada
-6		se				palavra reservada
-6		enquanto				palavra reservada
-7		f				identificador
-8		se				palavra reservada
-9		f				identificador
-9		c				identificador
-10		variaveis				palavra reservada
-11		f				identificador
+5		f				identificador
+5		f				identificador
+6		escreva				palavra reservada
+8		// exemplo de teste do lexico murilo e lenington				COMENTARIO DE LINHA
+10		/* exa869 mi processadores de linguagem de programacao				ERRO! COMENTARIO DE BLOCO MAL FORMADO
 
 
 

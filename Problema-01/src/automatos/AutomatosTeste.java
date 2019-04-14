@@ -18,44 +18,6 @@ public class AutomatosTeste {
 	}
 	
 	//AUTOMATOS ENTRAM AQUI:
-	public String automatoOperadorAritmetico() {
-		int state = -1;
-		char c = buffer.lerCharAtual();
-		if(c == '+') { 
-			 state = 0;
-		} else if(c == '-') {
-			state = 1; 
-		} else if(c == '*' || c == '/') {
-			return "OPERADOR ARITMETICO";
-		} 
-		
-		//roda enquanto nao for o fim do script/arquivo
-		while(this.buffer.temProximoChar()) {
-			c = buffer.lerChar(); 
-			switch(state) {
-			case 0:
-				if(c == '+') {
-					concatenarString.concatenar_String(c);
-					return "OPERADOR ARITMETICO";
-				} else {
-					this.buffer.backChar();
-					return "OPERADOR ARITMETICO";
-				}
-			case 1: 
-				if(c == '-') {
-					concatenarString.concatenar_String(c);
-					return "OPERADOR ARITMETICO";
-				} else {
-					this.buffer.backChar();
-					return "OPERADOR ARITMETICO";
-				}
-			default:
-				return "TOKEN INDEFINIDO";
-			}
-		} 
-		return "TOKEN INDEFINIDO";
-	}
-	
 	public String automatoOperadorRelacional() {
 		int state = 0;
 		char c = buffer.lerCharAtual();
@@ -76,33 +38,33 @@ public class AutomatosTeste {
 			switch(state) {
 			case 0:
 				if(c == '=') {
-					return "OPERADOR RELACIONAL DIFERENTE";
+					return "Operador Relacional";
 				} else {
-					return "OPERADOR LOGICO NEGACAO";
+					return "Operador Logico";
 				}
 			case 1: 
 				if(c == '=') {
-					return "OPERADOR LOGICO IGUAL";
+					return "Operador Logico";
 				} else {
-					return "OPERADOR LOGICO ATRIBUICAO";
+					return "Operador Logico";
 				}
 			case 2: 
 				if(c == '=') {
-					return "OPERADOR LOGICO MENOR IGUAL";
+					return "Operador Logico";
 				} else {
-					return "OPERADOR LOGICO MENOR";
+					return "Operador Logico";
 				}
 			case 3: 
 				if(c == '=') {
-					return "OPERADOR LOGICO MAIOR IGUAL";
+					return "Operador Logico";
 				} else {
-					return "OPERADOR LOGICO MAIOR";
+					return "Operador Logico";
 				}
 			default:
-				return "TOKEN INDEFINIDO";
+				return "Token Indefinido";
 			}
 		} 
-		return "TOKEN INDEFINIDO";
+		return "Token Indefinido";
 	}
 
 	public String automatoOperadorLogico() {
@@ -123,27 +85,27 @@ public class AutomatosTeste {
 			switch(state) {
 			case 0:
 				if(c == '=') {
-					return "OPERADOR RELACIONAL DIFERENTE";
+					return "Operador Relacional";
 				} else {
-					return "OPERADOR LOGICO NEGACAO";
+					return "Operador Logico";
 				}
 			case 1: 
 				if(c == '&') {
-					return "OPERADOR LOGICO E (AND)";
+					return "Operador Logico";
 				} else {
-					return "SIMBOLO";
+					return "Simbolo";
 				}
 			case 2: 
 				if(c == '|') {
-					return "OPERADOR LOGICO OU (OR)";
+					return "Operador Logico";
 				} else {
-					return "SIMBOLO";
+					return "Simbolo";
 				}
 			default:
-				return "TOKEN INDEFINIDO";
+				return "Token Indefinido";
 			}
 		} 
-		return "TOKEN INDEFINIDO";
+		return "Token Indefinido";
 	}
 	
 	public String automatoDelimitador() {
@@ -158,45 +120,42 @@ public class AutomatosTeste {
 			case 0:
 				if (c == ';') {
 					
-					return "DELIMITADOR PONTO VIRGULA";
+					return "Delimitador";
 				} else if (c == '.') {
 					
-					return "DELIMITADOR PONTO";
+					return "Delimitador";
 				} else if (c == '(') {
 					
-					return "DELIMITADOR ABRE PARENTESES";
+					return "Delimitador";
 				} else if (c == ')') {
 					
-					return "DELIMITADOR FECHA PARENTESES";
+					return "Delimitador";
 				} else if (c == '{') {
 					
-					return "DELIMITADOR ABRE CHAVE";
+					return "Delimitador";
 				} else if (c == '}') {
 					
-					return "DELIMITADOR FECHA CHAVE";
+					return "Delimitador";
 				} else if (c == ',') {
 					
-					return "DELIMITADOR VIRGULA";
+					return "Delimitador";
 				} else if (c == ']') {
 					
-					return "DELIMITADOR FECHA COLCHETE";
+					return "Delimitador";
 				} else if (c == '[') {
 					
-					return "DELIMITADOR ABRE COLCHETE";
+					return "Delimitador";
 				} else {
-					return "TOKEN INDEFINIDO";
+					return "Token Indefinido";
 				}
 			default:
 				//TOKEN INDEFINIDO
-				return "TOKEN INDEFINIDO";
+				return "Token Indefinido";
 			}
 		} 
-		return "TOKEN INDEFINIDO";
+		return "Token Indefinido";
 	}
 	
-	/*
-	 * Automato responsavel pela leitura da cadeia de caractere
-	 * */
 	public String automatoCadeiaCaractere() {
 		int state = 0;
 		char c;
@@ -211,14 +170,14 @@ public class AutomatosTeste {
 				} else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
 					state = 1;
 				} else if(c == '"') {
-					return "CADEIA DE CARACTERE";
+					return "Cadeia de Caractere";
 				}
 				break;
 			case 1:
 				if (c == '\\') {
 					state = 2;
 				} else if (c == '"') {
-					return "CADEIA DE CARACTERE";
+					return "Cadeia de Caractere";
 				} else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
 					state = 1;				
 				}
@@ -232,7 +191,7 @@ public class AutomatosTeste {
 				break;
 			case 3:
 				if (c == '"') {
-					return "CADEIA DE CARACTERE";
+					return "Cadeia de Caractere";
 				} else if (c == '\\') {
 					state = 2;
 				} else if (this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
@@ -240,10 +199,10 @@ public class AutomatosTeste {
 				}
 				break;
 			default:
-				return "TOKEN INDEFINIDO";
+				return "ERRO! Cadeia de Caractere Mal Formada";
 			}
 		} 
-		return "ERROR! CADEIA DE CARACTERE MAL FORMADA";
+		return "ERRO! Cadeia de Caractere Mal Formada";
 	}
 	
 	public String automatoComentarios() {
@@ -323,20 +282,59 @@ public class AutomatosTeste {
 		return "IDENTIFICADOR";
 	}
 	
+	public String automatoOperadorAritmetico() {
+		int state = -1;
+
+		char c_anterior = buffer.lerCharAtual();
+		if(c_anterior == '+') { 
+			 state = 0;
+		} else if(c_anterior == '-') {
+			state = 1; //System.out.println("ENTROU "+c_anterior);
+		} else if(c_anterior == '*' || c_anterior == '/') {
+			return "Operador Aritmetico";
+		}
+		
+		//roda enquanto nao for o fim do script/arquivo
+		while(this.buffer.temProximoChar()) {
+			char c = buffer.lerChar(); //System.out.println(c_anterior+" :: "+c);
+			switch(state) {
+			case 0:
+				if(c == '+') {
+					concatenarString.concatenar_String(c);
+					return "Operador Aritmetico";
+				} else {
+					this.buffer.backChar();
+					return "Operador Aritmetico";
+				} 
+			case 1: 
+				if(c == '-') {
+					concatenarString.concatenar_String(c);
+					return "Operador Aritmetico";
+				} else {
+					this.buffer.backChar();
+					return "Operador Aritmetico";
+				}
+			default:
+				return "Token Indefinido";
+			} 
+		} 
+		return "Token Indefinido";
+	}
+	
 	public String automatoNumero() {
 		int state = -1;
 		int ponto = 0; //variavel de controle para verificar se ja tem um ponto no numero
 		
-		char c = buffer.lerCharAtual();
-		if(c == '-' || this.charDiscover.isEspaco(c)) { //numero negativo 
+		char c_anterior = buffer.lerCharAtual(); //retorna o char que chamou 
+		if(c_anterior == '-' || this.charDiscover.isEspaco(c_anterior)) { //numero negativo 
 			 state = 0;
-		} else if(this.charDiscover.isDigito(c)) {
+		} else if(this.charDiscover.isDigito(c_anterior)) {
 			state = 1; 
 		} 
 		
 		//roda enquanto nao for o fim do script/arquivo
 		while(this.buffer.temProximoChar()) {
-			c = buffer.lerChar();  
+			char c = buffer.lerChar();  //System.out.println(c+" :: "+state);
 			switch(state) {
 			case 0:
 				if(this.charDiscover.isEspaco(c)) {
@@ -344,41 +342,39 @@ public class AutomatosTeste {
 				} else if(this.charDiscover.isDigito(c)) {
 					concatenarString.concatenar_String(c);
 					state = 1;
-				} 				
+				} else {
+					this.buffer.backChar();
+					return "Operador Aritmetico"; //recebeu apenas um menos
+				}
 				break;
 			case 1: 
 				if(buffer.temProximoChar()) {
 					if(this.charDiscover.isDigito(c)) {
 						concatenarString.concatenar_String(c);
-						
-					} else if(c == '.' && ponto <= 1) {
+					} else if(c == '.') {
 						concatenarString.concatenar_String(c);
-						if(ponto == 1 || !charDiscover.isDigito(buffer.verProximo())) { 
-							//significa que ele ja tem um ponto no número
-							return "NUMERO MAL FORMADO";
+						if(charDiscover.isEspaco(buffer.verProximo())) {
+							return "ERRO! Numero Mal Formado";
 						}
-						
 						ponto++; 
-						
 					} 
-					state = 2; 
 					
 					if(buffer.verProximo() != '.' && !charDiscover.isDigito(buffer.verProximo())) {
-						return "NUMERO";
+						//significa que tem mais de um ponto no numero ou ponto sem numero em seguida
+						if(ponto >= 1) { 
+							return "ERRO! Numero Mal Formado";
+						} else if(!charDiscover.isDigito(c)) {
+							buffer.backChar();
+							return "Numero";
+						} 
 					} 
-				} 
-				break;
-			case 2:
-				if(this.charDiscover.isDigito(c)) {
-					concatenarString.concatenar_String(c);
-					state = 1;
 				} 
 				break;
 			default:
-				return "TOKEN INDEFINIDO";
+				return "ERRO! Numero Mal Formado";
 			}
 		} 
-		return "TOKEN INDEFINIDO";
+		return "ERRO! Numero Mal Formado";
 	}
 	
 }
