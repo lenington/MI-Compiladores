@@ -119,6 +119,12 @@ public class Lexico {
 					concatenarString.zerar_StringConcatenada();
 				}
 				
+				else if(this.charDiscover.isSimbolo(c)) { 
+					concatenarString.concatenar_String(c);
+					System.out.println(buffer.getLinha() + ", Simbolo: " + concatenarString.getStringConcatenada());
+					concatenarString.zerar_StringConcatenada();
+				}
+				
 				
 			}
 		}

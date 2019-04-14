@@ -34,7 +34,7 @@ public class characterDiscover {
 	public boolean isSimbolo(Character c){
     	int ascii = (int) c;
     	
-    	if (ascii >= 32 && ascii <= 126 && ascii != 34) {
+    	if (ascii >= 33 && ascii <= 126 && ascii != 34) {
     		return true;
     	} else return false;
     }

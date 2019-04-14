@@ -330,11 +330,17 @@ public class AutomatosTeste {
 			 state = 0;
 		} else if(this.charDiscover.isDigito(c_anterior)) {
 			state = 1; 
+			if((buffer.temProximoChar() && !charDiscover.isDigito(buffer.verProximo()))
+					|| !buffer.temProximoChar()) {
+				//se o atual for digito e o proximo não, OU nao tiver proximo, retorna
+				return "Numero";
+			}
 		} 
+		
 		
 		//roda enquanto nao for o fim do script/arquivo
 		while(this.buffer.temProximoChar()) {
-			char c = buffer.lerChar();  //System.out.println(c+" :: "+state);
+			char c = buffer.lerChar(); 
 			switch(state) {
 			case 0:
 				if(this.charDiscover.isEspaco(c)) {
