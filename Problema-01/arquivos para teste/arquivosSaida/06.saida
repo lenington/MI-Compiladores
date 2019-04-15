@@ -1,0 +1,42 @@
+Linha	|	Lexama	|		Classificacao
+2		/* Vamos testara cadeia de caractere */				Comentario de Bloco
+4		texto				palavra reservada
+4		frase				identificador
+4		;				Delimitador
+6		se				palavra reservada
+6		(				Delimitador
+6		a				identificador
+6		=>				Operador Logico
+6		10				Numero
+6		&&				Operador Logico
+6		b				identificador
+6		==				Operador Logico
+6		3				Numero
+6		)				Delimitador
+6		{				Delimitador
+8		frase				identificador
+8		= 				Operador Logico
+8		"Vou bugar teu codigo em 3, 2.. 1... :D !"				Cadeia de Caractere
+10		}				Delimitador
+10		senao				palavra reservada
+10		[				Delimitador
+10		]				Delimitador
+12		a				identificador
+12		= 				Operador Logico
+12		,				Delimitador
+13		b				identificador
+13		= 				Operador Logico
+13		b				identificador
+13		--				Operador Aritmetico
+13		.				Delimitador
+15		frase				identificador
+15		= 				Operador Logico
+
+
+
+
+
+ ERROS PRESENTES: 
+
+12		3.9.8				ERRO! Numero Mal Formado
+15		" Alguma coisa'				ERRO! Cadeia de Caractere Mal Formada

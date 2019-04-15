@@ -125,6 +125,7 @@ public class Lexico {
 							classificacao = automatos.automatoOperadorAritmetico();
 							System.out.println(buffer.getLinha() + ", "+automatos.automatoOperadorAritmetico() + 
 									": " + concatenarString.getStringConcatenada());
+							tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), automatos.automatoOperadorAritmetico());
 						}
 					} else {
 						classificacao = automatos.automatoOperadorAritmetico();

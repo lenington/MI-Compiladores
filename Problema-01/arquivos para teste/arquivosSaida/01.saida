@@ -22,7 +22,7 @@ Linha	|	Lexama	|		Classificacao
 5		)				Delimitador
 6		escreva				palavra reservada
 6		(				Delimitador
-8		// exemplo de teste do lexico murilo e lenington				COMENTARIO DE LINHA
+8		// exemplo de teste do lexico murilo e lenington				Comentario de Linha
 
 
 
@@ -32,4 +32,4 @@ Linha	|	Lexama	|		Classificacao
 
 3		"teste				ERRO! Cadeia de Caractere Mal Formada
 6		"mensagem );				ERRO! Cadeia de Caractere Mal Formada
-10		/* exa869 mi processadores de linguagem de programacao				ERRO! COMENTARIO DE BLOCO MAL FORMADO
+10		/* exa869 mi processadores de linguagem de programacao				ERRO! Comentario de Bloco Mal Formado

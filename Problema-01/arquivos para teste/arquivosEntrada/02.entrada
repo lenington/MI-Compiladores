@@ -1,1 +1,5 @@
 escreva ("Ola mundo");
+
+	se ([-10, 2] == f);
+	escreva("correto);
+/*Apenas um teste para o PBL de Compiladores*/

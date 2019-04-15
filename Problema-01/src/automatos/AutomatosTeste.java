@@ -220,7 +220,7 @@ public class AutomatosTeste {
 				if (buffer.temProximoChar())
 					state = 1;
 				else
-					return "COMENTARIO DE LINHA";
+					return "Comentario de Linha";
 				//aqui eu ainda tenho que concatenar o comentario de linha
 				break;
 			case 2:
@@ -233,23 +233,23 @@ public class AutomatosTeste {
 					if (buffer.temProximaLinha()) 
 						buffer.lerLinha();
 					else 
-						return "ERRO! COMENTARIO DE BLOCO MAL FORMADO";
+						return "ERRO! Comentario de Bloco Mal Formado";
 				break;
 			case 3:
 				if (c == '/')
-					return "COMENTARIO DE BLOCO";
+					return "Comentario de Bloco";
 				else {
 					state = 2;
 					if (buffer.temProximoChar() == false)
 						if (buffer.temProximaLinha()) 
 							buffer.lerLinha();
 						else 
-							return "ERRO! COMENTARIO DE BLOCO MAL FORMADO";
+							return "ERRO! Comentario de Bloco Mal Formado";
 				}				
 			break;
 			}
 		}
-		return "ERRO!";
+		return "ERRO! Comentario de Bloco Mal Formado";
 	}
 	
 	public String automatoIdentificador() {
@@ -259,7 +259,7 @@ public class AutomatosTeste {
 		c = buffer.verProximo();
 		if (charDiscover.isLetra(c) || charDiscover.isDigito(c) || c == '_')
 			state = 0;
-		else return "IDENTIFICADOR";
+		else return "Identificador";
 		
 		while (buffer.temProximoChar()) {
 			c = buffer.lerChar();
@@ -273,13 +273,13 @@ public class AutomatosTeste {
 				if (buffer.temProximoChar()) {
 					c = buffer.verProximo();
 					if (charDiscover.isLetra(c) == false && charDiscover.isDigito(c) == false && c != '_')
-						return "IDENTIFICADOR";
+						return "Identificador";
 				}
 				break;
 			}
 		}
 		
-		return "IDENTIFICADOR";
+		return "Identificador";
 	}
 	
 	public String automatoOperadorAritmetico() {
@@ -329,12 +329,11 @@ public class AutomatosTeste {
 		if(c_anterior == '-' || this.charDiscover.isEspaco(c_anterior)) { //numero negativo 
 			 state = 0;
 		} else if(this.charDiscover.isDigito(c_anterior)) {
-			state = 1; 
-			if((buffer.temProximoChar() && !charDiscover.isDigito(buffer.verProximo()))
-					|| !buffer.temProximoChar()) {
-				//se o atual for digito e o proximo não, OU nao tiver proximo, retorna
+			if((buffer.temProximoChar() && !charDiscover.isDigito(buffer.verProximo()) && buffer.verProximo() != '.')
+					|| !buffer.temProximoChar()) { System.out.println("ENTROU AQUI");
+				//se o atual for digito e o proximo não (EXCETO PONTO), OU nao tiver proximo, retorna
 				return "Numero";
-			}
+			} else state = 1; 
 		} 
 		
 		
@@ -354,7 +353,7 @@ public class AutomatosTeste {
 				}
 				break;
 			case 1: 
-				if(buffer.temProximoChar()) {
+				if(buffer.temProximoChar()) { //System.out.println(c);
 					if(this.charDiscover.isDigito(c)) {
 						concatenarString.concatenar_String(c);
 					} else if(c == '.') {
@@ -367,20 +366,32 @@ public class AutomatosTeste {
 					
 					if(buffer.verProximo() != '.' && !charDiscover.isDigito(buffer.verProximo())) {
 						//significa que tem mais de um ponto no numero ou ponto sem numero em seguida
-						if(ponto >= 1) { 
+						if(ponto > 1) { 
 							return "ERRO! Numero Mal Formado";
-						} else if(!charDiscover.isDigito(c)) {
+						} else if(!charDiscover.isDigito(c) && c != '.') {
 							buffer.backChar();
 							return "Numero";
 						} 
 					} 
-				} 
+				} else { 
+					buffer.backChar(); //volta um char
+					c_anterior = buffer.lerCharAtual(); //ler o char atual
+					c = buffer.lerChar(); //avança mais um novamente
+					//System.out.println(c_anterior+" :: "+c);
+					if(charDiscover.isDigito(c)) {
+						concatenarString.concatenar_String(c);
+						return "Numero";
+					} else if(charDiscover.isDigito(c_anterior) && !charDiscover.isDigito(c)) {
+						buffer.backChar(); //volta um char
+						return "Numero";
+					} 
+				}
 				break;
 			default:
 				return "ERRO! Numero Mal Formado";
 			}
 		} 
-		return "ERRO! Numero Mal Formado";
+		return "ERRO! Numero Mal Formado1";
 	}
 	
 }
