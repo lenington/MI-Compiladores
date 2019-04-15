@@ -6,13 +6,17 @@ import java.util.LinkedList;
 
 public class MainTeste {
 	public static void main(String[] args) {
+		
+		String caminhoEntrada = "arquivos para teste/arquivosEntrada/";
+		String caminhoSaida = "arquivos para teste/arquivosSaida/";
+		
 		//Essas duas linha abaixo acessa a pasta teste e retorna os nomes do arquivos com a extensao .entrada
-		LinkedList<String> files = new FilesListed("teste").arquivosEntrada();
+		LinkedList<String> files = new FilesListed(caminhoEntrada).arquivosEntrada();
 		int tam = files.size();
-		System.out.println(files.get(0) + "     " + files.get(1));
+		
 		for (int i = 0; i < tam; i++) {
 		try {
-           testarArquivo(files.get(i));
+           testarArquivo(files.get(i), caminhoEntrada, caminhoSaida);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -20,9 +24,11 @@ public class MainTeste {
 	}
 }
 	
-	private static void testarArquivo(String arquivo) throws IOException{
-		Buffer buffer = new Buffer(arquivo);
-		Lexico lexico = new Lexico(buffer, arquivo.replace("entrada", "saida"));
+	private static void testarArquivo(String arquivo, String caminhoEntrada, String caminhoSaida) throws IOException{
+		
+		
+		Buffer buffer = new Buffer(caminhoEntrada + arquivo);
+		Lexico lexico = new Lexico(buffer, caminhoSaida + arquivo.replace("entrada", "saida"));
         
         lexico.rodarAutomatos();
         lexico.saveTokensInFile();
