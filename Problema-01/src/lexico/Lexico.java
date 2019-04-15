@@ -2,12 +2,12 @@ package lexico;
 
 import java.io.IOException;
 
-import automatos.AutomatosTeste;
+import automatos.Automatos;
 
 public class Lexico {
 	
 	private Buffer buffer;
-	private AutomatosTeste automatos;
+	private Automatos automatos;
 	private characterDiscover charDiscover;
 	private ConcatenadorString concatenarString;
 	private PalavrasReservadas palavra;
@@ -17,18 +17,14 @@ public class Lexico {
 		this.buffer = buffer; 
 		this.palavra = new PalavrasReservadas();
 		this.concatenarString = new ConcatenadorString();
-		this.automatos = new AutomatosTeste(buffer, concatenarString); //inicializa os automatos
+		this.automatos = new Automatos(buffer, concatenarString); //inicializa os automatos
 		this.charDiscover = new characterDiscover();
 		this.tabelaTokens = new TabelaTokens(arquivo_saida);
-		
 	}
-	
 	
 	public void saveTokensInFile() throws IOException {
 		this.tabelaTokens.salvarTokens();
 	}
-	
-	
 	
 	public void rodarAutomatos(){
 		char c = ' ';
@@ -64,11 +60,11 @@ public class Lexico {
 					classificacao = automatos.automatoIdentificador();
 					if (palavra.ehPalavraReservada(concatenarString.getStringConcatenada())) {
 						System.out.println(buffer.getLinha() + ", "+ classificacao+ ": " + concatenarString.getStringConcatenada());
-						tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), "palavra reservada");
+						tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), "Palavra Reservada");
 					}
 					else {
 						System.out.println(buffer.getLinha() + ", "+ classificacao+ ": " + concatenarString.getStringConcatenada());
-						tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), "identificador");
+						tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), "Identificador");
 					} 
 					concatenarString.zerar_StringConcatenada();
 				}
@@ -82,14 +78,12 @@ public class Lexico {
 				} else if(c == '"') { //chama funcao de automato de cadeia de caracteres...
 					concatenarString.concatenar_String(c);
 					classificacao = this.automatos.automatoCadeiaCaractere();
-					System.out.println(buffer.getLinha() + ","+ classificacao + ": " + concatenarString.getStringConcatenada());
+					System.out.println(buffer.getLinha() + ", "+ classificacao + ": " + concatenarString.getStringConcatenada());
 					tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), classificacao);
 					concatenarString.zerar_StringConcatenada();
-					
 				} 
 				
 				else if(this.charDiscover.isDelimitador(c)) {
-					
 					System.out.println(buffer.getLinha() + ", Delimitador: " + c);
 					tabelaTokens.guardarTokens(buffer.getLinha(), Character.toString(c), "Delimitador");
 					concatenarString.zerar_StringConcatenada();
@@ -142,7 +136,6 @@ public class Lexico {
 					tabelaTokens.guardarTokens(buffer.getLinha(), concatenarString.getStringConcatenada(), "Simbolo");
 					concatenarString.zerar_StringConcatenada();
 				}
-				
 				
 			}
 		}

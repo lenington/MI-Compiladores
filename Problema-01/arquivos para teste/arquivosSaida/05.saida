@@ -1,33 +1,33 @@
 Linha	|	Lexama	|		Classificacao
 1		//Teste do analisador lexico				Comentario de Linha
-3		real				palavra reservada
-3		a				identificador
+3		real				Palavra Reservada
+3		a				Identificador
 3		,				Delimitador
-3		b				identificador
+3		b				Identificador
 3		,				Delimitador
-3		c				identificador
+3		c				Identificador
 3		;				Delimitador
-5		a				identificador
+5		a				Identificador
 5		= 				Operador Logico
 5		10.2				Numero
 5		;				Delimitador
-6		b				identificador
+6		b				Identificador
 6		= 				Operador Logico
 6		2				Numero
 6		;				Delimitador
-7		c				identificador
+7		c				Identificador
 7		= 				Operador Logico
-9		c				identificador
+9		c				Identificador
 9		= 				Operador Logico
-9		a				identificador
+9		a				Identificador
 9		+				Operador Aritmetico
-9		b				identificador
+9		b				Identificador
 9		*				Operador Aritmetico
-9		a				identificador
+9		a				Identificador
 9		;				Delimitador
-11		b				identificador
+11		b				Identificador
 11		= 				Operador Logico
-11		b				identificador
+11		b				Identificador
 11		++				Operador Aritmetico
 11		;				Delimitador
 
@@ -37,4 +37,4 @@ Linha	|	Lexama	|		Classificacao
 
  ERROS PRESENTES: 
 
-7		3.				ERRO! Numero Mal Formado1
+7		3.				ERRO! Numero Mal Formado

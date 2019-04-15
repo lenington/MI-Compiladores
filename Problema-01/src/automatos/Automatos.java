@@ -1,341 +1,397 @@
 package automatos;
 
-import java.util.LinkedList;
-import java.util.Scanner;
+
+import lexico.Buffer;
+import lexico.ConcatenadorString;
+import lexico.characterDiscover;
 
 public class Automatos {
-	int count;
-	LinkedList<String> palavras_reservadas; //lista encadeada para palavras reservadas
-	public Automatos() {
-		palavras_reservadas = new LinkedList<String>();
-		palavras_reservadas.add("programa");
-		palavras_reservadas.add("constantes");
-		palavras_reservadas.add("variaveis");
-		palavras_reservadas.add("metodo");
-		palavras_reservadas.add("resultado");
-		palavras_reservadas.add("principal");
-		palavras_reservadas.add("se");
-		palavras_reservadas.add("entao");
-		palavras_reservadas.add("senao");
-		palavras_reservadas.add("enquanto");
-		palavras_reservadas.add("leia");
-    	palavras_reservadas.add("escreva");
-		palavras_reservadas.add("vazio");
-		palavras_reservadas.add("inteiro");
-		palavras_reservadas.add("real");
-		palavras_reservadas.add("boleano");
-		palavras_reservadas.add("texto");
-		palavras_reservadas.add("verdadeiro");
-		palavras_reservadas.add("falso");
+	private Buffer buffer;
+	private characterDiscover charDiscover;
+	private ConcatenadorString concatenarString;
+	
+	
+	public Automatos(Buffer buffer, ConcatenadorString concatenarString) {
+		this.buffer = buffer;
+		this.concatenarString = concatenarString;
+		this.charDiscover = new characterDiscover();
 	}
 	
-	public boolean palavrasReservadas(String palavra) {
-		if (palavras_reservadas.contains(palavra))
-			return true;
-		return false;
+	//AUTOMATOS ENTRAM AQUI:
+	public String automatoOperadorRelacional() {
+		int state = 0;
+		char c = buffer.lerCharAtual();
+		if(c == '!') { 
+			 state = 0;
+		} else if(c == '=') {
+			state = 1; 
+		} else if(c == '<') {
+			state = 2; 
+		} else if(c == '>') {
+			state = 3; 
+		} 
+		
+		//roda enquanto nao for o fim do script/arquivo
+		while(this.buffer.temProximoChar()) {
+			c = buffer.lerChar(); 
+			concatenarString.concatenar_String(c);
+			switch(state) {
+			case 0:
+				if(c == '=') {
+					return "Operador Relacional";
+				} else {
+					return "Operador Logico";
+				}
+			case 1: 
+				if(c == '=') {
+					return "Operador Logico";
+				} else {
+					return "Operador Logico";
+				}
+			case 2: 
+				if(c == '=') {
+					return "Operador Logico";
+				} else {
+					return "Operador Logico";
+				}
+			case 3: 
+				if(c == '=') {
+					return "Operador Logico";
+				} else {
+					return "Operador Logico";
+				}
+			default:
+				return "Token Indefinido";
+			}
+		} 
+		return "Token Indefinido";
 	}
-	
-	
-	
-	public String automatoComentarios(String line, Scanner leitor_arquivo, int state) {
-		int line_tamanho = line.length() - 1;
 
-		while (true) {
-			switch (state) {
-			case 1: //nesse estado ja se sabe que Ã© comentario de linha, assim so precisa achar o fim
-				this.count++;
-				if (this.count < line.length())
+	public String automatoOperadorLogico() {
+		int state = 0;
+		char c = buffer.lerCharAtual();
+		if(c == '!') { 
+			 state = 0;
+		} else if(c == '&') {
+			state = 1; 
+		} else if(c == '|') {
+			state = 2; 
+		}
+		
+		//roda enquanto nao for o fim do script/arquivo
+		while(this.buffer.temProximoChar()) {
+			c = buffer.lerChar(); 
+			concatenarString.concatenar_String(c);
+			switch(state) {
+			case 0:
+				if(c == '=') {
+					return "Operador Relacional";
+				} else {
+					return "Operador Logico";
+				}
+			case 1: 
+				if(c == '&') {
+					return "Operador Logico";
+				} else {
+					return "Simbolo";
+				}
+			case 2: 
+				if(c == '|') {
+					return "Operador Logico";
+				} else {
+					return "Simbolo";
+				}
+			default:
+				return "Token Indefinido";
+			}
+		} 
+		return "Token Indefinido";
+	}
+	
+	public String automatoDelimitador() {
+		int state = 0;
+		char c;
+		//roda enquanto nao for fim do script/arquivo
+		while(buffer.temProximoChar()) {
+			c = buffer.lerChar();
+			concatenarString.concatenar_String(c);
+			
+			switch(state) {
+			case 0:
+				if (c == ';') {
+					
+					return "Delimitador";
+				} else if (c == '.') {
+					
+					return "Delimitador";
+				} else if (c == '(') {
+					
+					return "Delimitador";
+				} else if (c == ')') {
+					
+					return "Delimitador";
+				} else if (c == '{') {
+					
+					return "Delimitador";
+				} else if (c == '}') {
+					
+					return "Delimitador";
+				} else if (c == ',') {
+					
+					return "Delimitador";
+				} else if (c == ']') {
+					
+					return "Delimitador";
+				} else if (c == '[') {
+					
+					return "Delimitador";
+				} else {
+					return "Token Indefinido";
+				}
+			default:
+				//TOKEN INDEFINIDO
+				return "Token Indefinido";
+			}
+		} 
+		return "Token Indefinido";
+	}
+	
+	public String automatoCadeiaCaractere() {
+		int state = 0;
+		char c;
+		//roda enquanto nao for fim do script/arquivo
+		while(buffer.temProximoChar()) {
+		c = buffer.lerChar();
+		concatenarString.concatenar_String(c);
+		switch(state) {
+			case 0:
+				if (c == '\\') {
+					state = 2;
+				} else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+					state = 1;
+				} else if(c == '"') {
+					return "Cadeia de Caractere";
+				}
+				break;
+			case 1:
+				if (c == '\\') {
+					state = 2;
+				} else if (c == '"') {
+					return "Cadeia de Caractere";
+				} else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+					state = 1;				
+				}
+				break;
+			case 2:
+				if (c == '"') {
+					state = 3;
+				} else if(this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+					state = 1;
+				}
+				break;
+			case 3:
+				if (c == '"') {
+					return "Cadeia de Caractere";
+				} else if (c == '\\') {
+					state = 2;
+				} else if (this.charDiscover.isLetra(c) || this.charDiscover.isDigito(c) || this.charDiscover.isSimbolo(c)) {
+					state = 1;
+				}
+				break;
+			default:
+				return "ERRO! Cadeia de Caractere Mal Formada";
+			}
+		} 
+		return "ERRO! Cadeia de Caractere Mal Formada";
+	}
+	
+	public String automatoComentarios() {
+		int state = 0;
+		char  c;
+		while(buffer.temProximoChar()) {
+			c = buffer.lerChar();
+			concatenarString.concatenar_String(c);
+			switch(state) {
+			case 0:
+				if (c == '/') state = 1; //entao vou tratar o caso do cometario de linha
+				else state = 2;
+				break;
+			case 1:
+				if (buffer.temProximoChar())
 					state = 1;
 				else
-					return "comentario de linha";
+					return "Comentario de Linha";
+				//aqui eu ainda tenho que concatenar o comentario de linha
 				break;
 			case 2:
-				this.count++;
-				if (line.charAt(this.count) == '*') state = 2;
-				else if (line.charAt(this.count) == '/') state = 4;
-				else state = 3;
+				if (c == '*')
+					state = 3;
+				else
+					state = 2; //senao ele permance nesse estado concatenando caractere
 				
-				if (this.count == line_tamanho) {
-					if (leitor_arquivo.hasNextLine()) {
-						line = leitor_arquivo.nextLine();
-						line_tamanho = line.length() - 1;
-						this.count = -1;
-					}
-					
-				}
+				if (buffer.temProximoChar() == false)
+					if (buffer.temProximaLinha()) 
+						buffer.lerLinha();
+					else 
+						return "ERRO! Comentario de Bloco Mal Formado";
 				break;
 			case 3:
-				this.count++;
-				if (line.charAt(this.count) == '*') state = 2;
-				else state = 3;
-				
-			case 4:
-				return "comentario de bloco";
-
+				if (c == '/')
+					return "Comentario de Bloco";
+				else {
+					state = 2;
+					if (buffer.temProximoChar() == false)
+						if (buffer.temProximaLinha()) 
+							buffer.lerLinha();
+						else 
+							return "ERRO! Comentario de Bloco Mal Formado";
+				}				
+			break;
 			}
 		}
+		return "ERRO! Comentario de Bloco Mal Formado";
 	}
-
-	public String automatoNumero(String line) {
+	
+	public String automatoIdentificador() {
 		int state = -1;
-		char char_line;
-		int num_asc;
-		int line_tamanho = line.length() - 1;
+		char c;
 		
-		if (line.charAt(this.count) == '-') {
+		c = buffer.verProximo();
+		if (charDiscover.isLetra(c) || charDiscover.isDigito(c) || c == '_')
 			state = 0;
-		}
-
-		while (true) {
-			switch (state) {
-			case 0:
-				this.count++;
-				if (line.charAt(this.count) == ' ') state = 1;
-				break;
-			case 1:
-				this.count++;
-				if (line.charAt(this.count) == ' ') state = 1;
-				else state = 2;
-				break;
-			case 2:
-				this.count++;
-				char_line = line.charAt(this.count);
-				num_asc = (int) char_line;
-				if (num_asc >= 48 && num_asc <= 57) state = 2;
-				else if (line.charAt(this.count) == '.') state = 3;
-				
-				if (this.count >= line_tamanho) return "so numero";
-				break;
-			case 3:
-				this.count++;
-				char_line = line.charAt(this.count);
-				num_asc = (int) char_line;
-				if (num_asc >= 48 && num_asc <=57) state = 3;
-				else if (line.charAt(this.count) == '.') state = 4;
-				else state = 3;
-				
-				if (this.count >= line_tamanho) return "numero com ponto";
-				break;
-			case 4: 
-				return "error";
-			default:
-				break;
-			}
-		}
-
-	}
-	
-	public String automatoIndentificador(String line) {
-		int state = 1;
-		char char_line;
-		int num_asc;
-		int line_tamanho = line.length() - 1;
+		else return "Identificador";
 		
-		while(true) {
-			switch (state) {
-			case 1:
-				this.count++;
-				char_line = line.charAt(this.count);
-				num_asc = (int) char_line;
-				if ((num_asc >= 97 && num_asc <= 122) || 
-						(num_asc >= 65 && num_asc <= 90) || 
-							(num_asc >= 48 && num_asc <= 57) || char_line == '_') state = 1;
-				else if (char_line == ' ' || char_line == '+') return "idetificador";
-				
-				if (this.count == line_tamanho) return "identificador_fim";
-				break;
-			
-			}
-		}
-	}
-	
-	//AUTOMATOS LENINGTON:
-	/*
-	 * Por enquanto ele verifica se tem operacoes separadas apenas
-	 * Ex: +, ++, -, --, *, /, +1, -1... mas n verifica se tem um numero antes
-	 */
-	public String automatoOperadorAritmetico(String line) {
-		int state = 0;
-		int line_tamanho = line.length()-1;
-		char char_line;
-		System.out.println(line_tamanho);
-		this.count = count-1;
-		
-		while(true) {
-			switch (state) {
-			case 0:
-				this.count++;
-				char_line = line.charAt(this.count);
-				System.out.println(char_line);
-				if (char_line == '+') {
-					if (line.charAt(1+this.count) == '+') {
-						return "operador aritmï¿½tico de incremento";
-					} else {
-						//verifica se tem um nï¿½mero...
-						return "operador aritmï¿½tico de adiï¿½ï¿½o";
-					} 
-				} else if (char_line == '-') { 
-					if (line.charAt(1+this.count) == '-') {
-						return "operador aritmï¿½tico de decremento";
-					} else {
-						//verifica se tem um nï¿½mero...
-						return "operador aritmï¿½tico de subtraï¿½ï¿½o";
-					} 
-				} else if (char_line == '*') {
-					return "operador aritmï¿½tico de multiplicaï¿½ï¿½o";
-				} else if (char_line == '/') {
-					return "operador aritmï¿½tico de divisï¿½o";
-				} else {
-					state = 1;
-				}
-				
-				break;
-			case 1: 
-				return "error";
-			default:
-				break;
-			}
-		}
-	}
-	
-	/*
-	 * 
-	 */
-	public String automatoOperadorRelacional(String line) {
-		int state = 0;
-		int line_tamanho = line.length()-1;
-		char char_line;
-		System.out.println(line_tamanho);
-		this.count = count-1;
-		
-		while(true) {
-			switch (state) {
-			case 0:
-				this.count++;
-				char_line = line.charAt(this.count);
-				System.out.println(char_line);
-				if (char_line == '<') {
-					if (line.charAt(1+this.count) == '=') {
-						return "operador relacional menor ou igual";
-					} else {
-						return "operador relacional menor";
-					} 
-				} else if (char_line == '>') {
-					if (line.charAt(1+this.count) == '=') {
-						return "operador relacional maior ou igual";
-					} else {
-						return "operador relacional maior";
-					} 
-				} else if (char_line == '=') { 
-					if (line.charAt(1+this.count) == '=') {
-						return "operador relacional igual";
-					} else {
-						return "operador relacional atribuiï¿½ï¿½o";
-					} 
-				} else if (char_line == '!') { 
-					if (line.charAt(1+this.count) == '=') {
-						return "operador relacional diferente";
-					} else {
-						return "operador lï¿½gico falso";
-					} 
-				} else {
-					state = 1;
-				}
-				
-				break;
-			case 1: 
-				return "error";
-			default:
-				break;
-			}
-		}
-	}
-	
-	/*
-	 * 
-	 */
-	public String automatoOperadorLogico(String line) {
-		int state = 0;
-		int line_tamanho = line.length()-1;
-		char char_line;
-		System.out.println(line_tamanho);
-		this.count = count-1;
-		
-		while(true) {
-			switch (state) {
-			case 0:
-				this.count++;
-				char_line = line.charAt(this.count);
-				System.out.println(char_line);
-				if (char_line == '!') {
-					return "operador lï¿½gico falso";
-				} else if (char_line == '&') {
-					if (line.charAt(1+this.count) == '&') {
-						return "operador lï¿½gico 'e'";
-					} else {
-						//
-					} 
-				} else if (char_line == '|') { 
-					if (line.charAt(1+this.count) == '|') {
-						return "operador lï¿½gico 'ou'";
-					} else {
-						//
-					} 
-				} else {
-					state = 1;
-				}
-				
-				break;
-			case 1: 
-				return "error";
-			default:
-				break;
-			}
-		}
-	}	
-	
-	public String automatoCadeiaCaractere(String line) {
-		int state = 0;
-		
-		if (line.charAt(this.count) == '"')
-			state = 1;
-		
-		while (true) {
+		while (buffer.temProximoChar()) {
+			c = buffer.lerChar();
 			switch(state) {
-			case 1:
-				this.count++;
-				if (line.charAt(this.count) == '"') state = 5;
-				else if (line.charAt(this.count) == '\\') state = 3;
-				else state = 2;
+			case 0:
+				if (charDiscover.isLetra(c) || charDiscover.isDigito(c) || c == '_') {
+					state = 0;
+					concatenarString.concatenar_String(c);
+				}
+				
+				if (buffer.temProximoChar()) {
+					c = buffer.verProximo();
+					if (charDiscover.isLetra(c) == false && charDiscover.isDigito(c) == false && c != '_')
+						return "Identificador";
+				}
 				break;
-			case 2:
-				this.count++;
-				if (line.charAt(this.count) == '\\') state = 3;
-				else if (line.charAt(this.count) == '"') state = 5;
-				else state = 2;
-				break;
-			case 3:
-				this.count++;
-				if (line.charAt(this.count) == '"') state = 4;
-				else return "error"; //por enquanto tratarei como erro
-				break;
-			case 4:
-				this.count++;
-				if (line.charAt(this.count) == '"') state = 5;
-				else state = 2;
-				break;
-			case 5:
-				return "validado";
 			}
 		}
+		
+		return "Identificador";
 	}
 	
-	public int getCounter() {
-		return count;
-	}
-	
-	public void setCounter(int count) {
-		this.count = count;
-	}
+	public String automatoOperadorAritmetico() {
+		int state = -1;
 
+		char c_anterior = buffer.lerCharAtual();
+		if(c_anterior == '+') { 
+			 state = 0;
+		} else if(c_anterior == '-') {
+			state = 1; //System.out.println("ENTROU "+c_anterior);
+		} else if(c_anterior == '*' || c_anterior == '/') {
+			return "Operador Aritmetico";
+		}
+		
+		//roda enquanto nao for o fim do script/arquivo
+		while(this.buffer.temProximoChar()) {
+			char c = buffer.lerChar(); //System.out.println(c_anterior+" :: "+c);
+			switch(state) {
+			case 0:
+				if(c == '+') {
+					concatenarString.concatenar_String(c);
+					return "Operador Aritmetico";
+				} else {
+					this.buffer.backChar();
+					return "Operador Aritmetico";
+				} 
+			case 1: 
+				if(c == '-') {
+					concatenarString.concatenar_String(c);
+					return "Operador Aritmetico";
+				} else {
+					this.buffer.backChar();
+					return "Operador Aritmetico";
+				}
+			default:
+				return "Token Indefinido";
+			} 
+		} 
+		return "Token Indefinido";
+	}
+	
+	public String automatoNumero() {
+		int state = -1;
+		int ponto = 0; //variavel de controle para verificar se ja tem um ponto no numero
+		
+		char c_anterior = buffer.lerCharAtual(); //retorna o char que chamou 
+		if(c_anterior == '-' || this.charDiscover.isEspaco(c_anterior)) { //numero negativo 
+			 state = 0;
+		} else if(this.charDiscover.isDigito(c_anterior)) {
+			if((buffer.temProximoChar() && !charDiscover.isDigito(buffer.verProximo()) && buffer.verProximo() != '.')
+					|| !buffer.temProximoChar()) {
+				//se o atual for digito e o proximo não (EXCETO PONTO), OU nao tiver proximo, retorna
+				return "Numero";
+			} else state = 1; 
+		} 
+		
+		
+		//roda enquanto nao for o fim do script/arquivo
+		while(this.buffer.temProximoChar()) {
+			char c = buffer.lerChar(); 
+			switch(state) {
+			case 0:
+				if(this.charDiscover.isEspaco(c)) {
+					state = 0;
+				} else if(this.charDiscover.isDigito(c)) {
+					concatenarString.concatenar_String(c);
+					state = 1;
+				} else {
+					this.buffer.backChar();
+					return "Operador Aritmetico"; //recebeu apenas um menos
+				}
+				break;
+			case 1: 
+				if(buffer.temProximoChar()) { //System.out.println(c);
+					if(this.charDiscover.isDigito(c)) {
+						concatenarString.concatenar_String(c);
+					} else if(c == '.') {
+						concatenarString.concatenar_String(c);
+						if(charDiscover.isEspaco(buffer.verProximo())) {
+							return "ERRO! Numero Mal Formado";
+						}
+						ponto++; 
+					} 
+					
+					if(buffer.verProximo() != '.' && !charDiscover.isDigito(buffer.verProximo())) {
+						//significa que tem mais de um ponto no numero ou ponto sem numero em seguida
+						if(ponto > 1) { 
+							return "ERRO! Numero Mal Formado";
+						} else if(!charDiscover.isDigito(c) && c != '.') {
+							buffer.backChar();
+							return "Numero";
+						} 
+					} 
+				} else { 
+					buffer.backChar(); //volta um char
+					c_anterior = buffer.lerCharAtual(); //ler o char atual
+					c = buffer.lerChar(); //avança mais um novamente
+					//System.out.println(c_anterior+" :: "+c);
+					if(charDiscover.isDigito(c)) {
+						concatenarString.concatenar_String(c);
+						return "Numero";
+					} else if(charDiscover.isDigito(c_anterior) && !charDiscover.isDigito(c)) {
+						buffer.backChar(); //volta um char
+						return "Numero";
+					} 
+				}
+				break;
+			default:
+				return "ERRO! Numero Mal Formado";
+			}
+		} 
+		return "ERRO! Numero Mal Formado";
+	}
+	
 }

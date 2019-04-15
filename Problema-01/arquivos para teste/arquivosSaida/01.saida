@@ -1,26 +1,26 @@
 Linha	|	Lexama	|		Classificacao
-1		real				palavra reservada
-1		f				identificador
+1		real				Palavra Reservada
+1		f				Identificador
 1		= 				Operador Logico
 1		3				Numero
-1		a				identificador
+1		a				Identificador
 1		+				Operador Aritmetico
 1		;				Delimitador
-3		texto				palavra reservada
-3		msg				identificador
+3		texto				Palavra Reservada
+3		msg				Identificador
 3		= 				Operador Logico
-5		se				palavra reservada
+5		se				Palavra Reservada
 5		(				Delimitador
-5		f				identificador
+5		f				Identificador
 5		>=				Operador Logico
 5		-10				Numero
 5		)				Delimitador
 5		&&				Operador Logico
 5		(				Delimitador
-5		f				identificador
+5		f				Identificador
 5		< 				Operador Logico
 5		)				Delimitador
-6		escreva				palavra reservada
+6		escreva				Palavra Reservada
 6		(				Delimitador
 8		// exemplo de teste do lexico murilo e lenington				Comentario de Linha
 
