@@ -26,6 +26,7 @@ public class Buffer {
 		
 		//leitura do arquivo
 		scan = new Scanner(new File(arquivo));
+		
 	}
 	
 	/*
