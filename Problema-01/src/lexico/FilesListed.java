@@ -24,7 +24,7 @@ public class FilesListed {
 		tam = filesNames.length;
 		for (int i = 0; i < tam; i++)
 			if (filesNames[i].contains(".entrada"))
-				entry_files.add(filesNames[i]);
+				entry_files.add("teste/"+filesNames[i]);
 
 		return entry_files;
 	}
