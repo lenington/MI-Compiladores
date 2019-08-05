@@ -4,6 +4,9 @@ package lexico;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import AnalisarSintatico.AnalisadorSintatico;
+import AnalisarSintatico.TokenReader;
+
 public class MainTeste {
 	public static void main(String[] args) {
 		
@@ -35,5 +38,13 @@ public class MainTeste {
         lexico.saveTokensInFile();
         
         buffer.closeFile();
+        
+        TokenReader tr = new TokenReader(lexico.getListTokens());
+        
+        AnalisadorSintatico as = new AnalisadorSintatico(tr);
+        
+        as.programa();
+        
+        
 	}
 }

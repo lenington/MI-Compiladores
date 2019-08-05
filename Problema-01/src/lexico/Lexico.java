@@ -1,6 +1,7 @@
 package lexico;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
 import automatos.Automatos;
 
@@ -24,6 +25,10 @@ public class Lexico {
 	
 	public void saveTokensInFile() throws IOException {
 		this.tabelaTokens.salvarTokens();
+	}
+	
+	public LinkedList<Tokens> getListTokens(){
+		return tabelaTokens.getListaTokens();
 	}
 	
 	public void rodarAutomatos(){

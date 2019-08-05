@@ -74,5 +74,9 @@ public class TabelaTokens {
 		return conjunto_erro.size();
 	}
 	
+	public LinkedList<Tokens> getListaTokens(){
+		return conjunto_token;
+		
+	}
 	
 }

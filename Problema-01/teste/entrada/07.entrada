@@ -1,0 +1,6 @@
+programa{
+	constantes{
+	real a = 1, b = 3;
+	}
+
+}

@@ -1,0 +1,23 @@
+Linha	|	Lexama	|		Classificacao
+1		programa				Palavra Reservada
+1		{				Delimitador
+2		constantes				Palavra Reservada
+2		{				Delimitador
+3		real				Palavra Reservada
+3		a				Identificador
+3		= 				Operador Logico
+3		1				Numero
+3		,				Delimitador
+3		b				Identificador
+3		= 				Operador Logico
+3		3				Numero
+3		;				Delimitador
+4		}				Delimitador
+6		}				Delimitador
+
+
+
+
+
+ ERROS PRESENTES: 
+
