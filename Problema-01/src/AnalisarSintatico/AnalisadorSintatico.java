@@ -24,7 +24,8 @@ public class AnalisadorSintatico {
 			if (token.equals("{")) {
 
 				blocoConstantes();
-
+				escopoPrograma();
+				
 				token = s.nextToken();
 				// aqui tem que Tratar os Nao terminai
 				if (token.equals("}"))
@@ -35,7 +36,9 @@ public class AnalisadorSintatico {
 			}
 		}
 	}
-
+	
+	//*****************
+	//*******DAQUI*********
 	public void blocoConstantes() {
 		String token = s.nextToken();
 		
@@ -66,7 +69,8 @@ public class AnalisadorSintatico {
 			constanteS();
 			token = s.nextToken();
 			if (token.equals(";")) {
-				//estruturaConstantes();
+				//estruturaConstantes(); ou pode ir para o vazio, tem que tratar
+				//tem que tratar essa parte ainda. Pois depois de um ponto e virgula, pode vir mais constantes ou nao
 				return;
 			}
 		}
@@ -119,6 +123,75 @@ public class AnalisadorSintatico {
 		}
 		
 	}
+	
+	//*********************************************
+	//******ATE AQUI. EH O TRATAMENTO DAS CONSTANTES***
+	
+	public void escopoPrograma() {
+		metodo();
+		escopoPrograma();
+		//tem que tratar vazio ainda
+		
+	}
+	
+	public void metodo() {
+		String token = s.nextToken();
+		
+		if (token.equals("metodo")) {
+			token = s.nextToken();
+			if (s.tokenType().equals("Identificador")) {
+				token = s.nextToken();
+				if (token.equals("(")) {
+					listaParametros();
+					token = s.nextToken();
+					if (token.equals("):")) {
+						token = s.nextToken();
+						if (tipo.contains(token)) {
+							token = s.nextToken();
+							if (token.equals("{")) {
+								declaracaoVariaveis();
+								escopoMetodo();
+								token = s.nextToken();
+								if (token.equals("}"))
+									return;
+							}
+						}
+					}
+				}
+				
+			}
+		}
+	}
+	
+	public void listaParametros() {
+		String token = s.nextToken();
+		if (tipo.contains(token)) {
+			token = s.nextToken();
+			token = s.tokenType();
+			if (token.equals("Identificador")) {
+				maisParametros();
+			}
+		}
+	}
+	
+	public void declaracaoVariaveis() {
+		
+	}
+	
+	public void escopoMetodo() {
+		
+	}
+	
+	public void maisParametros() {
+		String token = s.nextToken();
+		if (token.equals(",")) {
+			listaParametros();
+		}
+		else {
+			//tratar vazio e erros
+		}
+	}
+	
 	
 	
 }
