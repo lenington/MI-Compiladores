@@ -1,11 +1,13 @@
 package AnalisarSintatico;
+
 import java.util.LinkedList;
 
 public class AnalisadorSintatico {
 
-	TokenReader s;
-	LinkedList<String> tipo;
-	
+	private TokenReader s;
+	private LinkedList<String> tipo;
+	private String token;
+
 	public AnalisadorSintatico(TokenReader s) {
 		this.s = s;
 		tipo = new LinkedList<String>();
@@ -17,16 +19,17 @@ public class AnalisadorSintatico {
 	}
 
 	public void programa() {
-		String token;
+
 		token = s.nextToken();
 		if (token.equals("programa")) {
 			token = s.nextToken();
 			if (token.equals("{")) {
 
+				token = s.nextToken();
 				blocoConstantes();
 				escopoPrograma();
-				
-				token = s.nextToken();
+
+				// token = s.nextToken();
 				// aqui tem que Tratar os Nao terminai
 				if (token.equals("}"))
 					System.out.println("SUCESSO");
@@ -36,162 +39,242 @@ public class AnalisadorSintatico {
 			}
 		}
 	}
-	
-	//*****************
-	//*******DAQUI*********
+
+	// *****************
+	// *******DAQUI*********
 	public void blocoConstantes() {
-		String token = s.nextToken();
-		
+
 		if (token.equals("constantes")) {
 			token = s.nextToken();
 			if (token.equals("{")) {
-				
+
 				// chamar metodo<estrutura de constantes>
 				estruturaConstantes();
-				
+
 				token = s.nextToken();
 				if (token.equals("}")) {
 					return;
 				}
+			} else {
+				// tratar o erro da falta do { depois das constantes
 			}
-		}
-		
-		else {
-			//tratar o caso vazio <>
+
+		} else {
+			return; // senao vier uma "constantes" retorna
 		}
 	}
-	
+
 	public void estruturaConstantes() {
-		String token = s.nextToken();
-		
+		token = s.nextToken();
+
 		if (tipo.contains(token)) {
-			//chamar metodo de constantes; <Constantes>
+			// chamar metodo de constantes; <Constantes>
 			constanteS();
-			token = s.nextToken();
 			if (token.equals(";")) {
-				//estruturaConstantes(); ou pode ir para o vazio, tem que tratar
-				//tem que tratar essa parte ainda. Pois depois de um ponto e virgula, pode vir mais constantes ou nao
-				return;
+				estruturaConstantes();
+				// tem que tratar essa parte ainda. Pois depois de um ponto e virgula, pode vir
+				// mais constantes ou nao
+			} else {
+				// tratar erro
 			}
+		} else {
+			return;
 		}
 	}
-	
+
 	public void constanteS() {
-		String token = s.nextToken();
+		token = s.nextToken();
 		token = s.tokenType();
-		
+
 		if (token.equals("Identificador")) {
-			token = s.nextToken();
-			token = token.trim();
+			token = s.nextToken().trim();
 			if (token.equals("=")) {
-				//chamar <constante><multiconst>
+				// chamar <constante><multiconst>
 				constante();
-				
+
 				multiconst();
 			}
-		}	
+		}
 	}
-	
+
 	public void constante() {
-		String token = s.nextToken();
+		token = s.nextToken();
 		token = s.tokenType();
 
 		if (token.equals("Identificador")) {
 			return;
-		}
-		else if (token.equals("Numero")) {
+		} else if (token.equals("Numero")) {
 			return;
-		}
-		else if (token.matches("Cadeia de Caractere")) {
+		} else if (token.matches("Cadeia de Caractere")) {
 			return;
+		} else {
+			// tratar erro
 		}
-		else {
-			//tratar erro
-		}
-		
+
 	}
-	
+
 	public void multiconst() {
-		String token = s.lookAhead();//aqui tem gambiarra ajeitar
-		
+		token = s.nextToken();// aqui tem gambiarra ajeitar
+
 		if (token.equals(",")) {
-			token = s.nextToken();
 			constanteS();
-		}
-		else if (token.equals(";")){
+		} else
 			return;
-		}
-		
+
 	}
-	
-	//*********************************************
-	//******ATE AQUI. EH O TRATAMENTO DAS CONSTANTES***
-	
+
+	// *********************************************
+	// ******ATE AQUI. EH O TRATAMENTO DAS CONSTANTES***
+
 	public void escopoPrograma() {
 		metodo();
-		escopoPrograma();
-		//tem que tratar vazio ainda
-		
+		// escopoPrograma();
+		// tem que tratar vazio ainda
+
 	}
-	
+
 	public void metodo() {
-		String token = s.nextToken();
-		
+
 		if (token.equals("metodo")) {
 			token = s.nextToken();
 			if (s.tokenType().equals("Identificador")) {
 				token = s.nextToken();
 				if (token.equals("(")) {
 					listaParametros();
-					token = s.nextToken();
-					if (token.equals("):")) {
+					if (token.equals(")")) {
 						token = s.nextToken();
-						if (tipo.contains(token)) {
+						if (token.equals(":")) {
 							token = s.nextToken();
-							if (token.equals("{")) {
-								declaracaoVariaveis();
-								escopoMetodo();
+							if (tipo.contains(token)) {
 								token = s.nextToken();
-								if (token.equals("}"))
-									return;
+								if (token.equals("{")) {
+									declaracaoVariaveis();
+									escopoMetodo();
+									token = s.nextToken();
+									if (token.equals("}"))
+										return;
+								}
 							}
+
+						} else {
+							// tratar o erro por nao encontrar o :
 						}
+
+					} else {
+						// tratar o erro de nao encontrar o )
 					}
+				} else {
+					// tratar o erro de nao encontrar o (
 				}
-				
+
+			} else {
+				// tratar o erro de nao encontrar o identificador em seguida
 			}
 		}
 	}
-	
+
 	public void listaParametros() {
-		String token = s.nextToken();
+		token = s.nextToken();
 		if (tipo.contains(token)) {
 			token = s.nextToken();
 			token = s.tokenType();
 			if (token.equals("Identificador")) {
 				maisParametros();
 			}
+		} else {
+			return; // tratamento de vazio aqui
 		}
 	}
-	
+
 	public void declaracaoVariaveis() {
-		
-	}
-	
-	public void escopoMetodo() {
-		
-	}
-	
-	public void maisParametros() {
-		String token = s.nextToken();
-		if (token.equals(",")) {
-			listaParametros();
+		token = s.nextToken();
+		if (token.equals("variaveis")) {
+			token = s.nextToken();
+			if (token.equals("{")) {
+				VarV();
+				token = s.nextToken();
+				if (token.equals("}")) {
+					return;
+				}
+			}
 		}
 		else {
-			//tratar vazio e erros
+			return;
+			//esse else eh para tratar o vazio do <DeclaracaoVariaveis> ::= 'variaveis' '{'<VarV>'}' | <>
+		}
+		// escopoMetodo();
+	}
+
+	public void VarV() {
+		token = s.nextToken();
+		if (tipo.contains(token)) {
+			complementoV();
+			maisVariaveis();
+		}
+		else {
+			//tratar o erro de nao encontrar o tipo aqui --> <VarV> ::= Tipo <complementoV> <MaisVariaveis> 
+		}
+
+	}
+
+	public void complementoV() {
+		token = s.nextToken();
+		token = s.tokenType();
+
+		if (token.equals("Identificador")) {
+			vetor();
+			variavelMesmoTipo();
+
 		}
 	}
-	
-	
-	
+
+	public void vetor() {
+		//<Vetor> ::= '[' <OpI2><OpIndice> ']' <Matriz> | <>
+		//<Matriz> ::= '[' <OpI2><OpIndice> ']' | <>
+		
+		token = s.nextToken();
+		if (token.equals("[")) {
+			//<OpI2><OpIndice>
+			token = s.nextToken();
+			token = s.tokenType();
+			if (token.equals("Numeros") || token.equals("Identificadores")){
+				token = s.nextToken();
+			}
+			token = s.nextToken();
+			if (token.equals("]")) {
+				matriz();
+			}
+		}
+		else {
+			return; //aqui eh onde trata o vazio
+		}
+	}
+
+	private void matriz() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void variavelMesmoTipo() {
+
+	}
+
+	public void maisVariaveis() {
+
+	}
+
+	public void escopoMetodo() {
+
+	}
+
+	public void maisParametros() {
+		token = s.nextToken();
+		if (token.equals(",")) {
+			listaParametros();
+		} else {
+			// retorno de vazio
+			return;
+		}
+	}
+
 }

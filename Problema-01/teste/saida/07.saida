@@ -6,14 +6,27 @@ Linha	|	Lexama	|		Classificacao
 3		real				Palavra Reservada
 3		a				Identificador
 3		= 				Operador Logico
-3		1				Numero
+3		1.0				Numero
 3		,				Delimitador
 3		b				Identificador
 3		= 				Operador Logico
 3		3				Numero
 3		;				Delimitador
 4		}				Delimitador
-6		}				Delimitador
+6		metodo				Palavra Reservada
+6		soma				Identificador
+6		(				Delimitador
+6		inteiro				Palavra Reservada
+6		a				Identificador
+6		,				Delimitador
+6		real				Palavra Reservada
+6		b				Identificador
+6		)				Delimitador
+6		:				Simbolo
+6		vazio				Palavra Reservada
+6		{				Delimitador
+8		}				Delimitador
+10		}				Delimitador
 
 
 
