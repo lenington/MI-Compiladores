@@ -134,6 +134,11 @@ public class AnalisadorSintatico {
 	}
 
 	public void metodo() {
+		/*
+		 * <metodo> ::= 'metodo' Identificadores'('<listaParametros>'):'Tipo'{'<DeclaracaoVariaveis> <escopoMetodo>'}'
+		   <listaParametros> ::= Tipo Identificadores <maisParametros> | <>
+           <maisParametros> ::= ','<listaParametros> | <>
+		 * */
 
 		if (token.equals("metodo")) {
 			token = s.nextToken();
@@ -149,7 +154,7 @@ public class AnalisadorSintatico {
 								token = s.nextToken();
 								if (token.equals("{")) {
 									declaracaoVariaveis();
-									escopoMetodo();
+									//escopoMetodo();
 									token = s.nextToken();
 									if (token.equals("}"))
 										return;
@@ -235,11 +240,8 @@ public class AnalisadorSintatico {
 		token = s.nextToken();
 		if (token.equals("[")) {
 			//<OpI2><OpIndice>
-			token = s.nextToken();
-			token = s.tokenType();
-			if (token.equals("Numeros") || token.equals("Identificadores")){
-				token = s.nextToken();
-			}
+			OpI2();
+			OpIndice();
 			token = s.nextToken();
 			if (token.equals("]")) {
 				matriz();
@@ -248,23 +250,78 @@ public class AnalisadorSintatico {
 		else {
 			return; //aqui eh onde trata o vazio
 		}
-	}
-
-	private void matriz() {
-		// TODO Auto-generated method stub
 		
 	}
 
-	public void variavelMesmoTipo() {
+	private void OpIndice() {
+		//<OpIndice> ::= OperadoresAritmeticos <OpI2> <OpIndice> | <>
+		token = s.nextToken();
+		token = s.tokenType();
+		if (token.equals("Operador Aritmetico")) {
+			OpI2();
+			OpIndice();
+		}
+		else {
+			return; //tratamento de vazio aqui
+		}
+		
+	}
 
+	private void OpI2() {
+		//<OpI2> ::= Numeros | Identificadores 
+		token = s.nextToken();
+		token = s.tokenType();
+		if (token.equals("Numeros") || token.equals("Identificadores"))
+			return;
+		else {
+			//tratar o erro aqui
+		}
+	}
+
+	private void matriz() {
+		//<Matriz> ::= '[' <OpI2><OpIndice> ']' | <>
+		token = s.nextToken();
+		if (token.equals("[")) {
+			token = s.nextToken();
+			OpI2();
+			OpIndice();
+			token = s.nextToken();
+			if (token.equals("]")) {
+				return;
+			}
+		}
+		else {
+			return;//tratar vazio
+		}
+	}
+
+	public void variavelMesmoTipo() {
+		token = s.nextToken();
+		if (token.equals(",")) {
+			complementoV();
+		}
+		else if (token.equals(";")) {
+			return;
+		}
+		else {
+			//tratar erro aqui;
+		}
 	}
 
 	public void maisVariaveis() {
-
+		//<MaisVariaveis> ::= <VarV> | <>
+		token = s.nextToken();
+		if (tipo.contains(token)) {
+			complementoV();
+			maisVariaveis();
+		}
+		else {
+			return; 
+		}
 	}
 
 	public void escopoMetodo() {
-
+		
 	}
 
 	public void maisParametros() {

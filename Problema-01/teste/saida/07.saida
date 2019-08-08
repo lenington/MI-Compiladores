@@ -25,8 +25,16 @@ Linha	|	Lexama	|		Classificacao
 6		:				Simbolo
 6		vazio				Palavra Reservada
 6		{				Delimitador
-8		}				Delimitador
+7		variaveis				Palavra Reservada
+7		{				Delimitador
+8		real				Palavra Reservada
+8		a				Identificador
+8		= 				Operador Logico
+8		4				Numero
+8		;				Delimitador
+9		}				Delimitador
 10		}				Delimitador
+12		}				Delimitador
 
 
 

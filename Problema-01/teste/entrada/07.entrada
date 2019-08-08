@@ -4,7 +4,9 @@ programa{
 	}
 	
 	metodo soma(inteiro a, real b): vazio {
-	
+		variaveis{
+		     real a = 4;
+		}
 	}
 
 }
