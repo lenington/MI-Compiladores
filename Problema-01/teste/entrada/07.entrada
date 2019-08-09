@@ -7,6 +7,9 @@ programa{
 		variaveis{
 		     real a = 4;
 		}
+		escreva("Teste");
+		leia(a);
+		se(a!=1) entao { a-- }
 	}
 
 }

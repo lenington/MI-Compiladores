@@ -154,7 +154,7 @@ public class AnalisadorSintatico {
 								token = s.nextToken();
 								if (token.equals("{")) {
 									declaracaoVariaveis();
-									//escopoMetodo();
+									escopoMetodo();
 									token = s.nextToken();
 									if (token.equals("}"))
 										return;
@@ -236,7 +236,6 @@ public class AnalisadorSintatico {
 	public void vetor() {
 		//<Vetor> ::= '[' <OpI2><OpIndice> ']' <Matriz> | <>
 		//<Matriz> ::= '[' <OpI2><OpIndice> ']' | <>
-		
 		token = s.nextToken();
 		if (token.equals("[")) {
 			//<OpI2><OpIndice>
@@ -321,7 +320,53 @@ public class AnalisadorSintatico {
 	}
 
 	public void escopoMetodo() {
+		//<escopoMetodo> ::= <comandos><escopoMetodo> | <>
 		
+		token = s.nextToken();
+		if(token.equals("escreva")) {
+			escreva();
+			escopoMetodo();
+		} else if(token.equals("leia")) {
+			leia();
+			escopoMetodo();
+		} else if(token.equals("se")) {
+			se();
+			escopoMetodo();
+		} else if(token.equals("enquanto")) {
+			//FAZER AINDA
+			escopoMetodo();
+		} else if(token.equals("resultado")) {
+			//FAZER AINDA
+			escopoMetodo();
+		}
+		// FAZER RESTANTE...
+		else {
+			return; //para vazio <>
+		}
+	}
+	
+	public void comandos() {
+		//<comandos> ::= <leia> | <escreva> | <se> | <enquanto> | 
+		//               <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> | 
+		//               'resultado' <retorno> ';'
+		token = s.nextToken();
+		if(token.equals("escreva")) {
+			escreva();
+			escopoMetodo();
+		} else if(token.equals("leia")) {
+			leia();
+			escopoMetodo();
+		} else if(token.equals("se")) {
+			
+		} else if(token.equals("enquanto")) {
+			
+		} else if(token.equals("resultado")) {
+			
+		}
+		
+		else {
+			return; //para vazio <>
+		}
 	}
 
 	public void maisParametros() {
@@ -333,5 +378,293 @@ public class AnalisadorSintatico {
 			return;
 		}
 	}
+	
+	/*
+	 * Escrita
+	 * 
+	*/
+	public void escreva() {
+		//<escreva> ::= 'escreva' '(' <Param Escrita> ')'';'
+		//<Param Escrita> ::= <verificaCaso><MaisParametroE>
+		//<MaisParametroE> ::= ',' <Param Escrita> | <>
+		token = s.nextToken();
+		if(token.equals("(")) {
+			ParamEscrita();
+			
+			if(token.equals(")")) {
+				token = s.nextToken();
+				if(token.equals(";")) { 
+					return;
+				}
+			}
+		} else {
+			//ERROR
+		}
+	}
+	
+	public void ParamEscrita() {
+		//<Param Escrita> ::= <verificaCaso><MaisParametroE>
+		verificaCaso();
+		MaisParametroE();
+	}
+	
+	public void verificaCaso() {
+		//<verificaCaso> ::= <incremento> 
+        //| <expressao> 
+        //| <booleano>
+		token = s.nextToken();
+		token = s.tokenType();
+		
+		if (token.equals("Incremento") || token.equals("Booleano") || token.equals("Expressao")) {
+			return;
+		} else {
+			// ERROR
+		}
+		
+	}
+	
+	public void MaisParametroE() {
+		//<MaisParametroE> ::= ',' <Param Escrita> | <>
+		token = s.nextToken();
+		
+		if(token.equals(",")) {
+			ParamEscrita();
+		} else {
+			return;
+		}
+	}
+	
+	public void leia() {
+		//<leia> ::= 'leia' '(' <conteudoLeia> ')'';'
+		//<conteudoLeia> ::= Identificadores<Vetor> <lerMais>
+		//<lerMais> ::= ',' <conteudoLeia> | <>
+		
+		token = s.nextToken(); 
+		if(token.equals("(")) {
+			conteudoLeia();
+			
+			if(token.equals(")")) {
+				token = s.nextToken();
+				if(token.equals(";")) { 
+					return;
+				}
+			}
+		} else {
+			//ERROR
+		}
+	} 
+	
+	public void conteudoLeia() {
+		//<conteudoLeia> ::= Identificadores<Vetor> <lerMais>
+		token = s.nextToken(); 
+		token = s.tokenType();
 
+		if (token.equals("Identificador")) {
+			vetor();
+			lerMais();
+		} else {
+			// ERROR
+		}
+	}
+	
+	public void lerMais() {
+		//<lerMais> ::= ',' <conteudoLeia> | <>
+		token = s.nextToken();
+
+		if(token.equals(",")) {
+			conteudoLeia();
+		} else {
+			return;
+		}
+	}
+	
+	public void se() {
+		//<se> ::= 'se' <condse> 'entao''{' <blocoSe> '}' <senao>
+		//<condse> ::= '(' <cond> <maisCond> ')'
+		//<cond> ::= <termo> OperadoresRelacionais <termo> 
+		//        | <negar> Identificadores<Vetor> 
+		condse();
+		token = s.nextToken();
+
+		if(token.equals("entao")) {
+			token = s.nextToken();
+			if(token.equals("{")) {
+				blocoSe();
+				token = s.nextToken();
+				if(token.equals("}")) {
+					senao();
+				} else {
+					//ERROR
+				}
+			} else {
+				//ERROR
+			}
+		} else {
+			//ERROR
+		}
+		
+	}
+	
+	public void blocoSe() {
+		//<blocoSe> ::= <comandos><blocoSe> | <>
+		token = s.nextToken();
+		if(token.equals("escreva")) {
+			escreva();
+			blocoSe();
+		} else if(token.equals("leia")) {
+			leia();
+			blocoSe();
+		} else if(token.equals("se")) {
+			se();
+			blocoSe();
+		} else if(token.equals("enquanto")) {
+			enquanto(); //FAZER AINDA...
+			blocoSe();
+		} else if(token.equals("resultado")) {
+			//FAZER AINDA...
+			blocoSe();
+		}
+		//FAZER RESTANTE...
+		else {
+			return; //para vazio <>
+		}
+	}
+	
+	public void senao() {
+		//<senao> ::= <> | 'senao' <condSenao> '{' <blocoSe> '}' <senao>
+		token = s.nextToken();
+		if(token.equals("senao")) {
+			condSenao();
+			token = s.nextToken();
+			if(token.equals("{")) {
+				blocoSe();
+				token = s.nextToken();
+				if(token.equals("}")) {
+					senao();
+				} else {
+					//ERROR
+				}
+			} else {
+				//ERROR
+			}
+		} else {
+			return; 
+		}
+	}
+	
+	public void condSenao() {
+		//<condSenao> ::= 'se' <condse> 'entao' | <>
+		token = s.nextToken();
+		if(token.equals("se")) {
+			condse();
+			token = s.nextToken();
+			if(token.equals("entao")) {
+				return;
+			} else {
+				// ERROR
+			}
+		} else {
+			return; 
+		}
+	}
+	
+	public void condse() {
+		//<condse> ::= '(' <cond> <maisCond> ')'
+		token = s.nextToken();
+
+		if(token.equals("(")) {
+			cond();
+			maisCond();
+			token = s.nextToken();
+			if(token.equals(")")) {
+				return;
+			} else {
+				// ERROR
+			}
+		} else {
+			// ERROR
+		}
+	}
+	
+	public void cond() {
+		//<cond> ::= <termo> OperadoresRelacionais <termo> 
+		//        | <negar> Identificadores<Vetor> 
+		token = s.nextToken();
+		if(token.equals("!")) { // <negar> 
+			token = s.nextToken();
+			token = s.tokenType();
+			if (token.equals("Identificador")) 
+				vetor();
+		} else {
+			termo();
+			token = s.nextToken();
+			token = s.tokenType();
+			if (token.equals("Operador Relacional")) {
+				termo();
+			} else {
+				// ERRO
+			}
+		}
+	}
+	
+	public void termo() {
+		//<termo> ::= <tipoTermo> <op>
+		//<tipoTermo> ::= Identificadores<Vetor> 
+        //| Numeros 
+        //| CadeiaCaracteres 
+        //| TipoBooleano
+		//<op> ::= OperadorAritmeticos <tipoTermo> <op>|<>
+		tipoTermo();
+		op();
+		
+	}
+	
+	public void tipoTermo() {
+		//<tipoTermo> ::= Identificadores<Vetor> 
+        //| Numeros 
+        //| CadeiaCaracteres 
+        //| TipoBooleano
+		token = s.nextToken();
+		token = s.tokenType();
+		if (token.equals("Identificador")) {
+			vetor();
+		} else if(token.equals("Numeros") || token.equals("Cadeia de Caracteres") || token.equals("Booleano")) {
+			return;
+		} else {
+			// ERROR
+		}
+		
+	}
+	
+	public void op() {
+		//<op> ::= OperadorAritmeticos <tipoTermo> <op>|<>
+		token = s.nextToken();
+		token = s.tokenType();
+		if (token.equals("Operador Aritmetico")) {
+			tipoTermo();
+			op();
+		} else return;
+	}
+	
+	public void maisCond() {
+		//<maisCond> ::= OperadoresLogicos <cond> <maisCond> | <>
+		token = s.nextToken();
+		token = s.tokenType();
+		if (token.equals("Operador Logico")) {
+			cond();
+			maisCond();
+		} else return;
+		
+	}
+	
+	
+	public void enquanto() {
+		//<enquanto> ::= 'enquanto' '(' <operacao_relacional> ')' '{' <conteudo_laco> '}'
+		
+		//<operacao_relacional> ::= <complemento_operador> OperadoresRelacionais <complemento_operador> | <negar> Identificadores<Vetor>
+
+		//<complemento_operador> ::= Identificadores<Vetor> | Numeros | CadeiaCaracteres | TipoBooleano
+		
+		//<conteudo_laco> ::= <comandos> <conteudo_laco> | <>
+	}
 }

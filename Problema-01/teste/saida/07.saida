@@ -33,8 +33,29 @@ Linha	|	Lexama	|		Classificacao
 8		4				Numero
 8		;				Delimitador
 9		}				Delimitador
-10		}				Delimitador
+10		escreva				Palavra Reservada
+10		(				Delimitador
+10		"Teste"				Cadeia de Caractere
+10		)				Delimitador
+10		;				Delimitador
+11		leia				Palavra Reservada
+11		(				Delimitador
+11		a				Identificador
+11		)				Delimitador
+11		;				Delimitador
+12		se				Palavra Reservada
+12		(				Delimitador
+12		a				Identificador
+12		!=				Operador Relacional
+12		1				Numero
+12		)				Delimitador
+12		entao				Palavra Reservada
+12		{				Delimitador
+12		a				Identificador
+12		--				Operador Aritmetico
 12		}				Delimitador
+13		}				Delimitador
+15		}				Delimitador
 
 
 
