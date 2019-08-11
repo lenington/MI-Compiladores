@@ -16,7 +16,7 @@ metodo principal():vazio{
 		real a;
 		inteiro b; 
 	}
-	
+	leia(a);
 	enquanto(! k){}
 }
 }

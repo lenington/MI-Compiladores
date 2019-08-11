@@ -724,25 +724,13 @@ public class AnalisadorSintatico {
 			String tokenType = s.tokenType();
 			if (tokenType.equals("Identificador")) {
 				token = s.nextToken();
-				vetor();
+				vetor(); 	
 			}
 		}
 		else {
 			complementoOperador();
 			token = s.nextToken();
 			complementoOperador();
-		}
-
-	}
-
-	private void negar() {
-		System.out.println("");
-		if (token.equals("!")) {
-			System.out.println("Passou aqui");
-			token = s.nextToken();
-			return;
-		} else {
-			return; // tratamento de vazio
 		}
 
 	}
