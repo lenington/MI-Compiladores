@@ -53,11 +53,14 @@ Linha	|	Lexama	|		Classificacao
 17		b				Identificador
 17		;				Delimitador
 18		}				Delimitador
-20		leia				Palavra Reservada
+20		enquanto				Palavra Reservada
 20		(				Delimitador
-20		a				Identificador
+20		! 				Operador Logico
+20		k				Identificador
 20		)				Delimitador
-20		;				Delimitador
+20		{				Delimitador
+20		}				Delimitador
+21		}				Delimitador
 22		}				Delimitador
 
 
