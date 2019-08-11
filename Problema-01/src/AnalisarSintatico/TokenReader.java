@@ -27,6 +27,10 @@ public class TokenReader {
 		return true;
 	}
 	
+	public String getAtualToken() {
+		return this.listoken.get(i).getLexama();
+	}
+	
 	public String lookAhead() {
 		int j = i+1;
 		return this.listoken.get(j).getLexama();

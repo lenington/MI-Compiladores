@@ -1,15 +1,22 @@
 programa{
 	constantes{
-	real a = 1.0, b = 3;
+	real a = 1.0, b = 3; inteiro c = 4;
+}
+
+metodo soma(inteiro a):vazio{
+
+	variaveis{
+		real a;
+		inteiro b; 
+	}
+}
+
+metodo principal():vazio{
+	variaveis{
+		real a;
+		inteiro b; 
 	}
 	
-	metodo soma(inteiro a, real b): vazio {
-		variaveis{
-		     real a = 4;
-		}
-		escreva("Teste");
-		leia(a);
-		se(a!=1) entao { a-- }
-	}
-
+	leia(a);
+}
 }
