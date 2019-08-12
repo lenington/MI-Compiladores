@@ -132,7 +132,6 @@ public class AnalisadorSintatico {
 	public void escopoPrograma() {
 		metodo();
 		if (token.equals("metodo")) {
-			System.out.println("entrou no if do escopoPrograma");
 			escopoPrograma();
 
 		} else {
@@ -334,9 +333,8 @@ public class AnalisadorSintatico {
 
 	public void escopoMetodo() {
 		// <escopoMetodo> ::= <comandos><escopoMetodo> | <>
-
+		System.out.println("entrou aqui, bora ver onde ele vai parar: "+token);
 		// token = s.nextToken();
-		System.out.println(token);
 		if (token.equals("escreva")) {
 			token = s.nextToken();
 			escreva();
@@ -350,10 +348,15 @@ public class AnalisadorSintatico {
 			escopoMetodo();
 		} else if (token.equals("enquanto")) {
 			token = s.nextToken();
+			System.out.println("Bora ver o que tem dentro do enquanto>> "+token);
 			enquanto();
 			escopoMetodo();
 		} else if (token.equals("resultado")) {
 			// FAZER AINDA
+			escopoMetodo();
+		} else if (s.tokenType().equals("Identificador")) {
+			token = s.nextToken();
+			novoMetodo();
 			escopoMetodo();
 		}
 		// FAZER RESTANTE...
@@ -366,8 +369,7 @@ public class AnalisadorSintatico {
 		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
 		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
 		// 'resultado' <retorno> ';'
-		// token = s.nextToken();
-		System.out.println(token);
+		String tokenType = s.tokenType();
 		if (token.equals("escreva")) {
 			token = s.nextToken();
 			escreva();
@@ -384,12 +386,68 @@ public class AnalisadorSintatico {
 
 		} else if (token.equals("resultado")) {
 
-		}
-
-		else {
+		} else {
 			return; // para vazio <>
 		}
 	}
+
+	private void novoMetodo() {
+		if (token.equals("(")) {
+			token = s.nextToken();
+			var();
+			if (token.trim().equals(")")) {
+				token = s.nextToken();
+				if (token.equals(";")) {
+					token = s.nextToken();
+				} else {
+					System.out.println("Error! Esqueceu o ponto e virgula!");
+				}
+			}
+		} else {// rever isso
+			vetor();
+		}
+	}
+
+	/* AQUI COMECA A GRAMATICA DA CHAMADA DE METODO */
+	private void var() {
+		if (s.tokenType().equals("Identificador")) {
+			token = s.nextToken();
+			fatVar();
+		} else if (s.tokenType().equals("Numero") || token.equals("verdadeiro") || token.equals("falso")
+				|| s.tokenType().equals("Cadeia de Caractere")) {
+			token = s.nextToken();
+			maisVariavel();
+			return;
+		} else if (s.tokenType().equals("Delimitador")){
+			System.out.println("ERROR NA LINHA X POIS ENCONTROU UM DELIMITADOR");
+			return; // tratamento de vazios
+		}
+	}
+
+	private void fatVar() {
+		if (token.equals("(")) {
+			token = s.nextToken();
+			var();
+			if (token.equals(")")) {
+				token = s.nextToken();
+				maisVariavel();
+			}
+		} else {
+			vetor();
+			maisVariavel();
+		}
+
+	}
+
+	private void maisVariavel() {
+		if (token.equals(",")) {
+			token = s.nextToken();
+			var();
+		} else {
+			return; // tratamento de vazio
+		}
+	}
+	/* AQUI TERMINA A GRAMAATICA DE CHAAMDA DE METODO */
 
 	public void maisParametros() {
 		if (token.equals(",")) {
@@ -701,7 +759,7 @@ public class AnalisadorSintatico {
 
 		if (token.equals("(")) {
 			token = s.nextToken();
-			 operacaoRelacional();
+			operacaoRelacional();
 			if (token.equals(")")) {
 				token = s.nextToken();
 				if (token.equals("{")) {
@@ -718,16 +776,15 @@ public class AnalisadorSintatico {
 	}
 
 	private void operacaoRelacional() {
-		
-		if (token.trim().equals("!")){
+
+		if (token.trim().equals("!")) {
 			token = s.nextToken();
 			String tokenType = s.tokenType();
 			if (tokenType.equals("Identificador")) {
 				token = s.nextToken();
-				vetor(); 	
+				vetor();
 			}
-		}
-		else {
+		} else {
 			complementoOperador();
 			token = s.nextToken();
 			complementoOperador();
@@ -757,8 +814,8 @@ public class AnalisadorSintatico {
 
 	private void conteudoLaco() {
 		// TODO Auto-generated method stub
-		// comandos();
-		// conteudoLaco();
+		comandos();
+		conteudoLaco();
 
 	}
 	/* TERMINA AQUI A GRAMATICA DO ENQUANTO */

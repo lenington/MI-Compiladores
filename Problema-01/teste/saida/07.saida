@@ -36,37 +36,54 @@ Linha	|	Lexama	|		Classificacao
 10		b				Identificador
 10		;				Delimitador
 11		}				Delimitador
-12		}				Delimitador
-14		metodo				Palavra Reservada
-14		principal				Palavra Reservada
-14		(				Delimitador
-14		)				Delimitador
-14		:				Simbolo
-14		vazio				Palavra Reservada
-14		{				Delimitador
-15		variaveis				Palavra Reservada
-15		{				Delimitador
-16		real				Palavra Reservada
-16		a				Identificador
-16		;				Delimitador
-17		inteiro				Palavra Reservada
-17		b				Identificador
-17		;				Delimitador
-18		}				Delimitador
-19		leia				Palavra Reservada
-19		(				Delimitador
+13		soma				Identificador
+13		(				Delimitador
+13		"texto"				Cadeia de Caractere
+13		,				Delimitador
+13		a				Identificador
+13		,				Delimitador
+13		b				Identificador
+13		,				Delimitador
+13		3				Numero
+13		)				Delimitador
+13		;				Delimitador
+15		}				Delimitador
+17		metodo				Palavra Reservada
+17		principal				Palavra Reservada
+17		(				Delimitador
+17		)				Delimitador
+17		:				Simbolo
+17		vazio				Palavra Reservada
+17		{				Delimitador
+18		variaveis				Palavra Reservada
+18		{				Delimitador
+19		real				Palavra Reservada
 19		a				Identificador
-19		)				Delimitador
 19		;				Delimitador
-20		enquanto				Palavra Reservada
-20		(				Delimitador
-20		! 				Operador Logico
-20		k				Identificador
-20		)				Delimitador
-20		{				Delimitador
-20		}				Delimitador
+20		inteiro				Palavra Reservada
+20		b				Identificador
+20		;				Delimitador
 21		}				Delimitador
-22		}				Delimitador
+23		soma				Identificador
+23		(				Delimitador
+23		"texto"				Cadeia de Caractere
+23		,				Delimitador
+23		a				Identificador
+23		,				Delimitador
+23		b				Identificador
+23		,				Delimitador
+23		3				Numero
+23		)				Delimitador
+23		;				Delimitador
+24		enquanto				Palavra Reservada
+24		(				Delimitador
+24		! 				Operador Logico
+24		k				Identificador
+24		)				Delimitador
+24		{				Delimitador
+24		}				Delimitador
+26		}				Delimitador
+27		}				Delimitador
 
 
 

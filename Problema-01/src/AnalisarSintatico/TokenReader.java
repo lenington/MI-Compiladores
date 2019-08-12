@@ -16,6 +16,7 @@ public class TokenReader {
 	public String nextToken() {
 		 i = i+1;
 		 String s =  this.listoken.get(i).getLexama();
+		 System.out.println(s);
 		 return s;
 	}
 	
