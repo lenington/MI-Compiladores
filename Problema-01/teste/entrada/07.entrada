@@ -21,7 +21,12 @@ metodo principal():vazio{
 	}
 	
 	soma("texto", a, b, 3);
-	enquanto(! k){}
+	se(a == b) entao { 
+		a = b; 
+		leia(b);
+		escreva(b);
+	}
+	enquanto(! k){ }
 	
 }
 }

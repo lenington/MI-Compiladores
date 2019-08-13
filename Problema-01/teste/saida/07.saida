@@ -75,15 +75,37 @@ Linha	|	Lexama	|		Classificacao
 23		3				Numero
 23		)				Delimitador
 23		;				Delimitador
-24		enquanto				Palavra Reservada
+24		se				Palavra Reservada
 24		(				Delimitador
-24		! 				Operador Logico
-24		k				Identificador
+24		a				Identificador
+24		==				Operador Logico
+24		b				Identificador
 24		)				Delimitador
+24		entao				Palavra Reservada
 24		{				Delimitador
-24		}				Delimitador
-26		}				Delimitador
-27		}				Delimitador
+25		a				Identificador
+25		= 				Operador Logico
+25		b				Identificador
+26		leia				Palavra Reservada
+26		(				Delimitador
+26		b				Identificador
+26		)				Delimitador
+26		;				Delimitador
+27		escreva				Palavra Reservada
+27		(				Delimitador
+27		b				Identificador
+27		)				Delimitador
+27		;				Delimitador
+28		}				Delimitador
+29		enquanto				Palavra Reservada
+29		(				Delimitador
+29		! 				Operador Logico
+29		k				Identificador
+29		)				Delimitador
+29		{				Delimitador
+29		}				Delimitador
+31		}				Delimitador
+32		}				Delimitador
 
 
 

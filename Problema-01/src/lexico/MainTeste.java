@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import AnalisarSintatico.AnalisadorSintatico;
+import AnalisarSintatico.Erro_Sintatico;
 import AnalisarSintatico.TokenReader;
 
 public class MainTeste {
@@ -29,7 +30,7 @@ public class MainTeste {
         System.out.println("\n> Todos os arquivos de saida foram salvos em: "+caminhoSaida);
 	}
 	
-	private static void testarArquivo(String arquivo, String caminhoEntrada, String caminhoSaida) throws IOException{
+	private static void testarArquivo(String arquivo, String caminhoEntrada, String caminhoSaida) throws IOException, Erro_Sintatico{
 		
 		Buffer buffer = new Buffer(caminhoEntrada + arquivo);
 		Lexico lexico = new Lexico(buffer, caminhoSaida + arquivo.replace("entrada", "saida"));

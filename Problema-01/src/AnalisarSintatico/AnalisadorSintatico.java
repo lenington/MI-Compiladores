@@ -2,7 +2,7 @@ package AnalisarSintatico;
 
 import java.util.LinkedList;
 
-public class AnalisadorSintatico {
+public class AnalisadorSintatico{
 
 	private TokenReader s;
 	private LinkedList<String> tipo;
@@ -129,7 +129,7 @@ public class AnalisadorSintatico {
 	// *********************************************
 	// ******ATE AQUI. EH O TRATAMENTO DAS CONSTANTES***
 
-	public void escopoPrograma() {
+	public void escopoPrograma()   {
 		metodo();
 		if (token.equals("metodo")) {
 			escopoPrograma();
@@ -141,7 +141,7 @@ public class AnalisadorSintatico {
 
 	}
 
-	public void metodo() {
+	public void metodo()   {
 		/*
 		 * <metodo> ::= 'metodo'
 		 * Identificadores'('<listaParametros>'):'Tipo'{'<DeclaracaoVariaveis>
@@ -331,11 +331,14 @@ public class AnalisadorSintatico {
 		}
 	}
 
-	public void escopoMetodo() {
+	public void escopoMetodo()   {
 		// <escopoMetodo> ::= <comandos><escopoMetodo> | <>
+		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
+				// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
+				// 'resultado' <retorno> ';'
 		System.out.println("entrou aqui, bora ver onde ele vai parar: "+token);
 		// token = s.nextToken();
-		if (token.equals("escreva")) {
+		if (token.equals("escreva")) { 
 			token = s.nextToken();
 			escreva();
 			escopoMetodo();
@@ -365,12 +368,12 @@ public class AnalisadorSintatico {
 		}
 	}
 
-	public void comandos() {
+	public void comandos()   {
 		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
 		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
 		// 'resultado' <retorno> ';'
 		String tokenType = s.tokenType();
-		if (token.equals("escreva")) {
+		if (token.equals("escreva")) { 
 			token = s.nextToken();
 			escreva();
 			escopoMetodo();
@@ -494,7 +497,7 @@ public class AnalisadorSintatico {
 		// | <expressao>
 		// | <booleano>
 		// token = s.nextToken();
-		token = s.tokenType();
+		token = s.tokenType(); System.out.println("Entrou com "+token);
 
 		if (token.equals("Incremento") || token.equals("Booleano") || token.equals("Expressao")) {
 			token = s.nextToken();
@@ -565,7 +568,7 @@ public class AnalisadorSintatico {
 		}
 	}
 
-	public void se() {
+	public void se()   {
 		// <se> ::= 'se' <condse> 'entao''{' <blocoSe> '}' <senao>
 		// <condse> ::= '(' <cond> <maisCond> ')'
 		// <cond> ::= <termo> OperadoresRelacionais <termo>
@@ -575,7 +578,8 @@ public class AnalisadorSintatico {
 
 		if (token.equals("entao")) {
 			token = s.nextToken();
-			if (token.equals("{")) {
+			if (token.equals("{")) { 
+				token = s.nextToken();
 				blocoSe();
 				token = s.nextToken();
 				if (token.equals("}")) {
@@ -592,23 +596,33 @@ public class AnalisadorSintatico {
 
 	}
 
-	public void blocoSe() {
+	public void blocoSe()   {
 		// <blocoSe> ::= <comandos><blocoSe> | <>
-		token = s.nextToken();
+		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
+				// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
+				// 'resultado' <retorno> ';'
+		//token = s.nextToken(); 
 		if (token.equals("escreva")) {
+			token = s.nextToken();
 			escreva();
 			blocoSe();
 		} else if (token.equals("leia")) {
+			token = s.nextToken();
 			leia();
 			blocoSe();
 		} else if (token.equals("se")) {
 			se();
 			blocoSe();
 		} else if (token.equals("enquanto")) {
+			token = s.nextToken();
 			enquanto(); // FAZER AINDA...
 			blocoSe();
 		} else if (token.equals("resultado")) {
-			// FAZER AINDA...
+			// FAZER AINDA
+			escopoMetodo();
+		} else if (s.tokenType().equals("Identificador")) {System.out.println("ENTROU COM "+token);
+			vetor();
+			atribuicaoDeVariavel();
 			blocoSe();
 		}
 		// FAZER RESTANTE...
@@ -616,8 +630,27 @@ public class AnalisadorSintatico {
 			return; // para vazio <>
 		}
 	}
+	
+	public void atribuicaoDeVariavel()  {
+		//<atribuicaoDeVariavel> ::= Identificadores<Vetor>  '=' <verificaCaso>';'
+		token = s.nextToken(); 
+		if(token.trim().equals("=")) { 
+			token = s.nextToken(); 
+			verificaCaso();
+			token = s.nextToken(); 
+			if(token.equals(";")) {
+				return;
+			} else {
+				//ERROR
+				//throw new Erro_Sintatico("ERROR faltando o ;");
+			}
+		} else {
+			//ERROR
+		}
+		
+	}
 
-	public void senao() {
+	public void senao()   {
 		// <senao> ::= <> | 'senao' <condSenao> '{' <blocoSe> '}' <senao>
 		token = s.nextToken();
 		if (token.equals("senao")) {
@@ -657,13 +690,13 @@ public class AnalisadorSintatico {
 
 	public void condse() {
 		// <condse> ::= '(' <cond> <maisCond> ')'
-		token = s.nextToken();
+		token = s.nextToken(); 
 
 		if (token.equals("(")) {
 			cond();
 			maisCond();
 			token = s.nextToken();
-			if (token.equals(")")) {
+			if (token.equals(")")) { 
 				return;
 			} else {
 				// ERROR
@@ -676,16 +709,16 @@ public class AnalisadorSintatico {
 	public void cond() {
 		// <cond> ::= <termo> OperadoresRelacionais <termo>
 		// | <negar> Identificadores<Vetor>
-		token = s.nextToken();
+		token = s.nextToken(); 
 		if (token.equals("!")) { // <negar>
 			token = s.nextToken();
 			token = s.tokenType();
 			if (token.equals("Identificador"))
 				vetor();
 		} else {
-			termo();
-			token = s.nextToken();
-			token = s.tokenType();
+			termo(); 
+			//token = s.nextToken();
+			//token = s.tokenType(); 
 			if (token.equals("Operador Relacional")) {
 				termo();
 			} else {
@@ -701,7 +734,7 @@ public class AnalisadorSintatico {
 		// | CadeiaCaracteres
 		// | TipoBooleano
 		// <op> ::= OperadorAritmeticos <tipoTermo> <op>|<>
-		tipoTermo();
+		tipoTermo(); 
 		op();
 
 	}
@@ -711,8 +744,8 @@ public class AnalisadorSintatico {
 		// | Numeros
 		// | CadeiaCaracteres
 		// | TipoBooleano
-		token = s.nextToken();
-		token = s.tokenType();
+		//token = s.nextToken();
+		//token = s.tokenType();System.out.println("Entrou aqui >>>>"+token);
 		if (token.equals("Identificador")) {
 			vetor();
 		} else if (token.equals("Numeros") || token.equals("Cadeia de Caracteres") || token.equals("Booleano")) {
@@ -726,7 +759,7 @@ public class AnalisadorSintatico {
 	public void op() {
 		// <op> ::= OperadorAritmeticos <tipoTermo> <op>|<>
 		token = s.nextToken();
-		token = s.tokenType();
+		token = s.tokenType(); ;
 		if (token.equals("Operador Aritmetico")) {
 			tipoTermo();
 			op();
@@ -764,7 +797,7 @@ public class AnalisadorSintatico {
 				token = s.nextToken();
 				if (token.equals("{")) {
 					token = s.nextToken();
-					// conteudoLaco();
+					//conteudoLaco();
 					if (token.equals("}")) {
 						token = s.nextToken();
 						return;
@@ -812,7 +845,7 @@ public class AnalisadorSintatico {
 
 	}
 
-	private void conteudoLaco() {
+	private void conteudoLaco()   {
 		// TODO Auto-generated method stub
 		comandos();
 		conteudoLaco();
