@@ -24,9 +24,12 @@ metodo principal():vazio{
 	se(a == b) entao { 
 		a = b; 
 		leia(b);
-		escreva(b);
+		escreva("Valor de a eh ");
+		escreva(a);
 	}
-	enquanto(! k){ }
+	enquanto(k != 1){ 
+		
+	}
 	
 }
 }

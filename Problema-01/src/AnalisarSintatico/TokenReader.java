@@ -37,4 +37,9 @@ public class TokenReader {
 		return this.listoken.get(j).getLexama();
 	}
 	
+	public String lookDoubleAhead() {
+		int j = i+2;
+		return this.listoken.get(j).getLexama();
+	}
+	
 }

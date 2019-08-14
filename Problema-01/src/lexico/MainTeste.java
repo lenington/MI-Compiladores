@@ -30,7 +30,7 @@ public class MainTeste {
         System.out.println("\n> Todos os arquivos de saida foram salvos em: "+caminhoSaida);
 	}
 	
-	private static void testarArquivo(String arquivo, String caminhoEntrada, String caminhoSaida) throws IOException, Erro_Sintatico{
+	private static void testarArquivo(String arquivo, String caminhoEntrada, String caminhoSaida) throws IOException{
 		
 		Buffer buffer = new Buffer(caminhoEntrada + arquivo);
 		Lexico lexico = new Lexico(buffer, caminhoSaida + arquivo.replace("entrada", "saida"));
