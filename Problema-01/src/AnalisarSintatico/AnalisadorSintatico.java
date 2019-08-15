@@ -28,9 +28,7 @@ public class AnalisadorSintatico{
 				token = s.nextToken();
 				blocoConstantes();
 				escopoPrograma();
-
-				// token = s.nextToken();
-				// aqui tem que Tratar os Nao terminai
+				
 				if (token.equals("}"))
 					System.out.println("SUCESSO");
 				else
@@ -372,7 +370,7 @@ public class AnalisadorSintatico{
 		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
 		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
 		// 'resultado' <retorno> ';'
-		String tokenType = s.tokenType();
+
 		if (token.equals("escreva")) { 
 			token = s.nextToken();
 			escreva();
