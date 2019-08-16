@@ -9,9 +9,6 @@ metodo soma(inteiro a):vazio{
 		real a;
 		inteiro b; 
 	}
-	
-	soma("texto", a, b, 3);
-	
 }
 
 metodo principal():vazio{
@@ -20,15 +17,11 @@ metodo principal():vazio{
 		inteiro b; 
 	}
 	
-	soma("texto", a, b, 3);
 	se(a == b) entao { 
-		a = b; 
 		leia(b);
 		escreva("Valor de a eh ");
 		escreva(a);
-	}
-	enquanto(k != 1){ 
-		
+		resultado a;
 	}
 	
 }
