@@ -1,28 +1,15 @@
 programa{
-	constantes{
-	real a = 1.0, b = 3; inteiro c = 4;
-}
-
-metodo soma(inteiro a):vazio{
-
-	variaveis{
+   constantes{
+      real a = 3; inteiro b = 4, c = 5;
+  }
+  
+  metodo soma(inteiro a):vazio
+       
+       variaveis{
 		real a;
 		inteiro b; 
 	}
-}
-
-metodo principal():vazio{
-	variaveis{
-		real a;
-		inteiro b; 
-	}
-	
-	se(a == b) entao { 
-		leia(b);
-		escreva("Valor de a eh ");
-		escreva(a);
-		resultado a;
-	}
-	
-}
+  
+  }
+  
 }

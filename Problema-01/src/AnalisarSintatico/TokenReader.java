@@ -14,10 +14,17 @@ public class TokenReader {
 	}
 	
 	public String nextToken() {
+		 try {
 		 i = i+1;
 		 String s =  this.listoken.get(i).getLexama();
 		 System.out.println(s);
 		 return s;
+		 }
+		 catch(Exception e) {
+			 System.out.println("Erro! O programa foi mal formado!");
+			 System.exit(0);
+			 return "";
+		 }
 	}
 	
 	public String tokenType() {
@@ -40,6 +47,20 @@ public class TokenReader {
 	public String lookDoubleAhead() {
 		int j = i+2;
 		return this.listoken.get(j).getLexama();
+	}
+	
+	public void ignoreLine() {
+		int linhaAtual = this.listoken.get(i).getLinha();
+		int novalinha = this.listoken.get(i).getLinha();
+		while (linhaAtual == novalinha) {
+			i++;
+			novalinha = this.listoken.get(i).getLinha();
+		}
+		i--;
+	}
+	
+	public int getLine() {
+		return this.listoken.get(i).getLinha();
 	}
 	
 }

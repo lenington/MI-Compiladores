@@ -2,11 +2,13 @@ package AnalisarSintatico;
 
 import java.util.LinkedList;
 
-public class AnalisadorSintatico{
+public class AnalisadorSintatico {
 
 	private TokenReader s;
 	private LinkedList<String> tipo;
 	private String token;
+	private boolean hasError;
+	private Erro_Sintatico er;
 
 	public AnalisadorSintatico(TokenReader s) {
 		this.s = s;
@@ -16,6 +18,8 @@ public class AnalisadorSintatico{
 		tipo.add("boleano");
 		tipo.add("texto");
 		tipo.add("vazio");
+		hasError = false;
+		er = new Erro_Sintatico();
 	}
 
 	public void programa() {
@@ -28,13 +32,29 @@ public class AnalisadorSintatico{
 				token = s.nextToken();
 				blocoConstantes();
 				escopoPrograma();
-				
+
+				if (token.equals("}")) {
+					if (hasError == true)
+						System.out.println("PROGRAMA NAO FOI FINALIZADO COM SUCESSO");
+					else
+						System.out.println("SUCESSO");
+
+				} else
+					er.guardarErros(s.getLine(), "{");
+			} else { // tratamento do erro caso nao encontre {
+				System.out.println("Erro! linha: " + s.getLine() + ". esperava { mas veio " + s.getAtualToken());
+				token = s.nextToken();
+				blocoConstantes();
+				escopoPrograma();
+
 				if (token.equals("}"))
 					System.out.println("SUCESSO");
-				else
-					System.out.println("ERROR");
-
+				else // tratamento do erro caso nao encontre }
+					System.out.println(
+							"Error! Linha: " + s.getLine() + "Era esperado }, mas encontrou: " + s.getAtualToken());
 			}
+		} else {
+			System.out.println("Erro! Linha: " + s.getLine() + ". Esperava programa, mas veio: " + s.getAtualToken());
 		}
 	}
 
@@ -55,6 +75,19 @@ public class AnalisadorSintatico{
 				}
 			} else {
 				// tratar o erro da falta do { depois das constantes
+				System.out.println("Erro! linha: " + s.getLine() + ". Esperava { mas veio " + s.getAtualToken());
+				token = s.nextToken();
+				estruturaConstantes();
+
+				if (token.equals("}")) {
+					token = s.nextToken();
+					return;
+				} else {
+					System.out.println("Erro! linha: " + s.getLine() + ". Esperava } mas veio " + s.getAtualToken());
+					token = s.nextToken();
+					return;
+				}
+
 			}
 
 		} else {
@@ -68,16 +101,36 @@ public class AnalisadorSintatico{
 			// chamar metodo de constantes; <Constantes>
 			token = s.nextToken();
 			constanteS();
-			if (token.equals(";")) {
+			if (token.trim().equals(";")) {
 				token = s.nextToken();
 				estruturaConstantes();
 				// tem que tratar essa parte ainda. Pois depois de um ponto e virgula, pode vir
 				// mais constantes ou nao
 			} else {
-				// tratar erro
+				er.guardarErros(s.getLine(), ", ou ;");
+				hasError = true;
+				return;
 			}
-		} else {
+		} else if (token.equals("}")) {
 			return;
+		} else {
+			// tratamento de ERRO caso nao encontre um identificador no inicio das
+			// constantes
+			er.guardarErros(s.getLine(), "tipo");
+			hasError = true;
+			token = s.nextToken();
+			constanteS();
+			if (token.equals(";")) {
+				token = s.nextToken();
+				estruturaConstantes();
+
+			} else {
+				// tratamento de erro, caso nao venha o ponto e virgula
+				er.guardarErros(s.getLine(), ";");
+				token = s.nextToken();
+				estruturaConstantes();
+			}
+
 		}
 	}
 
@@ -90,7 +143,28 @@ public class AnalisadorSintatico{
 				// chamar <constante><multiconst>
 				token = s.nextToken();
 				constante();
-
+				multiconst();
+			} else {
+				// tratando erro de nao encontrar o =
+				er.guardarErros(s.getLine(), "=");
+				token = s.nextToken();
+				constante();
+				multiconst();
+			}
+		} else {
+			er.guardarErros(s.getLine(), "identificador");
+			hasError = true;
+			token = s.nextToken().trim();
+			if (token.equals("=")) {
+				// chamar <constante><multiconst>
+				token = s.nextToken();
+				constante();
+				multiconst();
+			} else {
+				// tratando erro de nao encontrar o =
+				er.guardarErros(s.getLine(), "=");
+				token = s.nextToken();
+				constante();
 				multiconst();
 			}
 		}
@@ -109,7 +183,7 @@ public class AnalisadorSintatico{
 			token = s.nextToken();
 			return;
 		} else {
-			// tratar erro
+			er.guardarErros(s.getLine(), " numero ou identificador ou caracteres");
 		}
 
 	}
@@ -127,7 +201,7 @@ public class AnalisadorSintatico{
 	// *********************************************
 	// ******ATE AQUI. EH O TRATAMENTO DAS CONSTANTES***
 
-	public void escopoPrograma()   {
+	public void escopoPrograma() {
 		metodo();
 		if (token.equals("metodo")) {
 			escopoPrograma();
@@ -139,7 +213,7 @@ public class AnalisadorSintatico{
 
 	}
 
-	public void metodo()   {
+	public void metodo() {
 		/*
 		 * <metodo> ::= 'metodo'
 		 * Identificadores'('<listaParametros>'):'Tipo'{'<DeclaracaoVariaveis>
@@ -166,27 +240,69 @@ public class AnalisadorSintatico{
 									if (token.equals("}")) {
 										token = s.nextToken();
 										return;
+									} else {
+										er.guardarErros(s.getLine(), "}");
+										token = s.nextToken();
+										return;
 									}
+								} else {
+									er.guardarErros(s.getLine(), "{");
+									chamadaParaTratarErroMetodo();
 								}
+							} else {
+								er.guardarErros(s.getLine(), "tipo");
+								chamadaParaTratarErroMetodo();
 							}
 
 						} else {
 							// tratar o erro por nao encontrar o :
+							er.guardarErros(s.getLine(), ":");							
+							chamadaParaTratarErroMetodo();
 						}
 
 					} else {
 						// tratar o erro de nao encontrar o )
+						er.guardarErros(s.getLine(), ")");
+						chamadaParaTratarErroMetodo();
 					}
 				} else {
 					// tratar o erro de nao encontrar o (
+					er.guardarErros(s.getLine(), "(");
+					chamadaParaTratarErroMetodo();
 				}
 
 			} else {
 				// tratar o erro de nao encontrar o identificador em seguida
+				er.guardarErros(s.getLine(), "identificador");
+				chamadaParaTratarErroMetodo();
 			}
-		} else {
+		}
+		// erro do metodo
+		else {
+			er.guardarErros(s.getLine(), "metodo");
+			chamadaParaTratarErroMetodo();
 		}
 	}
+
+	/*
+	 * esse metodo eh para tratar o erro da chamada de metodo e para nao ficar
+	 * reptindo codigo
+	 */
+	public void chamadaParaTratarErroMetodo() {
+		hasError = true;
+		s.ignoreLine();
+		declaracaoVariaveis();
+		escopoMetodo();
+		if (token.equals("}")) {
+			token = s.nextToken();
+			return;
+		} else {
+			er.guardarErros(s.getLine(), "}");
+			token = s.nextToken();
+			return;
+		}
+	}
+	/* TERMINA AQUI */
 
 	public void listaParametros() {
 		if (tipo.contains(token)) {
@@ -197,8 +313,10 @@ public class AnalisadorSintatico{
 				token = s.nextToken();
 				maisParametros();
 			}
-		} else {
+		} else if (token.equals(")")) {
 			return; // tratamento de vazio aqui
+		} else {
+			er.guardarErros(s.getLine(), "tipo");
 		}
 	}
 
@@ -329,46 +447,29 @@ public class AnalisadorSintatico{
 		}
 	}
 
-	public void escopoMetodo()   {
+	public void escopoMetodo() {
 		// <escopoMetodo> ::= <comandos><escopoMetodo> | <>
 		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
-				// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
-				// 'resultado' <retorno> ';'
-		System.out.println("entrou aqui, bora ver onde ele vai parar: "+token);
+		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
+		// 'resultado' <retorno> ';'
+		System.out.println("entrou aqui, bora ver onde ele vai parar: " + token);
 		comandos("metodo");
 		// token = s.nextToken();
-		/*if (token.equals("escreva")) { 
-			token = s.nextToken();
-			escreva();
-			escopoMetodo();
-		} else if (token.equals("leia")) {
-			token = s.nextToken();
-			leia();
-			escopoMetodo();
-		} else if (token.equals("se")) {
-			se();
-			escopoMetodo();
-		} else if (token.equals("enquanto")) {
-			token = s.nextToken();
-			System.out.println("Bora ver o que tem dentro do enquanto>> "+token);
-			enquanto();
-			escopoMetodo();
-		} else if (token.equals("resultado")) {
-			// FAZER AINDA
-			escopoMetodo();
-		} else if (s.tokenType().equals("Identificador")) {
-			token = s.nextToken();
-			novoMetodo();
-			escopoMetodo();
-		}
-		// FAZER RESTANTE...
-		else {
-			return; // para vazio <>
-		}*/
+		/*
+		 * if (token.equals("escreva")) { token = s.nextToken(); escreva();
+		 * escopoMetodo(); } else if (token.equals("leia")) { token = s.nextToken();
+		 * leia(); escopoMetodo(); } else if (token.equals("se")) { se();
+		 * escopoMetodo(); } else if (token.equals("enquanto")) { token = s.nextToken();
+		 * System.out.println("Bora ver o que tem dentro do enquanto>> "+token);
+		 * enquanto(); escopoMetodo(); } else if (token.equals("resultado")) { // FAZER
+		 * AINDA escopoMetodo(); } else if (s.tokenType().equals("Identificador")) {
+		 * token = s.nextToken(); novoMetodo(); escopoMetodo(); } // FAZER RESTANTE...
+		 * else { return; // para vazio <> }
+		 */
 	}
 
 	private void novoMetodo() {
-		if (token.equals("(")) { 
+		if (token.equals("(")) {
 			token = s.nextToken();
 			var();
 			if (token.trim().equals(")")) {
@@ -394,7 +495,7 @@ public class AnalisadorSintatico{
 			token = s.nextToken();
 			maisVariavel();
 			return;
-		} else if (s.tokenType().equals("Delimitador")){
+		} else if (s.tokenType().equals("Delimitador")) {
 			System.out.println("ERROR NA LINHA X POIS ENCONTROU UM DELIMITADOR");
 			return; // tratamento de vazios
 		}
@@ -444,15 +545,15 @@ public class AnalisadorSintatico{
 		// <Param Escrita> ::= <verificaCaso><MaisParametroE>
 		// <MaisParametroE> ::= ',' <Param Escrita> | <>
 		if (token.equals("(")) {
-			token = s.nextToken(); 
+			token = s.nextToken();
 			ParamEscrita();
 
-			if (token.equals(")")) { 
+			if (token.equals(")")) {
 				token = s.nextToken();
 				if (token.equals(";")) {
 					token = s.nextToken();
 					return;
-				} else{
+				} else {
 					// ERROR
 					System.out.println("|| ERROR ||");
 				}
@@ -473,40 +574,40 @@ public class AnalisadorSintatico{
 		// <verificaCaso> ::= <incremento>
 		// | <expressao>
 		// | <booleano>
-		
-		//ESSA PORRA TA CHEIA DE AMBIGUIDADE, PQP KKKKKK
-		String token_ahead = s.lookAhead(); 
+
+		// ESSA PORRA TA CHEIA DE AMBIGUIDADE, PQP KKKKKK
+		String token_ahead = s.lookAhead();
 		String double_ahead = s.lookDoubleAhead();
-		
-		if((token.equals("(") && (token_ahead.equals("Incrementador") || token_ahead.equals("Identificador")))
+
+		if ((token.equals("(") && (token_ahead.equals("Incrementador") || token_ahead.equals("Identificador")))
 				|| token.equals("Incrementador") || token.equals("Identificador")) {
 			incremento();
-		} else if((token.equals("(") && (token_ahead.equals("!") || token_ahead.equals("Booleano")))
+		} else if ((token.equals("(") && (token_ahead.equals("!") || token_ahead.equals("Booleano")))
 				|| token.equals("Booleano") || token.equals("!")) {
 			booleano();
 		} else {
-			expressao(); //totalmente ambiguo 
+			expressao(); // totalmente ambiguo
 		}
-		
+
 	}
-	
+
 	public void incremento() {
-		//<incremento> ::= '('Incrementador Identificadores<Vetor> ')' 
-        //		| '('Identificadores<Vetor>  Incrementador')' 
-        //		| Incrementador Identificadores<Vetor>  
-        //		| Identificadores<Vetor>  Incrementador
-		//token = s.nextToken();
-		
-		if(token.equals("(")) {
+		// <incremento> ::= '('Incrementador Identificadores<Vetor> ')'
+		// | '('Identificadores<Vetor> Incrementador')'
+		// | Incrementador Identificadores<Vetor>
+		// | Identificadores<Vetor> Incrementador
+		// token = s.nextToken();
+
+		if (token.equals("(")) {
 			token = s.nextToken();
 			token = s.tokenType();
-			if(token.equals("Incrementador")) {
+			if (token.equals("Incrementador")) {
 				token = s.nextToken();
 				token = s.tokenType();
-				if(token.equals("Identificador")) {
+				if (token.equals("Identificador")) {
 					vetor();
 					token = s.nextToken();
-					if(token.equals(")")) {
+					if (token.equals(")")) {
 						return;
 					} else {
 						// ERROR
@@ -516,95 +617,95 @@ public class AnalisadorSintatico{
 					// ERROR
 					System.out.println("|| ERROR ||");
 				}
-			} else if(token.equals("Identificador")) {
+			} else if (token.equals("Identificador")) {
 				vetor();
 				token = s.nextToken();
 				token = s.tokenType();
-				if(token.equals("incrementador")) {
+				if (token.equals("incrementador")) {
 					return;
 				} else {
 					// ERROR
 					System.out.println("|| ERROR ||");
 				}
 			} else {
-				//ERROR
+				// ERROR
 				System.out.println("|| ERROR ||");
 			}
-		} else if(token.equals("Incrementador")) {
+		} else if (token.equals("Incrementador")) {
 			token = s.nextToken();
 			token = s.tokenType();
-			if(token.equals("Identificador")) {
+			if (token.equals("Identificador")) {
 				vetor();
 				return;
 			} else {
 				// ERROR
 				System.out.println("|| ERROR ||");
 			}
-		} else if(token.equals("Identificador")) {
+		} else if (token.equals("Identificador")) {
 			vetor();
 			token = s.nextToken();
 			token = s.tokenType();
-			if(token.equals("incrementador")) {
+			if (token.equals("incrementador")) {
 				return;
 			} else {
 				// ERROR
 				System.out.println("|| ERROR ||");
 			}
 		} else {
-			//ERROR
+			// ERROR
 			System.out.println("|| ERROR ||");
 		}
 	}
-	
+
 	public void booleano() {
-		//<booleano> ::= '('TipoBooleano')' 
-        //		| '(''!' TipoBooleano')' 
-        //		| '(''!' Identificadores<Vetor> ')'
-        //		| TipoBooleano 
-        //		| '!' TipoBooleano 
-        //		| '!' Identificadores<Vetor> 
-		//token = s.nextToken();
-		
-		if(token.equals("(")) {
+		// <booleano> ::= '('TipoBooleano')'
+		// | '(''!' TipoBooleano')'
+		// | '(''!' Identificadores<Vetor> ')'
+		// | TipoBooleano
+		// | '!' TipoBooleano
+		// | '!' Identificadores<Vetor>
+		// token = s.nextToken();
+
+		if (token.equals("(")) {
 			token = s.nextToken();
 			token = s.tokenType();
-			if(token.equals("Booleano")) {
+			if (token.equals("Booleano")) {
 				token = s.nextToken();
-				if(token.equals(")")) {
+				if (token.equals(")")) {
 					return;
 				}
-			} else if(token.equals("!")) {
+			} else if (token.equals("!")) {
 				token = s.nextToken();
 				token = s.tokenType();
-				if(token.equals("Booleano")) {
+				if (token.equals("Booleano")) {
 					token = s.nextToken();
-					if(token.equals(")")) {
+					if (token.equals(")")) {
 						return;
 					}
-				} else if(token.equals("Identificador")) {
+				} else if (token.equals("Identificador")) {
 					vetor();
 					token = s.nextToken();
-					if(token.equals(")")) {
+					if (token.equals(")")) {
 						return;
 					}
 				} else {
 					// ERROR
 				}
 			}
-		} else if(token.equals("Booleano")) {
+		} else if (token.equals("Booleano")) {
 			token = s.nextToken();
-		} else if(token.equals("!")) {
+		} else if (token.equals("!")) {
 			token = s.nextToken();
 			token = s.tokenType();
-			if(token.equals("Booleano")) {
+			if (token.equals("Booleano")) {
 				token = s.nextToken();
-				if(token.equals(")")) {
+				if (token.equals(")")) {
 					return;
 				}
-			} else if(token.equals("Identificador")) {
+			} else if (token.equals("Identificador")) {
 				vetor();
 				token = s.nextToken();
-				if(token.equals(")")) {
+				if (token.equals(")")) {
 					return;
 				}
 			} else {
@@ -614,63 +715,63 @@ public class AnalisadorSintatico{
 			// ERROR
 		}
 	}
-	
+
 	public void expressao() {
-		//<expressao> ::= '('<expressao>')' 
-        //		| '('<expressao>')' OperadoresAritmeticos <expressao>
-        //		| <operador> <maisOperacoes>
-		//token = s.nextToken();
-		
-		if(token.equals("(")) {
+		// <expressao> ::= '('<expressao>')'
+		// | '('<expressao>')' OperadoresAritmeticos <expressao>
+		// | <operador> <maisOperacoes>
+		// token = s.nextToken();
+
+		if (token.equals("(")) {
 			token = s.nextToken();
 			expressao();
 			token = s.nextToken();
-			if(token.equals(")")) {
+			if (token.equals(")")) {
 				token = s.nextToken();
 				token = s.tokenType();
-				if(token.equals("Operador Aritimetico")) {
+				if (token.equals("Operador Aritimetico")) {
 					expressao();
 				} else {
 					return;
 				}
 			}
-		} else { 
+		} else {
 			operador();
 			maisOperacoes();
 		}
-		
+
 	}
-	
+
 	public void maisOperacoes() {
-		//<maisOperacoes> ::= OperadoresAritmeticos <maisOperacoes>
-        //		| OperadoresAritmeticos  <expressao>
-        //		| <>
-		//token = s.tokenType(); 
-		 
-		if(token.equals("Operador Aritmetico")) {
-			token = s.nextToken(); 
-			if(token.equals("Operador Aritmetico")) {
+		// <maisOperacoes> ::= OperadoresAritmeticos <maisOperacoes>
+		// | OperadoresAritmeticos <expressao>
+		// | <>
+		// token = s.tokenType();
+
+		if (token.equals("Operador Aritmetico")) {
+			token = s.nextToken();
+			if (token.equals("Operador Aritmetico")) {
 				maisOperacoes();
 			} else {
 				expressao();
 			}
 		} else {
-			return; //vazio
+			return; // vazio
 		}
 	}
-	
+
 	public void operador() {
-		//<operador> ::=  Numeros
-        //        | CadeiaCaracteres
-        //        | Identificadores<Vetor>
-        //        | <chamadaDeMetodo>
-		token = s.tokenType(); 
-		
-		if(token.equals("Numeros") || token.equals("Cadeia de Caractere")) {
+		// <operador> ::= Numeros
+		// | CadeiaCaracteres
+		// | Identificadores<Vetor>
+		// | <chamadaDeMetodo>
+		token = s.tokenType();
+
+		if (token.equals("Numeros") || token.equals("Cadeia de Caractere")) {
 			token = s.nextToken();
-		} else if(token.equals("Identificador")) {
+		} else if (token.equals("Identificador")) {
 			token = s.nextToken();
-			if(token.equals("(")) {
+			if (token.equals("(")) {
 				novoMetodo();
 			} else {
 				vetor();
@@ -738,7 +839,7 @@ public class AnalisadorSintatico{
 		}
 	}
 
-	public void se()   {
+	public void se() {
 		// <se> ::= 'se' <condse> 'entao''{' <blocoSe> '}' <senao>
 		// <condse> ::= '(' <cond> <maisCond> ')'
 		// <cond> ::= <termo> OperadoresRelacionais <termo>
@@ -748,7 +849,7 @@ public class AnalisadorSintatico{
 
 		if (token.equals("entao")) {
 			token = s.nextToken();
-			if (token.equals("{")) { 
+			if (token.equals("{")) {
 				token = s.nextToken();
 				blocoSe();
 				token = s.nextToken();
@@ -765,19 +866,22 @@ public class AnalisadorSintatico{
 		}
 
 	}
-	
+
 	public void verBloco(String bloco) {
-		if(bloco.equals("se")) blocoSe();
-		if(bloco.equals("enquanto")) conteudoLaco();
-		if(bloco.equals("metodo")) escopoMetodo();
+		if (bloco.equals("se"))
+			blocoSe();
+		if (bloco.equals("enquanto"))
+			conteudoLaco();
+		if (bloco.equals("metodo"))
+			escopoMetodo();
 	}
-	
-	public void comandos(String bloco)   {
+
+	public void comandos(String bloco) {
 		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
 		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
 		// 'resultado' <retorno> ';'
-		
-		System.out.println("ENTROU COM >>>>>"+token);
+
+		System.out.println("ENTROU COM >>>>>" + token);
 		if (token.equals("escreva")) {
 			token = s.nextToken();
 			escreva();
@@ -791,112 +895,95 @@ public class AnalisadorSintatico{
 			verBloco(bloco);
 		} else if (token.equals("enquanto")) {
 			token = s.nextToken();
-			enquanto(); 
+			enquanto();
 			verBloco(bloco);
 		} else if (token.equals("resultado")) {
 			retorno();
 			verBloco(bloco);
 		} else if (s.tokenType().equals("Identificador")) {
-			System.out.println("|| TIPO || "+token);
-			token = s.nextToken(); 
-			if(s.lookAhead().equals("(")) { 
-				//<chamadaDeMetodo> ::= Identificadores'('<var>')'
-				novoMetodo(); //chamada de metodo
+			System.out.println("|| TIPO || " + token);
+			token = s.nextToken();
+			if (s.lookAhead().equals("(")) {
+				// <chamadaDeMetodo> ::= Identificadores'('<var>')'
+				novoMetodo(); // chamada de metodo
 				token = s.nextToken();
-				if(token.equals(";")) {
+				if (token.equals(";")) {
 					return;
 				} else {
 					// ERROR
-					System.out.println("ERROR falta o ponto e vírgula");
+					System.out.println("ERROR falta o ponto e vï¿½rgula");
 				}
 			} else {
-				//<incrementador> ::= Identificadores<Vetor> Incrementador ';'
-				//<atribuicaoDeVariavel> ::= Identificadores<Vetor>  '=' <verificaCaso>';'
-				//vetor();
-				//token = s.nextToken();
-				
-				if(token.trim().equals("=")) { System.out.println("|| ATRIBUIÇÃO || "+token);
+				// <incrementador> ::= Identificadores<Vetor> Incrementador ';'
+				// <atribuicaoDeVariavel> ::= Identificadores<Vetor> '=' <verificaCaso>';'
+				// vetor();
+				// token = s.nextToken();
+
+				if (token.trim().equals("=")) {
+					System.out.println("|| ATRIBUIï¿½ï¿½O || " + token);
 					atribuicaoDeVariavel();
-				} else if(token.equals("Identificador") || token.equals(";")) {
+				} else if (token.equals("Identificador") || token.equals(";")) {
 					incremento();
 				} else {
 					// ERROR
 				}
 			}
-			//blocoSe();
+			// blocoSe();
 			verBloco(bloco);
 		} else {
 			return; // para vazio <>
 		}
 	}
-	
-	public void blocoSe()   {
+
+	public void blocoSe() {
 		// <blocoSe> ::= <comandos><blocoSe> | <>
 		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
-				// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
-				// 'resultado' <retorno> ';'
-		
+		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
+		// 'resultado' <retorno> ';'
+
 		comandos("se");
-		/*if (token.equals("escreva")) {
-			token = s.nextToken();
-			escreva();
-			blocoSe();
-		} else if (token.equals("leia")) {
-			token = s.nextToken();
-			leia();
-			blocoSe();
-		} else if (token.equals("se")) {
-			se();
-			blocoSe();
-		} else if (token.equals("enquanto")) {
-			token = s.nextToken();
-			enquanto(); // FAZER AINDA...
-			blocoSe();
-		} else if (token.equals("resultado")) {
-			// FAZER AINDA
-			retorno();
-			blocoSe();
-		} else if (s.tokenType().equals("Identificador")) {
-			vetor();
-			atribuicaoDeVariavel();
-			blocoSe();
-		}
-		// FAZER RESTANTE...
-		else {
-			return; // para vazio <>
-		}*/
+		/*
+		 * if (token.equals("escreva")) { token = s.nextToken(); escreva(); blocoSe(); }
+		 * else if (token.equals("leia")) { token = s.nextToken(); leia(); blocoSe(); }
+		 * else if (token.equals("se")) { se(); blocoSe(); } else if
+		 * (token.equals("enquanto")) { token = s.nextToken(); enquanto(); // FAZER
+		 * AINDA... blocoSe(); } else if (token.equals("resultado")) { // FAZER AINDA
+		 * retorno(); blocoSe(); } else if (s.tokenType().equals("Identificador")) {
+		 * vetor(); atribuicaoDeVariavel(); blocoSe(); } // FAZER RESTANTE... else {
+		 * return; // para vazio <> }
+		 */
 	}
-	
+
 	public void retorno() {
 		verificaCaso();
 		token = s.nextToken();
-		if(token.equals(";")) {
+		if (token.equals(";")) {
 			return;
 		} else {
 			// ERROR
 		}
 	}
-	
-	public void atribuicaoDeVariavel()  {
-		//<atribuicaoDeVariavel> ::= Identificadores<Vetor>  '=' <verificaCaso>';'
-		token = s.nextToken(); 
-		if(token.trim().equals("=")) { 
-			token = s.nextToken(); 
+
+	public void atribuicaoDeVariavel() {
+		// <atribuicaoDeVariavel> ::= Identificadores<Vetor> '=' <verificaCaso>';'
+		token = s.nextToken();
+		if (token.trim().equals("=")) {
+			token = s.nextToken();
 			verificaCaso();
-			token = s.nextToken(); 
-			if(token.equals(";")) {
+			token = s.nextToken();
+			if (token.equals(";")) {
 				return;
 			} else {
-				//ERROR
-				//throw new Erro_Sintatico("ERROR faltando o ;");
+				// ERROR
+				// throw new Erro_Sintatico("ERROR faltando o ;");
 			}
 		} else {
-			//ERROR
+			// ERROR
 		}
-		
+
 	}
 
-	public void senao()   {
+	public void senao() {
 		// <senao> ::= <> | 'senao' <condSenao> '{' <blocoSe> '}' <senao>
 		token = s.nextToken();
 		if (token.equals("senao")) {
@@ -936,13 +1023,13 @@ public class AnalisadorSintatico{
 
 	public void condse() {
 		// <condse> ::= '(' <cond> <maisCond> ')'
-		token = s.nextToken(); 
+		token = s.nextToken();
 
 		if (token.equals("(")) {
 			cond();
 			maisCond();
 			token = s.nextToken();
-			if (token.equals(")")) { 
+			if (token.equals(")")) {
 				return;
 			} else {
 				// ERROR
@@ -955,16 +1042,16 @@ public class AnalisadorSintatico{
 	public void cond() {
 		// <cond> ::= <termo> OperadoresRelacionais <termo>
 		// | <negar> Identificadores<Vetor>
-		token = s.nextToken(); 
+		token = s.nextToken();
 		if (token.equals("!")) { // <negar>
 			token = s.nextToken();
 			token = s.tokenType();
 			if (token.equals("Identificador"))
 				vetor();
 		} else {
-			termo(); 
-			//token = s.nextToken();
-			//token = s.tokenType(); 
+			termo();
+			// token = s.nextToken();
+			// token = s.tokenType();
 			if (token.equals("Operador Relacional")) {
 				termo();
 			} else {
@@ -980,7 +1067,7 @@ public class AnalisadorSintatico{
 		// | CadeiaCaracteres
 		// | TipoBooleano
 		// <op> ::= OperadorAritmeticos <tipoTermo> <op>|<>
-		tipoTermo(); 
+		tipoTermo();
 		op();
 
 	}
@@ -990,8 +1077,8 @@ public class AnalisadorSintatico{
 		// | Numeros
 		// | CadeiaCaracteres
 		// | TipoBooleano
-		//token = s.nextToken();
-		//token = s.tokenType();System.out.println("Entrou aqui >>>>"+token);
+		// token = s.nextToken();
+		// token = s.tokenType();System.out.println("Entrou aqui >>>>"+token);
 		if (token.equals("Identificador")) {
 			vetor();
 		} else if (token.equals("Numeros") || token.equals("Cadeia de Caracteres") || token.equals("Booleano")) {
@@ -1005,7 +1092,8 @@ public class AnalisadorSintatico{
 	public void op() {
 		// <op> ::= OperadorAritmeticos <tipoTermo> <op>|<>
 		token = s.nextToken();
-		token = s.tokenType(); ;
+		token = s.tokenType();
+		;
 		if (token.equals("Operador Aritmetico")) {
 			tipoTermo();
 			op();
@@ -1091,36 +1179,19 @@ public class AnalisadorSintatico{
 
 	}
 
-	private void conteudoLaco()   {
+	private void conteudoLaco() {
 		comandos("enquanto");
-		/*if (token.equals("escreva")) {
-			token = s.nextToken();
-			escreva();
-			conteudoLaco();
-		} else if (token.equals("leia")) {
-			token = s.nextToken();
-			leia();
-			conteudoLaco();
-		} else if (token.equals("se")) {
-			se();
-			conteudoLaco();
-		} else if (token.equals("enquanto")) {
-			token = s.nextToken();
-			enquanto(); // FAZER AINDA...
-			conteudoLaco();
-		} else if (token.equals("resultado")) {
-			// FAZER AINDA
-			retorno();
-			conteudoLaco();
-		} else if (s.tokenType().equals("Identificador")) {System.out.println("ENTROU COM "+token);
-			vetor();
-			atribuicaoDeVariavel();
-			conteudoLaco();
-		}
-		// FAZER RESTANTE...
-		else {
-			return; // para vazio <>
-		}*/
+		/*
+		 * if (token.equals("escreva")) { token = s.nextToken(); escreva();
+		 * conteudoLaco(); } else if (token.equals("leia")) { token = s.nextToken();
+		 * leia(); conteudoLaco(); } else if (token.equals("se")) { se();
+		 * conteudoLaco(); } else if (token.equals("enquanto")) { token = s.nextToken();
+		 * enquanto(); // FAZER AINDA... conteudoLaco(); } else if
+		 * (token.equals("resultado")) { // FAZER AINDA retorno(); conteudoLaco(); }
+		 * else if (s.tokenType().equals("Identificador"))
+		 * {System.out.println("ENTROU COM "+token); vetor(); atribuicaoDeVariavel();
+		 * conteudoLaco(); } // FAZER RESTANTE... else { return; // para vazio <> }
+		 */
 
 	}
 	/* TERMINA AQUI A GRAMATICA DO ENQUANTO */
