@@ -41,9 +41,9 @@ Linha	|	Lexama	|		Classificacao
 10		inteiro				Palavra Reservada
 10		b				Identificador
 10		;				Delimitador
-11		}				Delimitador
-13		}				Delimitador
-15		}				Delimitador
+10		}				Delimitador
+12		}				Delimitador
+14		}				Delimitador
 
 
 

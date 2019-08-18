@@ -331,7 +331,7 @@ public class Automatos {
 		} else if(this.charDiscover.isDigito(c_anterior)) {
 			if((buffer.temProximoChar() && !charDiscover.isDigito(buffer.verProximo()) && buffer.verProximo() != '.')
 					|| !buffer.temProximoChar()) {
-				//se o atual for digito e o proximo não (EXCETO PONTO), OU nao tiver proximo, retorna
+				//se o atual for digito e o proximo nï¿½o (EXCETO PONTO), OU nao tiver proximo, retorna
 				return "Numero";
 			} else state = 1; 
 		} 
@@ -376,7 +376,7 @@ public class Automatos {
 				} else { 
 					buffer.backChar(); //volta um char
 					c_anterior = buffer.lerCharAtual(); //ler o char atual
-					c = buffer.lerChar(); //avança mais um novamente
+					c = buffer.lerChar(); //avanï¿½a mais um novamente
 					//System.out.println(c_anterior+" :: "+c);
 					if(charDiscover.isDigito(c)) {
 						concatenarString.concatenar_String(c);

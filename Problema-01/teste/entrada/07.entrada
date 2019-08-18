@@ -7,8 +7,7 @@ programa{
        
        variaveis{
 		real a[5][6];
-		inteiro b;
-	}
+		inteiro b;}
 
   }
   
