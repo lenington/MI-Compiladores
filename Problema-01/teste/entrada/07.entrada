@@ -6,17 +6,10 @@ programa{
   metodo soma(inteiro a): vazio{
        
        variaveis{
-		real a;
-		inteiro b; 
+		real a[5][6];
+		inteiro b;
 	}
-  }
-  
-  metodo principal (): vazio{
-  
-  		enquanto(principal!=3){
-  		
-  		}
-  
+
   }
   
 }

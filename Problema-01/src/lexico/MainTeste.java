@@ -40,12 +40,18 @@ public class MainTeste {
         
         buffer.closeFile();
         
-        TokenReader tr = new TokenReader(lexico.getListTokens());
+        if (lexico.hasLeximasErros()) {
+        	TokenReader tr = new TokenReader(lexico.getListTokens());
+            
+            AnalisadorSintatico as = new AnalisadorSintatico(tr);
+            
+            as.programa();        	
+        }
+        else {
+        	System.out.println("> O arquivo [ " + arquivo + " ] possui erros lexicos. Impossivel prosseguir");
+        }
         
-        AnalisadorSintatico as = new AnalisadorSintatico(tr);
-        
-        as.programa();
-        
+                
         
 	}
 }

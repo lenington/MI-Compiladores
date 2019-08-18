@@ -76,7 +76,12 @@ public class TabelaTokens {
 	
 	public LinkedList<Tokens> getListaTokens(){
 		return conjunto_token;
-		
+	}
+	
+	public boolean hasLeximasErros() {
+		if (conjunto_erro.isEmpty())
+			return true;
+		return false;
 	}
 	
 }

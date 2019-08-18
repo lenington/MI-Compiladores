@@ -39,10 +39,12 @@ public class AnalisadorSintatico {
 					else
 						System.out.println("SUCESSO");
 
-				} else
+				} else {
 					er.guardarErros(s.getLine(), "{");
+				}
+				
 			} else { // tratamento do erro caso nao encontre {
-				System.out.println("Erro! linha: " + s.getLine() + ". esperava { mas veio " + s.getAtualToken());
+				er.guardarErros(s.getLine(), "{");
 				token = s.nextToken();
 				blocoConstantes();
 				escopoPrograma();
@@ -50,11 +52,11 @@ public class AnalisadorSintatico {
 				if (token.equals("}"))
 					System.out.println("SUCESSO");
 				else // tratamento do erro caso nao encontre }
-					System.out.println(
-							"Error! Linha: " + s.getLine() + "Era esperado }, mas encontrou: " + s.getAtualToken());
+					er.guardarErros(s.getLine(), "}");
+
 			}
 		} else {
-			System.out.println("Erro! Linha: " + s.getLine() + ". Esperava programa, mas veio: " + s.getAtualToken());
+			er.guardarErros(s.getLine(), "programa");
 		}
 	}
 
@@ -152,6 +154,7 @@ public class AnalisadorSintatico {
 				multiconst();
 			}
 		} else {
+			//tratamento de erro caso nao encontre um identificador
 			er.guardarErros(s.getLine(), "identificador");
 			hasError = true;
 			token = s.nextToken().trim();
@@ -256,7 +259,7 @@ public class AnalisadorSintatico {
 
 						} else {
 							// tratar o erro por nao encontrar o :
-							er.guardarErros(s.getLine(), ":");							
+							er.guardarErros(s.getLine(), ":");
 							chamadaParaTratarErroMetodo();
 						}
 
@@ -326,11 +329,35 @@ public class AnalisadorSintatico {
 			if (token.equals("{")) {
 				token = s.nextToken();
 				VarV();
+				
 				if (token.equals("}")) {
 					token = s.nextToken();
 					return;
 				}
+				
+				else {//tratamento do erro caso nao encontre o }
+					er.guardarErros(s.getLine(), "}");
+					token = s.nextToken();
+					return;
+				}
+				
+			}else { //tratamento caso nao encontre o { depois de variaveis
+				
+				er.guardarErros(s.getLine(), "{");
+				token = s.nextToken();
+				VarV();
+				if (token.equals("}")) {
+					token = s.nextToken();
+					return;
+				}
+				
+				else {
+					er.guardarErros(s.getLine(), "}");
+					token = s.nextToken();
+					return;
+				}
 			}
+			
 		} else {
 			return;
 			// esse else eh para tratar o vazio do <DeclaracaoVariaveis> ::= 'variaveis'
@@ -345,15 +372,25 @@ public class AnalisadorSintatico {
 			complementoV();
 			maisVariaveis();
 		} else {
+			//tratamento de erro
+			er.guardarErros(s.getLine(), "tipo");
+			token = s.nextToken();
+			complementoV();
+			maisVariaveis();
 			// tratar o erro de nao encontrar o tipo aqui --> <VarV> ::= Tipo <complementoV>
 			// <MaisVariaveis>
 		}
-
 	}
 
 	public void complementoV() {
 		token = s.tokenType();
 		if (token.equals("Identificador")) {
+			token = s.nextToken();
+			vetor();
+			variavelMesmoTipo();
+		}
+		else {
+			er.guardarErros(s.getLine(), "identificador");
 			token = s.nextToken();
 			vetor();
 			variavelMesmoTipo();
@@ -368,12 +405,22 @@ public class AnalisadorSintatico {
 			token = s.nextToken();
 			OpI2();
 			OpIndice();
-			System.out.println(token);
 			if (token.equals("]")) {
 				token = s.nextToken();
 				matriz();
 			}
-		} else {
+			else {
+				hasError = true;
+				er.guardarErros(s.getLine(), "]");
+				matriz();
+			}
+		}else if (token.equals("]")) {
+			hasError = true;
+			er.guardarErros(s.getLine(), "[");
+			token = s.nextToken();
+			matriz();
+		}
+		else {
 			return; // aqui eh onde trata o vazio
 		}
 
@@ -402,7 +449,9 @@ public class AnalisadorSintatico {
 			token = s.nextToken();
 			return;
 		} else {
-			// tratar o erro aqui
+			er.guardarErros(s.getLine(), " Numero ou identificador ");
+			token = s.nextToken();
+			return;
 		}
 	}
 
@@ -415,9 +464,18 @@ public class AnalisadorSintatico {
 			if (token.equals("]")) {
 				token = s.nextToken();
 				return;
+			}else {
+				er.guardarErros(s.getLine(), " ] ");
+				token = s.nextToken();
+				return;
 			}
-		} else {
-			token = s.getAtualToken();
+		}else if (token.equals("]")) {
+			er.guardarErros(s.getLine(), "[");
+			token = s.nextToken();
+			return;
+		}
+		else {
+			//token = s.nextToken(); //antes pegava o tokenAtual
 			return;// tratar vazio
 		}
 	}
@@ -432,6 +490,10 @@ public class AnalisadorSintatico {
 			token = s.nextToken();
 			return;
 		} else {
+			hasError = true;
+			er.guardarErros(s.getLine(), " ; ");
+			token = s.nextToken();
+			return;
 			// tratar erro aqui;
 		}
 	}
@@ -452,7 +514,7 @@ public class AnalisadorSintatico {
 		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
 		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
 		// 'resultado' <retorno> ';'
-		//System.out.println("entrou aqui, bora ver onde ele vai parar: " + token);
+		// System.out.println("entrou aqui, bora ver onde ele vai parar: " + token);
 		comandos("metodo");
 		// token = s.nextToken();
 		/*
@@ -881,7 +943,7 @@ public class AnalisadorSintatico {
 		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
 		// 'resultado' <retorno> ';'
 
-	//	System.out.println("ENTROU COM >>>>>" + token);
+		// System.out.println("ENTROU COM >>>>>" + token);
 		if (token.equals("escreva")) {
 			token = s.nextToken();
 			escreva();
@@ -1135,29 +1197,28 @@ public class AnalisadorSintatico {
 					if (token.equals("}")) {
 						token = s.nextToken();
 						return;
-					}
-					else {
+					} else {
 						hasError = true;
 						er.guardarErros(s.getLine(), "}");
 						token = s.nextToken();
 						return;
 					}
-				}else {
+				} else {
 					hasError = true;
 					er.guardarErros(s.getLine(), "{");
 					s.ignoreLine();
 					token = s.nextToken();
 					conteudoLaco();
 				}
-				
-			}else {
+
+			} else {
 				hasError = true;
 				er.guardarErros(s.getLine(), ")");
 				s.ignoreLine();
 				token = s.nextToken();
 				conteudoLaco();
 			}
-		}else {
+		} else {
 			hasError = true;
 			er.guardarErros(s.getLine(), "(");
 			s.ignoreLine();
@@ -1199,7 +1260,7 @@ public class AnalisadorSintatico {
 			return;
 		} else {
 			hasError = true;
-			er.guardarErros(s.getLine(), "nao esperado valor: "+s.getAtualToken());
+			er.guardarErros(s.getLine(), "nao esperado valor: " + s.getAtualToken());
 			token = s.nextToken();
 		}
 

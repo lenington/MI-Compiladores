@@ -31,6 +31,10 @@ public class Lexico {
 		return tabelaTokens.getListaTokens();
 	}
 	
+	public boolean hasLeximasErros() {
+		return tabelaTokens.hasLeximasErros();
+	}
+	
 	public void rodarAutomatos(){
 		char c = ' ';
 		String classificacao;

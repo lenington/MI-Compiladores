@@ -31,29 +31,19 @@ Linha	|	Lexama	|		Classificacao
 8		{				Delimitador
 9		real				Palavra Reservada
 9		a				Identificador
+9		[				Delimitador
+9		5				Numero
+9		]				Delimitador
+9		[				Delimitador
+9		6				Numero
+9		]				Delimitador
 9		;				Delimitador
 10		inteiro				Palavra Reservada
 10		b				Identificador
 10		;				Delimitador
 11		}				Delimitador
-12		}				Delimitador
-14		metodo				Palavra Reservada
-14		principal				Palavra Reservada
-14		(				Delimitador
-14		)				Delimitador
-14		:				Simbolo
-14		vazio				Palavra Reservada
-14		{				Delimitador
-16		enquanto				Palavra Reservada
-16		(				Delimitador
-16		principal				Palavra Reservada
-16		!=				Operador Relacional
-16		3				Numero
-16		)				Delimitador
-16		{				Delimitador
-18		}				Delimitador
-20		}				Delimitador
-22		}				Delimitador
+13		}				Delimitador
+15		}				Delimitador
 
 
 
