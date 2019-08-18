@@ -452,7 +452,7 @@ public class AnalisadorSintatico {
 		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
 		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
 		// 'resultado' <retorno> ';'
-		System.out.println("entrou aqui, bora ver onde ele vai parar: " + token);
+		//System.out.println("entrou aqui, bora ver onde ele vai parar: " + token);
 		comandos("metodo");
 		// token = s.nextToken();
 		/*
@@ -881,7 +881,7 @@ public class AnalisadorSintatico {
 		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
 		// 'resultado' <retorno> ';'
 
-		System.out.println("ENTROU COM >>>>>" + token);
+	//	System.out.println("ENTROU COM >>>>>" + token);
 		if (token.equals("escreva")) {
 			token = s.nextToken();
 			escreva();
@@ -1136,9 +1136,33 @@ public class AnalisadorSintatico {
 						token = s.nextToken();
 						return;
 					}
-
+					else {
+						hasError = true;
+						er.guardarErros(s.getLine(), "}");
+						token = s.nextToken();
+						return;
+					}
+				}else {
+					hasError = true;
+					er.guardarErros(s.getLine(), "{");
+					s.ignoreLine();
+					token = s.nextToken();
+					conteudoLaco();
 				}
+				
+			}else {
+				hasError = true;
+				er.guardarErros(s.getLine(), ")");
+				s.ignoreLine();
+				token = s.nextToken();
+				conteudoLaco();
 			}
+		}else {
+			hasError = true;
+			er.guardarErros(s.getLine(), "(");
+			s.ignoreLine();
+			token = s.nextToken();
+			conteudoLaco();
 		}
 	}
 
@@ -1174,7 +1198,9 @@ public class AnalisadorSintatico {
 			token = s.nextToken();
 			return;
 		} else {
-			// tratar erro
+			hasError = true;
+			er.guardarErros(s.getLine(), "nao esperado valor: "+s.getAtualToken());
+			token = s.nextToken();
 		}
 
 	}

@@ -3,12 +3,19 @@ programa{
       real a = 3; inteiro b = 4, c = 5;
   }
   
-  metodo soma(inteiro a):vazio
+  metodo soma(inteiro a): vazio{
        
        variaveis{
 		real a;
 		inteiro b; 
 	}
+  }
+  
+  metodo principal (): vazio{
+  
+  		enquanto(principal!=3){
+  		
+  		}
   
   }
   
