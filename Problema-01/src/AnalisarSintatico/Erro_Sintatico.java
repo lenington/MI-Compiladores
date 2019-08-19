@@ -4,17 +4,28 @@ import java.util.LinkedList;
 
 public class Erro_Sintatico {
 
+	private String mensagem_erro;
+
 	private LinkedList<String> erros;
-		public Erro_Sintatico() {  
-			erros = new LinkedList<String>();
-		}  
-		
-		public void guardarErros(int linha, String esperado) {
-			erros.add("Error! Linha: " + linha + " Esperava: " + esperado);
-			displayError(linha, esperado);
-		}
-		
-		private void displayError(int linha, String esperado) {
-			System.out.println("Error! Linha: " + linha + " Esperava: " + esperado);
-		}
+
+	public Erro_Sintatico() {
+		erros = new LinkedList<String>();
+	}
+
+	public void guardarErros(int linha, String esperado) {
+		if (esperado.equals("SUCESSO"))
+			mensagem_erro = "Seu programa foi finalizado com: " + esperado;
+		else if (esperado.equals("SEMSUCESSO"))
+			mensagem_erro = "\n\n PROGRAMA NAO FOI FINALIZADO COM SUCESSO";
+		else
+			mensagem_erro = "Error! Linha: " + linha + " Esperava: " + esperado;
+
+		erros.add(mensagem_erro);
+		System.out.println(mensagem_erro);
+	}
+
+	public LinkedList<String> getErrosList() {
+		return erros;
+	}
+
 }

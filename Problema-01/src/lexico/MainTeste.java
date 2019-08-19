@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import AnalisarSintatico.AnalisadorSintatico;
 import AnalisarSintatico.Erro_Sintatico;
+import AnalisarSintatico.ErrorFileSaver;
 import AnalisarSintatico.TokenReader;
 
 public class MainTeste {
@@ -45,7 +46,9 @@ public class MainTeste {
             
             AnalisadorSintatico as = new AnalisadorSintatico(tr);
             
-            as.programa();        	
+            as.programa(); 
+            
+            new ErrorFileSaver(arquivo, as.getErro_Sintatico()).saveErrorInFile();
         }
         else {
         	System.out.println("> O arquivo [ " + arquivo + " ] possui erros lexicos. Impossivel prosseguir");

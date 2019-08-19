@@ -8,23 +8,18 @@ public class TokenReader {
 	
 	private LinkedList<Tokens> listoken;
 	private int i;
+	
 	public TokenReader(LinkedList<Tokens> listoken) throws FileNotFoundException {
 		this.listoken = listoken;
 		this.i = -1; 
 	}
 	
-	public String nextToken() {
-		 try {
+	public String nextToken() throws IndexOutOfBoundsException {
 		 i = i+1;
 		 String s =  this.listoken.get(i).getLexama();
 		 System.out.println(s);
 		 return s;
-		 }
-		 catch(Exception e) {
-			 System.out.println("Erro! O programa foi mal formado!"+e);
-			 System.exit(0);
-			 return "";
-		 }
+		 
 	}
 	
 	public String tokenType() {

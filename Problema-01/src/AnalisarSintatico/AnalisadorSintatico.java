@@ -21,7 +21,11 @@ public class AnalisadorSintatico {
 		hasError = false;
 		er = new Erro_Sintatico();
 	}
-
+	
+	public LinkedList<String> getErro_Sintatico() {
+		return er.getErrosList();
+	}
+	
 	public void programa() {
 
 		token = s.nextToken();
@@ -35,9 +39,9 @@ public class AnalisadorSintatico {
 
 				if (token.equals("}")) {
 					if (hasError == true)
-						System.out.println("PROGRAMA NAO FOI FINALIZADO COM SUCESSO");
+						er.guardarErros(s.getLine(), "SEMSUCESSO");
 					else
-						System.out.println("SUCESSO");
+						er.guardarErros(s.getLine(), "SUCESSO");//System.out.println("SUCESSO");
 
 				} else {
 					er.guardarErros(s.getLine(), "{");
@@ -50,7 +54,7 @@ public class AnalisadorSintatico {
 				escopoPrograma();
 
 				if (token.equals("}"))
-					System.out.println("SUCESSO");
+					return; //System.out.println("SUCESSO");
 				else // tratamento do erro caso nao encontre }
 					er.guardarErros(s.getLine(), "}");
 
@@ -75,9 +79,14 @@ public class AnalisadorSintatico {
 					token = s.nextToken();
 					return;
 				}
+				else {
+					er.guardarErros(s.getLine(), " } ");
+					token = s.nextToken();
+					return;
+				}
 			} else {
 				// tratar o erro da falta do { depois das constantes
-				System.out.println("Erro! linha: " + s.getLine() + ". Esperava { mas veio " + s.getAtualToken());
+				er.guardarErros(s.getLine(), " { ");
 				token = s.nextToken();
 				estruturaConstantes();
 
@@ -85,7 +94,7 @@ public class AnalisadorSintatico {
 					token = s.nextToken();
 					return;
 				} else {
-					System.out.println("Erro! linha: " + s.getLine() + ". Esperava } mas veio " + s.getAtualToken());
+					er.guardarErros(s.getLine(), "}");
 					token = s.nextToken();
 					return;
 				}
@@ -118,7 +127,7 @@ public class AnalisadorSintatico {
 		} else {
 			// tratamento de ERRO caso nao encontre um identificador no inicio das
 			// constantes
-			er.guardarErros(s.getLine(), "tipo");
+			er.guardarErros(s.getLine(), " tipo ou  um }");
 			hasError = true;
 			token = s.nextToken();
 			constanteS();

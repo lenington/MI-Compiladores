@@ -1,7 +1,8 @@
 programa{
    constantes{
       real a = 3; inteiro b = 4, c = 5;
-   }
+      
+
   
   metodo soma(inteiro a): vazio{
        variaveis{
