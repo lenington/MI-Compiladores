@@ -1,14 +1,39 @@
 programa{
    constantes{
       real a = 3; inteiro b = 4, c = 5;
-  }
+   }
   
   metodo soma(inteiro a): vazio{
-       
        variaveis{
-		real a[5][6];
-		inteiro b;}
-
+		real aux[5][6];
+		inteiro b, a;
+		inteiro v[1];
+	}
   }
   
+  metodo principal():vazio{
+	variaveis{
+		real a;
+		inteiro b; 
+		inteiro aux[1];
+	}
+	
+	se(a == b) entao {
+		a = a + a; 
+		b = 1 + a;
+
+		leia(a);
+		escreva("Valor de a = ", a);
+		
+		enquanto(a != 1){
+			aux[1] = 10;
+			escreva("Valor de aux[1]", aux[1]);
+			se(a != b) entao {
+				escreva("A eh diferente de B");
+			} senao se(a == b) entao {
+				escreva("A eh igual a B");
+			} 
+		}
+	}
+  }
 }

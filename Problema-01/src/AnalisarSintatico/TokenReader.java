@@ -21,7 +21,7 @@ public class TokenReader {
 		 return s;
 		 }
 		 catch(Exception e) {
-			 System.out.println("Erro! O programa foi mal formado!");
+			 System.out.println("Erro! O programa foi mal formado!"+e);
 			 System.exit(0);
 			 return "";
 		 }
