@@ -526,35 +526,6 @@ public class AnalisadorSintatico {
 		// 'resultado' <retorno> ';'
 		
 		comandos("metodo");
-		// token = s.nextToken();
-		/*if (token.equals("escreva")) { 
-			token = s.nextToken();
-			escreva();
-			escopoMetodo();
-		} else if (token.equals("leia")) {
-			token = s.nextToken();
-			leia();
-			escopoMetodo();
-		} else if (token.equals("se")) {
-			se();
-			escopoMetodo();
-		} else if (token.equals("enquanto")) {
-			token = s.nextToken();
-			System.out.println("Bora ver o que tem dentro do enquanto>> "+token);
-			enquanto();
-			escopoMetodo();
-		} else if (token.equals("resultado")) {
-			retorno();
-			escopoMetodo();
-		} else if (s.tokenType().equals("Identificador")) {
-			token = s.nextToken();
-			novoMetodo();
-			escopoMetodo();
-		}
-		// FAZER RESTANTE...
-		else {
-			return; // para vazio <>
-		}*/
 	}
 
 	private void novoMetodo() {
@@ -566,7 +537,9 @@ public class AnalisadorSintatico {
 				if (token.equals(";")) {
 					token = s.nextToken();
 				} else {
-					System.out.println("Error! Esqueceu o ponto e virgula!");
+					er.guardarErros(s.getLine(), ";");
+					hasError = true;
+					return;
 				}
 			}
 		} else {// rever isso
@@ -585,7 +558,6 @@ public class AnalisadorSintatico {
 			maisVariavel();
 			return;
 		} else if (s.tokenType().equals("Delimitador")) {
-			System.out.println("ERROR NA LINHA X POIS ENCONTROU UM DELIMITADOR");
 			return; // tratamento de vazios
 		}
 	}
@@ -636,20 +608,26 @@ public class AnalisadorSintatico {
 		if (token.equals("(")) {
 			token = s.nextToken();
 			ParamEscrita();
-			token = s.getAtualToken();
-			if (token.equals(")")) {
-				token = s.nextToken();
+			token = s.getAtualToken(); 
+			if (token.equals(")")) { 
+				token = s.nextToken(); 
 				if (token.equals(";")) {
 					token = s.nextToken();
 					return;
 				} else {
-					// ERROR
-					System.out.println("|| ERROR ||");
+					er.guardarErros(s.getLine(), " ;");
+					hasError = true;
+					return;
 				}
+			} else {
+				er.guardarErros(s.getLine(), " )");
+				hasError = true;
+				return; // TRATAR ESSE ERRO!
 			}
 		} else {
-			// ERROR
-			System.out.println("|| ERROR ||");
+			er.guardarErros(s.getLine(), " (");
+			hasError = true;
+			return; //TRATAR ESSE ERRO!
 		}
 	}
 
@@ -694,29 +672,29 @@ public class AnalisadorSintatico {
 				if (token.equals("Identificador")) {
 					vetor();
 					token = s.nextToken();
-					if (token.equals(")")) {
+					if (token.equals(")")) { System.out.println("TOKEN == "+token);
 						return;
-					} else {
-						// ERROR
-						System.out.println("|| ERROR ||");
+					} else { //ERROR
+						er.guardarErros(s.getLine(), " )");
+						hasError = true;
+						return;
 					}
-				} else {
-					// ERROR
-					System.out.println("|| ERROR ||");
-				}
+				} 
 			} else if (token.equals("Identificador")) {
 				vetor();
 				token = s.nextToken();
 				token = s.tokenType();
 				if (token.equals("incrementador")) {
 					return;
-				} else {
-					// ERROR
-					System.out.println("|| ERROR ||");
+				} else { //ERROR
+					er.guardarErros(s.getLine(), " Incrementador");
+					hasError = true;
+					return;
 				}
-			} else {
-				// ERROR
-				System.out.println("|| ERROR ||");
+			} else { //ERROR
+				er.guardarErros(s.getLine(), " Identificador");
+				hasError = true;
+				return;
 			}
 		} else if (token.equals("Incrementador")) {
 			token = s.nextToken();
@@ -724,9 +702,10 @@ public class AnalisadorSintatico {
 			if (token.equals("Identificador")) {
 				vetor();
 				return;
-			} else {
-				// ERROR
-				System.out.println("|| ERROR ||");
+			} else { //ERROR
+				er.guardarErros(s.getLine(), " Incrementador");
+				hasError = true;
+				return;
 			}
 		} else if (token.equals("Identificador")) {
 			vetor();
@@ -734,13 +713,15 @@ public class AnalisadorSintatico {
 			token = s.tokenType();
 			if (token.equals("incrementador")) {
 				return;
-			} else {
-				// ERROR
-				System.out.println("|| ERROR ||");
+			} else { //ERROR
+				er.guardarErros(s.getLine(), " Incrementador");
+				hasError = true;
+				return;
 			}
-		} else {
-			// ERROR
-			System.out.println("|| ERROR ||");
+		} else { // ERROR
+			er.guardarErros(s.getLine(), " Identificador");
+			hasError = true;
+			return;
 		}
 	}
 
@@ -777,6 +758,9 @@ public class AnalisadorSintatico {
 					}
 				} else {
 					// ERROR
+					er.guardarErros(s.getLine(), " Identificador");
+					hasError = true;
+					return;
 				}
 			}
 		} else if (token.equals("Booleano")) {
@@ -797,9 +781,15 @@ public class AnalisadorSintatico {
 				}
 			} else {
 				// ERROR
+				er.guardarErros(s.getLine(), " Identificador");
+				hasError = true;
+				return;
 			}
 		} else {
 			// ERROR
+			er.guardarErros(s.getLine(), " !");
+			hasError = true;
+			return;
 		}
 	}
 
@@ -898,10 +888,21 @@ public class AnalisadorSintatico {
 				if (token.equals(";")) {
 					token = s.nextToken();
 					return;
+				} else {
+					er.guardarErros(s.getLine(), " ;");
+					hasError = true;
+					return;
 				}
+			} else {
+				er.guardarErros(s.getLine(), " )");
+				hasError = true;
+				return;
 			}
 		} else {
 			// ERROR
+			er.guardarErros(s.getLine(), " (");
+			hasError = true;
+			return;
 		}
 	}
 
@@ -915,7 +916,9 @@ public class AnalisadorSintatico {
 			vetor();
 			lerMais();
 		} else {
-			// ERROR
+			er.guardarErros(s.getLine(), " Identificador");
+			hasError = true;
+			return;
 		}
 	}
 
@@ -946,14 +949,22 @@ public class AnalisadorSintatico {
 				blocoSe(); 
 				if (token.equals("}")) { 
 					senao();
-				} else {
-					// ERROR
+				} else { //ERROR
+					er.guardarErros(s.getLine(), " }");
+					hasError = true;
+					return;
 				}
 			} else {
 				// ERROR
+				er.guardarErros(s.getLine(), " {");
+				hasError = true;
+				return;
 			}
 		} else {
 			// ERROR
+			er.guardarErros(s.getLine(), " entao");
+			hasError = true;
+			return;
 		}
 
 	}
@@ -987,7 +998,8 @@ public class AnalisadorSintatico {
 			token = s.nextToken();
 			enquanto();
 			verBloco(bloco);
-		} else if (token.equals("resultado")) {
+		} else if (token.equals("resultado")) { 
+			token = s.nextToken();
 			retorno();
 			verBloco(bloco);
 		} else if (s.tokenType().equals("Identificador")) { 
@@ -1000,7 +1012,8 @@ public class AnalisadorSintatico {
 					return;
 				} else {
 					// ERROR
-					System.out.println("ERROR falta o ponto e virgula");
+					er.guardarErros(s.getLine(), " ;");
+					hasError = true;
 				}
 				verBloco(bloco);
 			} else {
@@ -1020,12 +1033,15 @@ public class AnalisadorSintatico {
 					if (token.equals(";")) {
 						return;
 					} else {
-						// ERROR
-						System.out.println("ERROR falta o ponto e virgula");
+						er.guardarErros(s.getLine(), " ;");
+						hasError = true;
 					}
 					verBloco(bloco);
 				} else {
 					// ERROR
+					er.guardarErros(s.getLine(), " Identificador");
+					hasError = true;
+					return;
 				}
 			}
 			//blocoSe();
@@ -1043,12 +1059,17 @@ public class AnalisadorSintatico {
 	}
 
 	public void retorno() {
-		verificaCaso();
-		token = s.nextToken();
+		verificaCaso(); System.out.println("TOKEN == "+token);
+		//token = s.nextToken(); 
 		if (token.equals(";")) {
+			token = s.nextToken();
 			return;
 		} else {
 			// ERROR
+			er.guardarErros(s.getLine(), " ;");
+			hasError = true;
+			token = s.nextToken();
+			return;
 		}
 	}
 
@@ -1075,12 +1096,21 @@ public class AnalisadorSintatico {
 					return;
 				} else {
 					// ERROR
+					er.guardarErros(s.getLine(), " ;");
+					hasError = true;
+					return;
 				}
 			} else {
 				// ERROR
+				er.guardarErros(s.getLine(), " Identificador, Operador Aritmetico ou Numeral");
+				hasError = true;
+				return;
 			}
 		} else {
 			// ERROR
+			er.guardarErros(s.getLine(), " =");
+			hasError = true;
+			return;
 		}
 
 	}
@@ -1098,9 +1128,15 @@ public class AnalisadorSintatico {
 					senao(); 
 				} else {
 					// ERROR
+					er.guardarErros(s.getLine(), " }");
+					hasError = true;
+					return;
 				}
 			} else {
 				// ERROR
+				//er.guardarErros(s.getLine(), " {");
+				//hasError = true;
+				//return;
 			}
 		} else {
 			return;
@@ -1117,6 +1153,9 @@ public class AnalisadorSintatico {
 				return;
 			} else {
 				// ERROR
+				er.guardarErros(s.getLine(), " entao");
+				hasError = true;
+				return;
 			}
 		} else { 
 			return;
@@ -1137,9 +1176,15 @@ public class AnalisadorSintatico {
 				return;
 			} else {
 				// ERROR
+				//er.guardarErros(s.getLine(), " )");
+				//hasError = true;
+				//return;
 			}
 		} else {
 			// ERROR
+			er.guardarErros(s.getLine(), " (");
+			hasError = true;
+			return;
 		}
 	}
 
@@ -1154,12 +1199,14 @@ public class AnalisadorSintatico {
 				vetor();
 		} else {
 			termo();
-			// token = s.nextToken();
-			// token = s.tokenType();
-			if (token.equals("Operador Relacional")) {
+			token = s.tokenType(); 
+			if (token.equals("Operador Relacional") || token.equals("Operador Logico") ) {
 				termo();
 			} else {
 				// ERRO
+				er.guardarErros(s.getLine(), " Operador Relacional");
+				hasError = true;
+				return;
 			}
 		}
 	}
@@ -1182,13 +1229,16 @@ public class AnalisadorSintatico {
 		// | CadeiaCaracteres
 		// | TipoBooleano
 		// token = s.nextToken();
-		// token = s.tokenType();System.out.println("Entrou aqui >>>>"+token);
+		token = s.tokenType();
 		if (token.equals("Identificador")) {
 			vetor();
 		} else if (token.equals("Numeros") || token.equals("Cadeia de Caracteres") || token.equals("Booleano")) {
 			return;
 		} else {
 			// ERROR
+			//er.guardarErros(s.getLine(), " Numeros, Cadeia de Caracteres ou Booleano");
+			//hasError = true;
+			//return;
 		}
 
 	}
@@ -1311,35 +1361,6 @@ public class AnalisadorSintatico {
 
 	private void conteudoLaco() {
 		comandos("enquanto");
-		/*if (token.equals("escreva")) { 
-			token = s.nextToken();
-			escreva();
-			conteudoLaco();
-		} else if (token.equals("leia")) {
-			token = s.nextToken();
-			leia();
-			conteudoLaco();
-		} else if (token.equals("se")) {
-			se();
-			conteudoLaco();
-		} else if (token.equals("enquanto")) {
-			token = s.nextToken();
-			System.out.println("Bora ver o que tem dentro do enquanto>> "+token);
-			enquanto();
-			conteudoLaco();
-		} else if (token.equals("resultado")) {
-			retorno();
-			conteudoLaco();
-		} else if (s.tokenType().equals("Identificador")) {
-			token = s.nextToken();
-			novoMetodo();
-			conteudoLaco();
-		}
-		// FAZER RESTANTE...
-		else {
-			return; // para vazio <>
-		}*/
-
 	}
 	/* TERMINA AQUI A GRAMATICA DO ENQUANTO */
 }

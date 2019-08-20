@@ -5,11 +5,11 @@ programa{
 
   
   metodo soma(inteiro a): vazio{
-       variaveis{
-		real aux[5][6];
-		inteiro b, a;
-		inteiro v[1];
-	}
+       	variaveis{
+			real aux[5][6];
+			inteiro b, a;
+			inteiro v[1];
+		}
   }
   
   metodo principal():vazio{
@@ -24,8 +24,8 @@ programa{
 		b = 1 + a;
 		aux[1] = a + b;
 
-		leia(a);
-		escreva("Valor de a = ", a);
+		leia (a);
+		escreva ("Valor de a = ", a);
 		
 		enquanto(a != 1){
 			aux[1] = 10;
@@ -36,6 +36,7 @@ programa{
 				escreva("A eh igual a B");
 			} senao {
 				escreva("Erro");
+				resultado a;
 			} 
 		}
 	}

@@ -174,11 +174,14 @@ Linha	|	Lexama	|		Classificacao
 38		"Erro"				Cadeia de Caractere
 38		)				Delimitador
 38		;				Delimitador
-39		}				Delimitador
+39		resultado				Palavra Reservada
+39		a				Identificador
+39		;				Delimitador
 40		}				Delimitador
 41		}				Delimitador
 42		}				Delimitador
 43		}				Delimitador
+44		}				Delimitador
 
 
 
