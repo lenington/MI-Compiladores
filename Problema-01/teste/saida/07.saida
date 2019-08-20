@@ -17,6 +17,7 @@ Linha	|	Lexama	|		Classificacao
 3		= 				Operador Logico
 3		5				Numero
 3		;				Delimitador
+4		}				Delimitador
 7		metodo				Palavra Reservada
 7		soma				Identificador
 7		(				Delimitador
@@ -92,75 +93,92 @@ Linha	|	Lexama	|		Classificacao
 24		+				Operador Aritmetico
 24		a				Identificador
 24		;				Delimitador
-26		leia				Palavra Reservada
-26		(				Delimitador
-26		a				Identificador
-26		)				Delimitador
-26		;				Delimitador
-27		escreva				Palavra Reservada
+25		aux				Identificador
+25		[				Delimitador
+25		1				Numero
+25		]				Delimitador
+25		= 				Operador Logico
+25		a				Identificador
+25		+				Operador Aritmetico
+25		b				Identificador
+25		;				Delimitador
+27		leia				Palavra Reservada
 27		(				Delimitador
-27		"Valor de a = "				Cadeia de Caractere
-27		,				Delimitador
 27		a				Identificador
 27		)				Delimitador
 27		;				Delimitador
-29		enquanto				Palavra Reservada
-29		(				Delimitador
-29		a				Identificador
-29		!=				Operador Relacional
-29		1				Numero
-29		)				Delimitador
-29		{				Delimitador
-30		aux				Identificador
-30		[				Delimitador
+28		escreva				Palavra Reservada
+28		(				Delimitador
+28		"Valor de a = "				Cadeia de Caractere
+28		,				Delimitador
+28		a				Identificador
+28		)				Delimitador
+28		;				Delimitador
+30		enquanto				Palavra Reservada
+30		(				Delimitador
+30		a				Identificador
+30		!=				Operador Relacional
 30		1				Numero
-30		]				Delimitador
-30		= 				Operador Logico
-30		10				Numero
-30		;				Delimitador
-31		escreva				Palavra Reservada
-31		(				Delimitador
-31		"Valor de aux[1]"				Cadeia de Caractere
-31		,				Delimitador
+30		)				Delimitador
+30		{				Delimitador
 31		aux				Identificador
 31		[				Delimitador
 31		1				Numero
 31		]				Delimitador
-31		)				Delimitador
+31		= 				Operador Logico
+31		10				Numero
 31		;				Delimitador
-32		se				Palavra Reservada
+32		escreva				Palavra Reservada
 32		(				Delimitador
-32		a				Identificador
-32		!=				Operador Relacional
-32		b				Identificador
+32		"Valor de aux[1]"				Cadeia de Caractere
+32		,				Delimitador
+32		aux				Identificador
+32		[				Delimitador
+32		1				Numero
+32		]				Delimitador
 32		)				Delimitador
-32		entao				Palavra Reservada
-32		{				Delimitador
-33		escreva				Palavra Reservada
+32		;				Delimitador
+33		se				Palavra Reservada
 33		(				Delimitador
-33		"A eh diferente de B"				Cadeia de Caractere
+33		a				Identificador
+33		!=				Operador Relacional
+33		b				Identificador
 33		)				Delimitador
-33		;				Delimitador
-34		}				Delimitador
-34		senao				Palavra Reservada
-34		se				Palavra Reservada
+33		entao				Palavra Reservada
+33		{				Delimitador
+34		escreva				Palavra Reservada
 34		(				Delimitador
-34		a				Identificador
-34		==				Operador Logico
-34		b				Identificador
+34		"A eh diferente de B"				Cadeia de Caractere
 34		)				Delimitador
-34		entao				Palavra Reservada
-34		{				Delimitador
-35		escreva				Palavra Reservada
+34		;				Delimitador
+35		}				Delimitador
+35		senao				Palavra Reservada
+35		se				Palavra Reservada
 35		(				Delimitador
-35		"A eh igual a B"				Cadeia de Caractere
+35		a				Identificador
+35		==				Operador Logico
+35		b				Identificador
 35		)				Delimitador
-35		;				Delimitador
-36		}				Delimitador
+35		entao				Palavra Reservada
+35		{				Delimitador
+36		escreva				Palavra Reservada
+36		(				Delimitador
+36		"A eh igual a B"				Cadeia de Caractere
+36		)				Delimitador
+36		;				Delimitador
 37		}				Delimitador
-38		}				Delimitador
+37		senao				Palavra Reservada
+37		{				Delimitador
+38		escreva				Palavra Reservada
+38		(				Delimitador
+38		"Erro"				Cadeia de Caractere
+38		)				Delimitador
+38		;				Delimitador
 39		}				Delimitador
 40		}				Delimitador
+41		}				Delimitador
+42		}				Delimitador
+43		}				Delimitador
 
 
 
