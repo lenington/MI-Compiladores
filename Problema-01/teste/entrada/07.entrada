@@ -18,8 +18,10 @@ programa{
 		inteiro b; 
 		inteiro aux[1];
 	}
-	
-	se(a == b) entao {
+	/* Comentario em 
+	   Bloco
+	*/
+	se(a == b) entao { //aqui faz a comparacao
 		a = a + a; 
 		b = 1 + a;
 		aux[1] = a + b;

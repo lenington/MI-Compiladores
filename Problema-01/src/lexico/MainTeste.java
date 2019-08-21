@@ -48,7 +48,7 @@ public class MainTeste {
             
             as.programa(); 
             
-            new ErrorFileSaver(arquivo, as.getErro_Sintatico()).saveErrorInFile();
+            new ErrorFileSaver(caminhoSaida + arquivo.replace("entrada", "saida"), as.getErro_Sintatico()).saveErrorInFile();
         }
         else {
         	System.out.println("> O arquivo [ " + arquivo + " ] possui erros lexicos. Impossivel prosseguir");

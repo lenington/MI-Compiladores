@@ -44,7 +44,7 @@ public class AnalisadorSintatico {
 						er.guardarErros(s.getLine(), "SUCESSO");//System.out.println("SUCESSO");
 
 				} else {
-					er.guardarErros(s.getLine(), "{");
+					er.guardarErros(s.getLine(), "}");
 				}
 				
 			} else { // tratamento do erro caso nao encontre {
@@ -672,7 +672,7 @@ public class AnalisadorSintatico {
 				if (token.equals("Identificador")) {
 					vetor();
 					token = s.nextToken();
-					if (token.equals(")")) { System.out.println("TOKEN == "+token);
+					if (token.equals(")")) {
 						return;
 					} else { //ERROR
 						er.guardarErros(s.getLine(), " )");
@@ -1044,7 +1044,10 @@ public class AnalisadorSintatico {
 					return;
 				}
 			}
-			//blocoSe();
+		} else if(s.tokenType().equals("Comentario de Linha") || s.tokenType().equals("Comentario de Bloco")) {
+			token = s.nextToken(); 
+			comandos(bloco);
+			return ;
 		} else {
 			return; // para vazio <>
 		}
@@ -1059,7 +1062,7 @@ public class AnalisadorSintatico {
 	}
 
 	public void retorno() {
-		verificaCaso(); System.out.println("TOKEN == "+token);
+		verificaCaso(); 
 		//token = s.nextToken(); 
 		if (token.equals(";")) {
 			token = s.nextToken();
@@ -1120,7 +1123,9 @@ public class AnalisadorSintatico {
 		token = s.nextToken(); 
 		if (token.equals("senao")) { 
 			condSenao();
-			token = s.nextToken();
+			if(!token.equals("{")) {
+				token = s.nextToken();
+			}
 			if (token.equals("{")) {
 				token = s.nextToken();
 				blocoSe();
@@ -1134,9 +1139,9 @@ public class AnalisadorSintatico {
 				}
 			} else {
 				// ERROR
-				//er.guardarErros(s.getLine(), " {");
-				//hasError = true;
-				//return;
+				er.guardarErros(s.getLine(), " {");
+				hasError = true;
+				return;
 			}
 		} else {
 			return;

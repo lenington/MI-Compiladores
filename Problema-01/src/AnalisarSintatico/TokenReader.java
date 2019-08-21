@@ -8,18 +8,23 @@ public class TokenReader {
 	
 	private LinkedList<Tokens> listoken;
 	private int i;
+	private int size;
 	
 	public TokenReader(LinkedList<Tokens> listoken) throws FileNotFoundException {
 		this.listoken = listoken;
 		this.i = -1; 
+		size = listoken.size();
 	}
 	
 	public String nextToken() throws IndexOutOfBoundsException {
-		 i = i+1;
-		 String s =  this.listoken.get(i).getLexama();
-		 System.out.println(s);
-		 return s;
-		 
+		 i = i+1; 
+		 try {
+			 String s =  this.listoken.get(i).getLexama();
+			 System.out.println(s);
+			 return s;
+		 } catch(IndexOutOfBoundsException e) {
+			 return "";
+		 }
 	}
 	
 	public String tokenType() {
@@ -55,7 +60,11 @@ public class TokenReader {
 	}
 	
 	public int getLine() {
-		return this.listoken.get(i).getLinha();
+		try {
+			return this.listoken.get(i).getLinha();
+		} catch (IndexOutOfBoundsException e) {
+			return this.listoken.get(size-1).getLinha();
+		}
 	}
 	
 }

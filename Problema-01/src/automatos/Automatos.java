@@ -256,10 +256,12 @@ public class Automatos {
 		int state = -1;
 		char c;
 		
-		c = buffer.verProximo();
-		if (charDiscover.isLetra(c) || charDiscover.isDigito(c) || c == '_')
-			state = 0;
-		else return "Identificador";
+		if(buffer.temProximoChar()) {
+			c = buffer.verProximo();
+			if (charDiscover.isLetra(c) || charDiscover.isDigito(c) || c == '_')
+				state = 0;
+			else return "Identificador";
+		} else return "Identificador";
 		
 		while (buffer.temProximoChar()) {
 			c = buffer.lerChar();

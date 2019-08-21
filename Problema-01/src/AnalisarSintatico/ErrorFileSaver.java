@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 public class ErrorFileSaver {
 	
-	private String file_name;
+	private String file_name, caminho_saida;
 	private LinkedList<String> erros;
 	
 	public ErrorFileSaver(String file_name, LinkedList<String> erros) {
