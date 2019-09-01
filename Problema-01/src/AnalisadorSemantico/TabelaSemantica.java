@@ -1,22 +1,37 @@
 package AnalisadorSemantico;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class TabelaSemantica {
 	
-	HashMap<String, LinkedList<String>> tabSem;
+	HashMap<String, AtributosConstVar> tabelaConstVar;
 	public TabelaSemantica() {
 		
-		tabSem = new HashMap<String, LinkedList<String>>();
+		tabelaConstVar = new HashMap<String, AtributosConstVar>();
 	}
 	
-	public void inserirTabela(String cadeia, String token, String cat, String tipo) {
-		LinkedList<String> e = new LinkedList<String>();
-		e.add(token);
-		e.add(cat);
-		e.add(tipo);
-		tabSem.put(cadeia, e);
+	public void inserirTabela(String cadeia, String token, String cat, String tipo, String valor ,String primeiroIndice, String segundoIndice, boolean utilizado) {
+		tabelaConstVar.put(cadeia, new AtributosConstVar(token, cat, tipo, valor, primeiroIndice, segundoIndice, utilizado));
+	}
+	
+	public boolean temConstVar(String cadeia) {
+		if (tabelaConstVar.containsKey(cadeia))
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean validaIdentificadorVetor(String cadeia) {
+		//System.out.println(tabelaConstVar.get(cadeia).getTipo());
+		if (tabelaConstVar.containsKey(cadeia)) {
+			if (tabelaConstVar.get(cadeia).getTipo().equals("inteiro"))
+					return true;
+		}
+		return false;
+	}
+	
+	public void printTabela() {
+		System.out.println(tabelaConstVar.keySet());
 	}
 
 }

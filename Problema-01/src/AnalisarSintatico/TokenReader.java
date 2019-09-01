@@ -20,7 +20,7 @@ public class TokenReader {
 		 i = i+1; 
 		 try {
 			 String s =  this.listoken.get(i).getLexama();
-			 System.out.println(s);
+			 //System.out.println(s);
 			 return s;
 		 } catch(IndexOutOfBoundsException e) {
 			 return "";

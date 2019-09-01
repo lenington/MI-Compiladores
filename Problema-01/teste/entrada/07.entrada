@@ -1,7 +1,13 @@
 programa{
+
    	constantes{
-      	texto nome = 3;
+      	inteiro a = 3;
   	}
   	
-  	metodo principal():vazio{}
+  	metodo principal():vazio{
+  		variaveis{
+  			inteiro a[5][c], b;
+  		
+  		}
+  	}
 }
