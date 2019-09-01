@@ -91,7 +91,7 @@ public class AnalisadorSemantico {
 			if (token.equals("=")) {
 				// chamar <constante><multiconst>
 				token = s.nextToken();
-				
+	
 				valorConstante = token;
 				tktp = s.tokenType();
 				constante();

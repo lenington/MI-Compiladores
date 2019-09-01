@@ -1,7 +1,6 @@
 programa{
    	constantes{
-      	real a = 3; 
-      	inteiro b = "ola", c = 5;
+      	texto nome = 3;
   	}
   	
   	metodo principal():vazio{}
