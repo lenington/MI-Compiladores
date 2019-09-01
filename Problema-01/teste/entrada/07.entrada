@@ -1,46 +1,8 @@
 programa{
    	constantes{
-      	real a = 3; inteiro b = 4, c = 5;
+      	real a = 3; 
+      	inteiro b = "ola", c = 5;
   	}
-
-  
-  metodo soma(inteiro a): vazio{
-       	variaveis{
-			real aux[5][6];
-			inteiro b, a;
-			inteiro v[1];
-		}
-  }
-  
-  metodo principal():vazio{
-	variaveis{
-		real a;
-		inteiro b; 
-		inteiro aux[1];
-	}
-	/* Comentario em 
-	   Bloco
-	*/
-	se(a == b) entao { //aqui faz a comparacao
-		a = a + a; 
-		b = 1 + a;
-		aux[1] = a + b;
-
-		leia (a);
-		escreva ("Valor de a = ", a);
-		
-		enquanto(a != 1){
-			aux[1] = 10;
-			escreva("Valor de aux[1]", aux[1]);
-			se(a != b) entao {
-				escreva("A eh diferente de B");
-			} senao se(a == b) entao {
-				escreva("A eh igual a B");
-			} senao {
-				escreva("Erro");
-				resultado a;
-			} 
-		}
-	}
-  }
+  	
+  	metodo principal():vazio{}
 }

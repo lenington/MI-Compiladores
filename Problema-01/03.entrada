@@ -1,8 +1,0 @@
-variavel numero, numero2, numero3;
-escreva ("Primeiro numero: ");
-leia (numero);
-escreva ("Segundo numero: ");
-leia (numero2);
-c = numero + numero2;
-escreva ("resultado: ", c);
-.

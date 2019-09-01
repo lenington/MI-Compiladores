@@ -4,6 +4,7 @@ package lexico;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import AnalisadorSemantico.AnalisadorSemantico;
 import AnalisarSintatico.AnalisadorSintatico;
 import AnalisarSintatico.Erro_Sintatico;
 import AnalisarSintatico.ErrorFileSaver;
@@ -49,6 +50,10 @@ public class MainTeste {
             as.programa(); 
             
             new ErrorFileSaver(caminhoSaida + arquivo.replace("entrada", "saida"), as.getErro_Sintatico()).saveErrorInFile();
+            
+            AnalisadorSemantico asc = new AnalisadorSemantico(new TokenReader(lexico.getListTokens()));
+            asc.programa();
+        
         }
         else {
         	System.out.println("> O arquivo [ " + arquivo + " ] possui erros lexicos. Impossivel prosseguir");
