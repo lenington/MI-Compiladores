@@ -1,12 +1,13 @@
 programa{
 
    	constantes{
-      	inteiro a = 3;
+      	inteiro a = 3, c = 4, d = 1;
   	}
   	
   	metodo principal():vazio{
   		variaveis{
-  			inteiro a[5][c], b;
+  			inteiro b[5][4], casa;
+  			real boneca;
   		
   		}
   	}

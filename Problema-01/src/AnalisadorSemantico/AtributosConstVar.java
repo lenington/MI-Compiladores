@@ -25,5 +25,9 @@ public class AtributosConstVar {
 	public String getTipo() {
 		return this.tipo;
 	}
+	
+	public void imprimirString() {
+		System.out.println(token + " " + cat + " " + tipo + " " + valor + " " + primeiroIndice + " " + " " + segundoIndice + " \n");
+	}
 
 }

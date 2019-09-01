@@ -82,6 +82,10 @@ public class AnalisadorSemantico {
 
 		if (token.equals("Identificador")) {
 			vc.setNomeConstante(s.getAtualToken()); // inserindo o nome da variavel dentro da classe para depois inserir na tabela
+			
+			if (tabSem.temConstVar(s.getAtualToken()))
+				System.out.println("Error Semantico. Possui duas variaveis ou constantes identificas");
+			
 			token = s.nextToken().trim();
 			if (token.equals("=")) {
 				// chamar <constante><multiconst>
@@ -132,6 +136,7 @@ public class AnalisadorSemantico {
 
 	/* AQUI INICIA O BLOCO DO ESCOPO DO PROGRAMA */
 	public void escopoPrograma() {
+		vc.zerarStrings();
 		metodo();
 		if (token.equals("metodo")) {
 			escopoPrograma();
@@ -236,6 +241,10 @@ public class AnalisadorSemantico {
 		token = s.tokenType();
 		if (token.equals("Identificador")) {
 			vc.setNomeConstante(s.getAtualToken());
+			
+			if (tabSem.temConstVar(s.getAtualToken()))
+				System.out.println("erro semantico. Ja possui uma constante ou variavel com esse nome. Aqui ta dentro de variaveis" );
+			
 			token = s.nextToken();
 			vetor();
 			variavelMesmoTipo();
@@ -314,14 +323,14 @@ public class AnalisadorSemantico {
 
 	public void variavelMesmoTipo() {
 		if (token.equals(",")) {
-			tabSem.inserirTabela(vc.getNomeConstante(), vc.getTokenType(), "variavel", vc.getTipo(), vc.getValor(),vc.getValorVetorPrimeiro(), vc.getValorVetorSegundo(), false);
+			tabSem.inserirTabela(vc.getNomeConstante(), vc.getTokenType(), "variavel", vc.getTipo(), "",vc.getValorVetorPrimeiro(), vc.getValorVetorSegundo(), false);
 			vc.zerarVetores();
 			token = s.nextToken();
 			complementoV();
 		}
 
 		else if (token.equals(";")) {
-			tabSem.inserirTabela(vc.getNomeConstante(), vc.getTokenType(), "variavel", vc.getTipo(), vc.getValor(),vc.getValorVetorPrimeiro(), vc.getValorVetorSegundo(), false);
+			tabSem.inserirTabela(vc.getNomeConstante(), vc.getTokenType(), "variavel", vc.getTipo(), "",vc.getValorVetorPrimeiro(), vc.getValorVetorSegundo(), false);
 			vc.zerarStrings();
 			token = s.nextToken();
 			return;

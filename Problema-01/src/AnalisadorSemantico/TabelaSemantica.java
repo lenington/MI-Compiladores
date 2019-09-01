@@ -1,6 +1,7 @@
 package AnalisadorSemantico;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class TabelaSemantica {
 	
@@ -11,7 +12,10 @@ public class TabelaSemantica {
 	}
 	
 	public void inserirTabela(String cadeia, String token, String cat, String tipo, String valor ,String primeiroIndice, String segundoIndice, boolean utilizado) {
-		tabelaConstVar.put(cadeia, new AtributosConstVar(token, cat, tipo, valor, primeiroIndice, segundoIndice, utilizado));
+		
+		if (tabelaConstVar.containsKey(cadeia) == false)
+			tabelaConstVar.put(cadeia, new AtributosConstVar(token, cat, tipo, valor, primeiroIndice, segundoIndice, utilizado));
+	
 	}
 	
 	public boolean temConstVar(String cadeia) {
@@ -32,6 +36,13 @@ public class TabelaSemantica {
 	
 	public void printTabela() {
 		System.out.println(tabelaConstVar.keySet());
+		Set<String> a = tabelaConstVar.keySet();
+		for (String chave: a) {
+			if (chave != null) {
+				System.out.println(chave);
+				tabelaConstVar.get(chave).imprimirString();
+			}
+		}
 	}
 
 }
