@@ -349,5 +349,76 @@ public class AnalisadorSemantico {
 	}
 
 	/* AQUI FINALIZA O BLOCO DO ESCOPO DO PROGRAMA */
-
+	
+	public void escopoMetodo() {
+		// <escopoMetodo> ::= <comandos><escopoMetodo> | <>
+		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
+		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
+		// 'resultado' <retorno> ';'
+		
+		comandos("metodo");
+	}
+	
+	public void comandos(String bloco) {
+		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
+		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
+		// 'resultado' <retorno> ';'
+		
+		if (token.equals("escreva")) {
+			token = s.nextToken();
+			//escreva();
+			//verBloco(bloco);
+		} else if (token.equals("leia")) {
+			token = s.nextToken();
+			//leia();
+			//verBloco(bloco);
+		} else if (token.equals("se")) { 
+			//se();
+			//verBloco(bloco);
+		} else if (token.equals("enquanto")) {
+			token = s.nextToken();
+			//enquanto();
+			//verBloco(bloco);
+		} else if (token.equals("resultado")) { 
+			token = s.nextToken();
+			//retorno();
+			//verBloco(bloco);
+		} else if (s.tokenType().equals("Identificador")) { 
+			//token = s.nextToken();
+			if (s.lookAhead().equals("(")) {
+				// <chamadaDeMetodo> ::= Identificadores'('<var>')'
+				//novoMetodo(); // chamada de metodo
+				token = s.nextToken();
+				if (token.equals(";")) {
+					return;
+				} 
+				//verBloco(bloco);
+			} else {
+				// <incrementador> ::= Identificadores<Vetor> Incrementador ';'
+				// <atribuicaoDeVariavel> ::= Identificadores<Vetor> '=' <verificaCaso>';'
+				if(s.lookAhead().equals("[")) {
+					token = s.nextToken();
+					vetor();
+				}
+				
+				if (s.lookAhead().trim().equals("=")) {
+					//atribuicaoDeVariavel();
+					//verBloco(bloco);
+				} else if (s.lookAhead().equals("Identificador")) { 
+					//incremento();
+					token = s.nextToken();
+					if (token.equals(";")) {
+						return;
+					} 
+					//verBloco(bloco);
+				} 
+			}
+		} else if(s.tokenType().equals("Comentario de Linha") || s.tokenType().equals("Comentario de Bloco")) {
+			token = s.nextToken(); 
+			comandos(bloco);
+			return ;
+		} else {
+			return; // para vazio <>
+		}
+	}
 }
