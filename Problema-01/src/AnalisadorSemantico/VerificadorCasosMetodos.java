@@ -23,6 +23,11 @@ public class VerificadorCasosMetodos {
 		return false;
 	}
 	
+	/*metodo para verificar se tem parametros duplicados. Exemplo.: metodo soma(inteiro casa, real casa)*/
+	public boolean duplicateParametro(String nomeParametro) {
+		return this.listaParametros.contains(nomeParametro);
+	}
+	
 	//armazena o nome do metodo: metodo *soma*(){}
 	public void setNomeMetodo(String nomeMetodo) {
 		this.nomeMetodo = nomeMetodo;

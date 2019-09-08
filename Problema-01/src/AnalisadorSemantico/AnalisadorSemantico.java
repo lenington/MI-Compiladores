@@ -206,6 +206,10 @@ public class AnalisadorSemantico {
 			token = s.nextToken();
 			token = s.tokenType();
 			if (token.equals("Identificador")) {
+				
+				if (vcm.duplicateParametro(s.getAtualToken())) //verificar se tem parametros duplicados. Exemplo.: metodo soma(inteiro casa, real casa)
+					System.out.println("Erro semantico! Nao eh permitido o parametros com o mesmo nome: " + s.getAtualToken());
+				
 				vcm.setNomeParametro(s.getAtualToken()); //insere o nome do parametro na lista
 				token = s.nextToken();
 				maisParametros();

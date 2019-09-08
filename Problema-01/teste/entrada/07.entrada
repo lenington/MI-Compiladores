@@ -4,7 +4,7 @@ programa{
       	inteiro a = 3, c = 4, d = 1;
   	}
   	
-  	metodo soma(inteiro casa):vazio{
+  	metodo soma(inteiro casa, real casa):vazio{
   		variaveis{
   			inteiro b[5][4], casa;
   			real boneca;
