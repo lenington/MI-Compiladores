@@ -26,11 +26,11 @@ public class TabelaSemantica {
 	 * string
 	 */
 	public void inserirTabela(String cadeia, String token, String cat, String tipo, String valor, String primeiroIndice,
-			String segundoIndice, boolean utilizado) {
+			String segundoIndice, boolean utilizado,String metodoDaVariavel) {
 
 		if (tabelaConstVar.containsKey(cadeia) == false)
 			tabelaConstVar.put(cadeia,
-					new AtributosConstVar(token, cat, tipo, valor, primeiroIndice, segundoIndice, utilizado));
+					new AtributosConstVar(token, cat, tipo, valor, primeiroIndice, segundoIndice, utilizado, metodoDaVariavel));
 
 	}
 
@@ -47,7 +47,30 @@ public class TabelaSemantica {
 		}
 		return false;
 	}
-
+	
+	
+	/*
+	 *Verifica se o nome do metodo existe 
+	 * */
+	public boolean metodoExiste(String nomeMetodo) {
+		
+		if (this.tabelaMetodos.containsKey(nomeMetodo) == false) {
+			System.out.println("Essa metodo ainda nao foi declarado!");
+			return false;
+		}
+		return true;
+	}
+	
+	/*
+	 * Verifica se os atribuitos dos metodos estao corretos
+	 * metodo soma(inteiro a)
+	 * soma (a). a eh inteiro tambem?
+	 * */
+	
+	public boolean checaAtributoChamadaMetodo() {
+		return true;
+	}
+	
 	/*Verifica se a variavel ja esta declarada dentro do metodo que ela esta*/
 	public boolean varConstDeclaradaMetodo(String nomeMetodo, String nomeParametro) {
 		return tabelaMetodos.get(nomeMetodo).containsVar(nomeParametro);
@@ -74,7 +97,11 @@ public class TabelaSemantica {
 		}
 		return false;
 	}
-
+	
+	
+	/*
+	 * Apenas imprime a tabela para a verificacao visual da tabela
+	 * */
 	public void printTabela() {
 		System.out.println(tabelaConstVar.keySet());
 		Set<String> a = tabelaConstVar.keySet();

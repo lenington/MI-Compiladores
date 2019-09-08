@@ -12,7 +12,7 @@ public class AnalisadorSemantico {
 	private VerificadorCasos vc;
 	private VerificadorCasosMetodos vcm;
 	private String token;
-	private String emqualMetodoEstou;
+
 
 	public AnalisadorSemantico(TokenReader s) {
 		this.s = s;
@@ -104,7 +104,7 @@ public class AnalisadorSemantico {
 				if (!vc.semanticaConstante())
 					System.out.println("Tem erro semantico. Na constante");
 				else 
-					tabSem.inserirTabela(vc.getNomeConstante(), vc.getTokenType(), "constante", vc.getTipo(),vc.getValor(), "", "",false);
+					tabSem.inserirTabela(vc.getNomeConstante(), vc.getTokenType(), "constante", vc.getTipo(),vc.getValor(), "", "",false, "");
 					/////////////////////////////////////////////////////////////////////////////////////////
 				
 				multiconst();
@@ -173,7 +173,7 @@ public class AnalisadorSemantico {
 						if (token.equals(":")) {
 							token = s.nextToken();
 							if (tipo.contains(token)) {
-								vcm.setTipoPrametro(token.trim()); //insere o tipo de retorno na classe que verifica a semantica da tabela
+								vcm.setTipoRetorno(token.trim()); //insere o tipo de retorno na classe que verifica a semantica da tabela
 								//esse if verifica o erro semantico de que o metodo principal nao pode ter parametros e deve ser unico
 								if (vcm.semanticaMetodo() == false)
 									tabSem.inserirTabelaMetodos(vcm.getNomeMetodo(), vcm.getTipoRetorno(), vcm.getNomeParametro(), vcm.getTipoPrametro());
@@ -182,22 +182,19 @@ public class AnalisadorSemantico {
 								if (token.equals("{")) {
 									token = s.nextToken();
 									declaracaoVariaveis();
-									// escopoMetodo();
+									 escopoMetodo();
 									if (token.equals("}")) {
+										vcm.oRetornoAparaceu();//verifica se o metodo eh diferente de vazio e se o retorno apareceu
 										token = s.nextToken();
 										return;
 									}
 								}
 							}
-
 						}
-
 					}
 				}
-
 			}
 		}
-
 	}
 
 	public void listaParametros() {
@@ -340,14 +337,14 @@ public class AnalisadorSemantico {
 
 	public void variavelMesmoTipo() {
 		if (token.equals(",")) {
-			tabSem.inserirTabela(vc.getNomeConstante(), vc.getTokenType(), "variavel", vc.getTipo(), "",vc.getValorVetorPrimeiro(), vc.getValorVetorSegundo(), false);
+			tabSem.inserirTabela(vc.getNomeConstante(), vc.getTokenType(), "variavel", vc.getTipo(), "",vc.getValorVetorPrimeiro(), vc.getValorVetorSegundo(), false, vcm.getNomeMetodo());
 			vc.zerarVetores();
 			token = s.nextToken();
 			complementoV();
 		}
 
 		else if (token.equals(";")) {
-			tabSem.inserirTabela(vc.getNomeConstante(), vc.getTokenType(), "variavel", vc.getTipo(), "",vc.getValorVetorPrimeiro(), vc.getValorVetorSegundo(), false);
+			tabSem.inserirTabela(vc.getNomeConstante(), vc.getTokenType(), "variavel", vc.getTipo(), "",vc.getValorVetorPrimeiro(), vc.getValorVetorSegundo(), false, vcm.getNomeMetodo());
 			vc.zerarStrings();
 			token = s.nextToken();
 			return;
@@ -396,19 +393,17 @@ public class AnalisadorSemantico {
 			token = s.nextToken();
 			//enquanto();
 			//verBloco(bloco);
-		} else if (token.equals("resultado")) { 
+		} else if (token.equals("resultado")) {
+			
 			token = s.nextToken();
-			//retorno();
+			retorno();
 			//verBloco(bloco);
 		} else if (s.tokenType().equals("Identificador")) { 
 			//token = s.nextToken();
 			if (s.lookAhead().equals("(")) {
 				// <chamadaDeMetodo> ::= Identificadores'('<var>')'
-				//novoMetodo(); // chamada de metodo
-				token = s.nextToken();
-				if (token.equals(";")) {
-					return;
-				} 
+				tabSem.metodoExiste(token); //verifica se o metodo sendo chamado existe
+				novoMetodo(); // chamada de metodo
 				//verBloco(bloco);
 			} else {
 				// <incrementador> ::= Identificadores<Vetor> Incrementador ';'
@@ -438,4 +433,251 @@ public class AnalisadorSemantico {
 			return; // para vazio <>
 		}
 	}
+	
+	public void retorno() {
+		verificaCaso(); 
+		//token = s.nextToken(); 
+		if (token.equals(";")) {
+			token = s.nextToken();
+			return;
+		} 
+	}
+	
+	public void verificaCaso() {
+		// <verificaCaso> ::= <incremento>
+		// | <expressao>
+		// | <booleano>
+
+		// ESSA PORRA TA CHEIA DE AMBIGUIDADE, PQP KKKKKK
+		String token_ahead = s.lookAhead();
+
+		if ((token.equals("(") && (token_ahead.equals("Incrementador") || token_ahead.equals("Identificador")))
+				|| token.equals("Incrementador") || token.equals("Identificador")) {
+			incremento();
+		} else if ((token.equals("(") && (token_ahead.equals("!") || token_ahead.equals("Booleano")))
+				|| token.equals("Booleano") || token.equals("!")) {
+			booleano();
+		} else {
+			expressao(); // totalmente ambiguo
+		}
+	}
+	
+	public void expressao() {
+		// <expressao> ::= '('<expressao>')'
+		// | '('<expressao>')' OperadoresAritmeticos <expressao>
+		// | <operador> <maisOperacoes>
+		// token = s.nextToken();
+
+		if (token.equals("(")) {
+			token = s.nextToken();
+			expressao();
+			token = s.nextToken();
+			if (token.equals(")")) {
+				token = s.nextToken();
+				token = s.tokenType();
+				if (token.equals("Operador Aritimetico")) {
+					expressao();
+				} else {
+					return;
+				}
+			}
+		} else {
+			operador();
+			maisOperacoes();
+		}
+
+	}
+	
+	private void novoMetodo() {
+		if (token.equals("(")) {
+			token = s.nextToken();
+			
+			var();
+			if (token.trim().equals(")")) {
+				token = s.nextToken();
+				if (token.equals(";")) {
+					token = s.nextToken();
+				} 
+			}
+		} else {// rever isso
+			vetor();
+		}
+	}
+	
+	public void operador() {
+		// <operador> ::= Numeros
+		// | CadeiaCaracteres
+		// | Identificadores<Vetor>
+		// | <chamadaDeMetodo>
+		token = s.tokenType();
+		if (token.equals("Numero") || token.equals("Cadeia de Caractere")) {
+			token = s.nextToken();
+
+		} else if (token.equals("Identificador")) {
+			token = s.nextToken();
+			if (token.equals("(")) {
+				novoMetodo();
+			} else {
+				vetor();
+			}
+		}
+	}
+	
+	public void maisOperacoes() {
+		// <maisOperacoes> ::= OperadoresAritmeticos <maisOperacoes>
+		// | OperadoresAritmeticos <expressao>
+		// | <>
+		// token = s.tokenType();
+
+		if (token.equals("Operador Aritmetico")) {
+			token = s.nextToken();
+			if (token.equals("Operador Aritmetico")) {
+				maisOperacoes();
+			} else {
+				expressao();
+			}
+		} else {
+			return; // vazio
+		}
+	}
+	
+	public void booleano() {
+		// <booleano> ::= '('TipoBooleano')'
+		// | '(''!' TipoBooleano')'
+		// | '(''!' Identificadores<Vetor> ')'
+		// | TipoBooleano
+		// | '!' TipoBooleano
+		// | '!' Identificadores<Vetor>
+		// token = s.nextToken();
+
+		if (token.equals("(")) {
+			token = s.nextToken();
+			token = s.tokenType();
+			if (token.equals("Booleano")) {
+				token = s.nextToken();
+				if (token.equals(")")) {
+					return;
+				}
+			} else if (token.equals("!")) {
+				token = s.nextToken();
+				token = s.tokenType();
+				if (token.equals("Booleano")) {
+					token = s.nextToken();
+					if (token.equals(")")) {
+						return;
+					}
+				} else if (token.equals("Identificador")) {
+					vetor();
+					token = s.nextToken();
+					if (token.equals(")")) {
+						return;
+					}
+				} 
+			}
+		} else if (token.equals("Booleano")) {
+			token = s.nextToken();
+		} else if (token.equals("!")) {
+			token = s.nextToken();
+			token = s.tokenType();
+			if (token.equals("Booleano")) {
+				token = s.nextToken();
+				if (token.equals(")")) {
+					return;
+				}
+			} else if (token.equals("Identificador")) {
+				vetor();
+				token = s.nextToken();
+				if (token.equals(")")) {
+					return;
+				}
+			} 
+		} 
+	}
+	
+	public void incremento() {
+		// <incremento> ::= '('Incrementador Identificadores<Vetor> ')'
+		// | '('Identificadores<Vetor> Incrementador')'
+		// | Incrementador Identificadores<Vetor>
+		// | Identificadores<Vetor> Incrementador
+
+		if (token.equals("(")) {
+			token = s.nextToken();
+			token = s.tokenType();
+			if (token.equals("Incrementador")) {
+				token = s.nextToken();
+				token = s.tokenType();
+				if (token.equals("Identificador")) {
+					vetor();
+					token = s.nextToken();
+					if (token.equals(")")) {
+						return;
+					} 
+				} 
+			} else if (token.equals("Identificador")) {
+				vetor();
+				token = s.nextToken();
+				token = s.tokenType();
+				if (token.equals("incrementador")) {
+					return;
+				} 
+			}
+		} else if (token.equals("Incrementador")) {
+			token = s.nextToken();
+			token = s.tokenType();
+			if (token.equals("Identificador")) {
+				vetor();
+				return;
+			}
+		} else if (token.equals("Identificador")) {
+			vetor();
+			token = s.nextToken();
+			token = s.tokenType();
+			if (token.equals("incrementador")) {
+				return;
+			}
+		} 
+	}
+	
+	
+	/* AQUI COMECA A GRAMATICA DA CHAMADA DE METODO */
+	private void var() {
+		if (s.tokenType().equals("Identificador")) {
+			token = s.nextToken();
+			fatVar();
+		} else if (s.tokenType().equals("Numero") || token.equals("verdadeiro") || token.equals("falso")
+				|| s.tokenType().equals("Cadeia de Caractere")) {
+			token = s.nextToken();
+			maisVariavel();
+			return;
+		} else if (s.tokenType().equals("Delimitador")) {
+			return; // tratamento de vazios
+		}
+	}
+
+	private void fatVar() {
+		if (token.equals("(")) {
+			token = s.nextToken();
+			var();
+			if (token.equals(")")) {
+				token = s.nextToken();
+				maisVariavel();
+			}
+		} else {
+			vetor();
+			maisVariavel();
+		}
+
+	}
+
+	private void maisVariavel() {
+		if (token.equals(",")) {
+			token = s.nextToken();
+			var();
+		} else {
+			return; // tratamento de vazio
+		}
+	}
+	/* AQUI TERMINA A GRAMAATICA DE CHAAMDA DE METODO */
+	
+	
 }

@@ -51,6 +51,7 @@ public class MainTeste {
             
             new ErrorFileSaver(caminhoSaida + arquivo.replace("entrada", "saida"), as.getErro_Sintatico()).saveErrorInFile();
             
+            System.out.println("***INICIALIZANDO O ANALISADOR SEMANTICO*****");
             AnalisadorSemantico asc = new AnalisadorSemantico(new TokenReader(lexico.getListTokens()));
             asc.programa();
         

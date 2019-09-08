@@ -843,9 +843,9 @@ public class AnalisadorSintatico {
 		// | Identificadores<Vetor>
 		// | <chamadaDeMetodo>
 		token = s.tokenType();
-
-		if (token.equals("Numeros") || token.equals("Cadeia de Caractere")) {
+		if (token.equals("Numero") || token.equals("Cadeia de Caractere")) {
 			token = s.nextToken();
+
 		} else if (token.equals("Identificador")) {
 			token = s.nextToken();
 			if (token.equals("(")) {
@@ -1006,15 +1006,8 @@ public class AnalisadorSintatico {
 			//token = s.nextToken();
 			if (s.lookAhead().equals("(")) {
 				// <chamadaDeMetodo> ::= Identificadores'('<var>')'
-				novoMetodo(); // chamada de metodo
 				token = s.nextToken();
-				if (token.equals(";")) {
-					return;
-				} else {
-					// ERROR
-					er.guardarErros(s.getLine(), " ;");
-					hasError = true;
-				}
+				novoMetodo(); // chamada de metodo
 				verBloco(bloco);
 			} else {
 				// <incrementador> ::= Identificadores<Vetor> Incrementador ';'
