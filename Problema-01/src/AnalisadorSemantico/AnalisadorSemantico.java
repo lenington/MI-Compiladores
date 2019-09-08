@@ -10,13 +10,16 @@ public class AnalisadorSemantico {
 	private LinkedList<String> tipo;
 	private TabelaSemantica tabSem;
 	private VerificadorCasos vc;
+	private VerificadorCasosMetodos vcm;
 	private String token;
+	private String emqualMetodoEstou;
 
 	public AnalisadorSemantico(TokenReader s) {
 		this.s = s;
 		tipo = new LinkedList<String>();
 		tabSem = new TabelaSemantica();
 		vc = new VerificadorCasos();
+		vcm = new VerificadorCasosMetodos();
 		tipo.add("real");
 		tipo.add("inteiro");
 		tipo.add("boleano");
@@ -155,18 +158,26 @@ public class AnalisadorSemantico {
 		 * <escopoMetodo>'}' <listaParametros> ::= Tipo Identificadores <maisParametros>
 		 * | <> <maisParametros> ::= ','<listaParametros> | <>
 		 */
+		vcm.inicializaAtributos();
 		if (token.trim().equals("metodo")) {
 			token = s.nextToken();
 			if (s.tokenType().equals("Identificador") || token.equals("principal")) {
+				vcm.setNomeMetodo(token.trim()); //insere o nome do metodo na classe de verificacao do semantico
 				token = s.nextToken();
 				if (token.equals("(")) {
 					token = s.nextToken();
+					//como os parametros podem vir em conjunto eles devem ser inseridos na lista de parametros dentro da classe que verifica a semantica
 					listaParametros();
 					if (token.equals(")")) {
 						token = s.nextToken();
 						if (token.equals(":")) {
 							token = s.nextToken();
 							if (tipo.contains(token)) {
+								vcm.setTipoPrametro(token.trim()); //insere o tipo de retorno na classe que verifica a semantica da tabela
+								//esse if verifica o erro semantico de que o metodo principal nao pode ter parametros e deve ser unico
+								if (vcm.semanticaMetodo() == false)
+									tabSem.inserirTabelaMetodos(vcm.getNomeMetodo(), vcm.getTipoRetorno(), vcm.getNomeParametro(), vcm.getTipoPrametro());
+								
 								token = s.nextToken();
 								if (token.equals("{")) {
 									token = s.nextToken();
@@ -191,9 +202,11 @@ public class AnalisadorSemantico {
 
 	public void listaParametros() {
 		if (tipo.contains(token)) {
+			vcm.setTipoPrametro(s.getAtualToken().trim()); //insere o tipo do parametro na lista
 			token = s.nextToken();
 			token = s.tokenType();
 			if (token.equals("Identificador")) {
+				vcm.setNomeParametro(s.getAtualToken()); //insere o nome do parametro na lista
 				token = s.nextToken();
 				maisParametros();
 			}
@@ -242,8 +255,8 @@ public class AnalisadorSemantico {
 		if (token.equals("Identificador")) {
 			vc.setNomeConstante(s.getAtualToken());
 			
-			if (tabSem.temConstVar(s.getAtualToken()))
-				System.out.println("erro semantico. Ja possui uma constante ou variavel com esse nome. Aqui ta dentro de variaveis" );
+			if (tabSem.temConstVar(s.getAtualToken()) || tabSem.varConstDeclaradaMetodo(vcm.getNomeMetodo(), s.getAtualToken()))
+				System.out.println("erro semantico. Ja possui uma constante ou variavel com esse nome ou esta declarada no escopo do metodo. Aqui ta dentro de variaveis" );
 			
 			token = s.nextToken();
 			vetor();

@@ -1,5 +1,9 @@
 package AnalisadorSemantico;
 
+
+/*
+ * Classe que armazena as informacoes para a tabela das constantes e variaveis
+ * */
 public class AtributosConstVar {
 	
 	private String cat;

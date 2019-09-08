@@ -1,7 +1,10 @@
 package AnalisadorSemantico;
 
-public class VerificadorCasos {
+/*Classe responsavel por verificar a analise semantica das constantes e variaveis*/
 
+
+public class VerificadorCasos {
+	
 	private String tipo;
 	private String valor;
 	private String tokenType;
@@ -9,6 +12,7 @@ public class VerificadorCasos {
 	private String valorVetorPrimeiro;
 	private String valorVetorSegundo = " ";
 
+	/*Metodo responsavel por verificar se a semantica das constantes e variaveis estao corretas*/
 	public boolean semanticaConstante() {
 		if (tipo.equals("real") && tokenType.equals("Numero"))
 			return true;
@@ -25,6 +29,8 @@ public class VerificadorCasos {
 			return false;
 	}
 
+	
+	/*Verifica a semantica da parte do vetor*/
 	public boolean sematicaVetor() {
 		if (this.valorVetorSegundo.equals(" ")) {
 			if (this.valorVetorPrimeiro.contains(".") == false) {
