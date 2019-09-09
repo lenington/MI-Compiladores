@@ -2,6 +2,13 @@ package AnalisadorSemantico;
 
 import java.util.LinkedList;
 
+/*
+ * Essa classe so armazena e retorna as informacoes sobre o metodo
+ * tipoRetorno: inteiro, real, texto...
+ * listaParametro: (a,b,c)
+ * tipoParametro(inteiro, real, texto)
+ * **/
+
 public class AtributosMetodos {
 	
 	private String tipoRetorno;
@@ -18,7 +25,9 @@ public class AtributosMetodos {
 	}
 	
 	public String tipoParametro(int i) {
-		return tipoParametros.get(i);
+		String tipo = tipoParametros.get(i);
+		System.out.println("tipo>>> " + tipo);
+		return tipo;
 	}
 	
 	/*Retorna true se o nome do parametro estiver contido na lista*/

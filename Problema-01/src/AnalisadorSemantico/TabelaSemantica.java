@@ -75,35 +75,48 @@ public class TabelaSemantica {
 		if (this.tabelaConstVar.containsKey(nomeAtributo)) {
 			String s = this.tabelaConstVar.get(nomeAtributo).getmeetodoDaVariavel();
 			String cat = this.tabelaConstVar.get(nomeAtributo).getCategoria();
-			
+
 			if (s.equals(nomeMetodo) || cat.equals("constante")) {
 				AtributosConstVar acv = this.tabelaConstVar.get(nomeAtributo);
 				AtributosMetodos am = this.tabelaMetodos.get(nomeMetodo);
-				
+
 				try {
-				if (acv.getTipo().equals(am.tipoParametro(this.countParametro))) {
-					return true;
-				} else {
-					// error
-					System.out.println("Error! Incompativeis parametros");
-				}
-				}catch(Exception e) {
+					if (acv.getTipo().equals(am.tipoParametro(this.countParametro))) {
+						return true;
+					} else {
+						// error
+						System.out.println("Error! Incompativeis parametros");
+					}
+				} catch (Exception e) {
 					System.out.println("error! Parametros em excesso");
 				}
-				
+
 			} else {
 				// error
 				System.out.println("Error! Variavel nao faz parte do metodo eu eh uma constante.");
+				return false;
 			}
+		} else if (tipoAtributo.equals("Numero") || tipoAtributo.equals("verdadeiro") || tipoAtributo.equals("falso")
+				|| tipoAtributo.equals("Cadeia de Caractere")) {
+			AtributosMetodos am = this.tabelaMetodos.get(nomeMetodo);
+			tipoAtributo = this.converteVar(tipoAtributo, nomeAtributo);
+			if (tipoAtributo.equals(am.tipoParametro(this.countParametro))) {
+				return true;
+			} else {
+				// error
+				System.out.println("Error! Tipos incompativeis. Entrada direta>> "+tipoAtributo);
+				return false;
+			}
+
 		}
+
 		return true;
 	}
-	
+
 	public void zerarCountParametro() {
 		this.countParametro = -1;
 	}
-	
-	
+
 	/* Verifica se a variavel ja esta declarada dentro do metodo que ela esta */
 	public boolean varConstDeclaradaMetodo(String nomeMetodo, String nomeParametro) {
 		return tabelaMetodos.get(nomeMetodo).containsVar(nomeParametro);
@@ -142,6 +155,20 @@ public class TabelaSemantica {
 				tabelaConstVar.get(chave).imprimirString();
 			}
 		}
+	}
+
+	private String converteVar(String tipoAtributo, String valorAtributo) {
+		if (tipoAtributo.equals("Cadeia de Caractere"))
+			return "texto";
+		else if (tipoAtributo.equals("verdadeiro") || tipoAtributo.equals("falso"))
+			return "booleano";
+		else if (tipoAtributo.equals("Numero")) {
+			if (valorAtributo.contains("."))
+				return "real";
+			else
+				return "inteiro";
+		}
+		return "error";
 	}
 
 }

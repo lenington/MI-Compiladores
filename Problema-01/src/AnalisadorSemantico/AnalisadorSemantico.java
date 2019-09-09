@@ -490,8 +490,7 @@ public class AnalisadorSemantico {
 	}
 	
 	private void novoMetodo() {
-		System.out.println("Em novoMetodo");
-		System.out.println("passou por ( : " + token);
+
 		if (token.equals("(")) {
 			token = s.nextToken();	
 			
