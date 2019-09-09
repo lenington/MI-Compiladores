@@ -4,14 +4,14 @@ programa{
       	inteiro a = 3, c = 4, d = 1;
   	}
   	
-  	metodo soma(inteiro c): vazio{
+  	metodo soma(inteiro c, real home): vazio{
   		
   		variaveis{
   			inteiro b[5][4], casa;
   			real boneca;
   		}
   		
-  		soma(c);
+  		soma(c, casa);
 		  	
   	}
 }

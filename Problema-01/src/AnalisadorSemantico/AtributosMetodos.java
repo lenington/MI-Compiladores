@@ -17,6 +17,10 @@ public class AtributosMetodos {
 		this.utilizado = utilizado;
 	}
 	
+	public String tipoParametro(int i) {
+		return tipoParametros.get(i);
+	}
+	
 	/*Retorna true se o nome do parametro estiver contido na lista*/
 	public boolean containsVar(String nomeParametro) {
 		return listaParametros.contains(nomeParametro);

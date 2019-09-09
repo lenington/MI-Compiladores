@@ -403,6 +403,7 @@ public class AnalisadorSemantico {
 			if (s.lookAhead().equals("(")) {
 				// <chamadaDeMetodo> ::= Identificadores'('<var>')'
 				tabSem.metodoExiste(token); //verifica se o metodo sendo chamado existe
+				token = s.nextToken();
 				novoMetodo(); // chamada de metodo
 				//verBloco(bloco);
 			} else {
@@ -489,11 +490,14 @@ public class AnalisadorSemantico {
 	}
 	
 	private void novoMetodo() {
+		System.out.println("Em novoMetodo");
+		System.out.println("passou por ( : " + token);
 		if (token.equals("(")) {
-			token = s.nextToken();
+			token = s.nextToken();	
 			
 			var();
 			if (token.trim().equals(")")) {
+				tabSem.zerarCountParametro();
 				token = s.nextToken();
 				if (token.equals(";")) {
 					token = s.nextToken();
@@ -641,11 +645,16 @@ public class AnalisadorSemantico {
 	
 	/* AQUI COMECA A GRAMATICA DA CHAMADA DE METODO */
 	private void var() {
+		System.out.println("em var()");
 		if (s.tokenType().equals("Identificador")) {
+			
+			tabSem.checaAtributoChamadaMetodo(token, s.tokenType(), vcm.getNomeMetodo());
 			token = s.nextToken();
 			fatVar();
 		} else if (s.tokenType().equals("Numero") || token.equals("verdadeiro") || token.equals("falso")
 				|| s.tokenType().equals("Cadeia de Caractere")) {
+			System.out.println("no else if de var()");
+			tabSem.checaAtributoChamadaMetodo(token, s.tokenType(), vcm.getNomeMetodo());
 			token = s.nextToken();
 			maisVariavel();
 			return;
