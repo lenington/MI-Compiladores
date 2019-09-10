@@ -417,7 +417,9 @@ public class AnalisadorSintatico {
 				if(s.lookAhead().equals("[") || s.lookAhead().equals(";") ) {
 					token = s.nextToken();
 					matriz();
-				} 
+				}
+				else
+					token = s.nextToken(); //voltar
 			}
 			else {
 				hasError = true;
@@ -579,6 +581,7 @@ public class AnalisadorSintatico {
 
 	private void maisVariavel() {
 		if (token.equals(",")) {
+			
 			token = s.nextToken();
 			var();
 		} else {
@@ -662,7 +665,7 @@ public class AnalisadorSintatico {
 		// | '('Identificadores<Vetor> Incrementador')'
 		// | Incrementador Identificadores<Vetor>
 		// | Identificadores<Vetor> Incrementador
-
+		System.out.println("token type: " + s.tokenType() + " token: " + s.getAtualToken());
 		if (token.equals("(")) {
 			token = s.nextToken();
 			token = s.tokenType();
@@ -680,7 +683,7 @@ public class AnalisadorSintatico {
 						return;
 					}
 				} 
-			} else if (token.equals("Identificador")) {
+			} else if (s.tokenType().trim().equals("Identificador")) {
 				vetor();
 				token = s.nextToken();
 				token = s.tokenType();
@@ -1012,6 +1015,8 @@ public class AnalisadorSintatico {
 			} else {
 				// <incrementador> ::= Identificadores<Vetor> Incrementador ';'
 				// <atribuicaoDeVariavel> ::= Identificadores<Vetor> '=' <verificaCaso>';'
+				
+
 				if(s.lookAhead().equals("[")) {
 					token = s.nextToken();
 					vetor();
@@ -1020,7 +1025,7 @@ public class AnalisadorSintatico {
 				if (s.lookAhead().trim().equals("=")) {
 					atribuicaoDeVariavel();
 					verBloco(bloco);
-				} else if (s.lookAhead().equals("Identificador")) { 
+				} else if (s.lookAhead().equals("Identificador")) {
 					incremento();
 					token = s.nextToken();
 					if (token.equals(";")) {
@@ -1032,6 +1037,7 @@ public class AnalisadorSintatico {
 					verBloco(bloco);
 				} else {
 					// ERROR
+					System.out.println("entrou aqui no erro");
 					er.guardarErros(s.getLine(), " Identificador");
 					hasError = true;
 					return;

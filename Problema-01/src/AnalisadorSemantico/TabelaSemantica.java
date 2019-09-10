@@ -104,7 +104,7 @@ public class TabelaSemantica {
 				return true;
 			} else {
 				// error
-				System.out.println("Error! Tipos incompativeis. Entrada direta>> "+tipoAtributo);
+				System.out.println("Error! Tipos incompativeis. Entrada direta>> " + tipoAtributo);
 				return false;
 			}
 
@@ -124,9 +124,12 @@ public class TabelaSemantica {
 
 	/* Verifica se uma determinada constante ou variavel existe na tabela */
 	public boolean temConstVar(String cadeia) {
-		if (tabelaConstVar.containsKey(cadeia))
-			return true;
-		else
+		if (tabelaConstVar.containsKey(cadeia)) {
+			String s = tabelaConstVar.get(cadeia).getCategoria();
+			if (s.equals("constante"))
+				return true;
+			return false;
+		} else
 			return false;
 	}
 

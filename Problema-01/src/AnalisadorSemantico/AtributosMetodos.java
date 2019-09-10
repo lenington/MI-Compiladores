@@ -25,9 +25,7 @@ public class AtributosMetodos {
 	}
 	
 	public String tipoParametro(int i) {
-		String tipo = tipoParametros.get(i);
-		System.out.println("tipo>>> " + tipo);
-		return tipo;
+		return tipoParametros.get(i);
 	}
 	
 	/*Retorna true se o nome do parametro estiver contido na lista*/

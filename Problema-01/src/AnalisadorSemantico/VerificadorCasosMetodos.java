@@ -70,6 +70,13 @@ public class VerificadorCasosMetodos {
 			return true;
 		}else if (this.tipoRetorno.equals("vazio") == true && this.temResultado == false) {
 			return true;
+		}else if (this.nomeMetodo.equals("principal") == true && this.temResultado == false) {
+			if (this.tipoRetorno.equals("vazio") == true)
+				return true;
+			else{
+				System.out.println("Erro! O metodo principal deve ser do tipo vazio");
+				return false;
+			}
 		}
 		System.out.println("Error! Esse metodo necessita de um resultado.");
 		return false;

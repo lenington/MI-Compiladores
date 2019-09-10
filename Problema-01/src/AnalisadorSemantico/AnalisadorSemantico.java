@@ -13,7 +13,6 @@ public class AnalisadorSemantico {
 	private VerificadorCasosMetodos vcm;
 	private String token;
 
-
 	public AnalisadorSemantico(TokenReader s) {
 		this.s = s;
 		tipo = new LinkedList<String>();
@@ -418,7 +417,7 @@ public class AnalisadorSemantico {
 					//atribuicaoDeVariavel();
 					//verBloco(bloco);
 				} else if (s.lookAhead().equals("Identificador")) { 
-					//incremento();
+					incremento();
 					token = s.nextToken();
 					if (token.equals(";")) {
 						return;
@@ -493,7 +492,6 @@ public class AnalisadorSemantico {
 
 		if (token.equals("(")) {
 			token = s.nextToken();	
-			
 			var();
 			if (token.trim().equals(")")) {
 				tabSem.zerarCountParametro();
@@ -644,15 +642,13 @@ public class AnalisadorSemantico {
 	
 	/* AQUI COMECA A GRAMATICA DA CHAMADA DE METODO */
 	private void var() {
-		System.out.println("em var()");
+
 		if (s.tokenType().equals("Identificador")) {
-			
 			tabSem.checaAtributoChamadaMetodo(token, s.tokenType(), vcm.getNomeMetodo());
 			token = s.nextToken();
 			fatVar();
 		} else if (s.tokenType().equals("Numero") || token.equals("verdadeiro") || token.equals("falso")
 				|| s.tokenType().equals("Cadeia de Caractere")) {
-			System.out.println("no else if de var()");
 			tabSem.checaAtributoChamadaMetodo(token, s.tokenType(), vcm.getNomeMetodo());
 			token = s.nextToken();
 			maisVariavel();
@@ -660,6 +656,7 @@ public class AnalisadorSemantico {
 		} else if (s.tokenType().equals("Delimitador")) {
 			return; // tratamento de vazios
 		}
+		
 	}
 
 	private void fatVar() {
