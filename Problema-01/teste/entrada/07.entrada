@@ -16,6 +16,6 @@ programa{
   		variaveis{
   			inteiro casa;
   		}
-  		
+  		casa = boneca;
   	}
 }

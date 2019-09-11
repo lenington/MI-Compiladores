@@ -43,6 +43,10 @@ public class TokenReader {
 		int j = i+1;
 		return this.listoken.get(j).getLexama();
 	}
+	public String lookAheadType() {
+		int j = i+1;
+		return this.listoken.get(j).getClassificacao();
+	}
 	
 	public String lookDoubleAhead() {
 		int j = i+2;

@@ -669,7 +669,7 @@ public class AnalisadorSintatico {
 		if (token.equals("(")) {
 			token = s.nextToken();
 			token = s.tokenType();
-			if (token.equals("Incrementador")) {
+			if (token.equals("Operador Aritmetico")) {
 				token = s.nextToken();
 				token = s.tokenType();
 				if (token.equals("Identificador")) {
@@ -687,10 +687,10 @@ public class AnalisadorSintatico {
 				vetor();
 				token = s.nextToken();
 				token = s.tokenType();
-				if (token.equals("incrementador")) {
+				if (token.equals("Operador Aritmetico")) {
 					return;
 				} else { //ERROR
-					er.guardarErros(s.getLine(), " Incrementador");
+					er.guardarErros(s.getLine(), " Operador Aritmetico");
 					hasError = true;
 					return;
 				}
@@ -699,25 +699,25 @@ public class AnalisadorSintatico {
 				hasError = true;
 				return;
 			}
-		} else if (token.equals("Incrementador")) {
+		} else if (s.tokenType().equals("Operador Aritmetico")) {
 			token = s.nextToken();
 			token = s.tokenType();
 			if (token.equals("Identificador")) {
 				vetor();
 				return;
 			} else { //ERROR
-				er.guardarErros(s.getLine(), " Incrementador");
+				er.guardarErros(s.getLine(), " Operador Aritmetico");
 				hasError = true;
 				return;
 			}
-		} else if (token.equals("Identificador")) {
+		} else if (s.tokenType().equals("Identificador")) {
 			vetor();
 			token = s.nextToken();
-			token = s.tokenType();
-			if (token.equals("incrementador")) {
+			token = s.tokenType(); 
+			if (token.equals("Operador Aritmetico")) {
 				return;
 			} else { //ERROR
-				er.guardarErros(s.getLine(), " Incrementador");
+				er.guardarErros(s.getLine(), " Operador Aritmetico");
 				hasError = true;
 				return;
 			}
@@ -1007,6 +1007,7 @@ public class AnalisadorSintatico {
 			verBloco(bloco);
 		} else if (s.tokenType().equals("Identificador")) { 
 			//token = s.nextToken();
+			System.out.println("Printando: "+s.lookAhead()+" e "+s.lookAheadType());
 			if (s.lookAhead().equals("(")) {
 				// <chamadaDeMetodo> ::= Identificadores'('<var>')'
 				token = s.nextToken();
@@ -1024,11 +1025,12 @@ public class AnalisadorSintatico {
 				
 				if (s.lookAhead().trim().equals("=")) {
 					atribuicaoDeVariavel();
-					verBloco(bloco);
-				} else if (s.lookAhead().equals("Identificador")) {
+					verBloco(bloco); 
+				} else if (s.tokenType().equals("Identificador") || s.tokenType().equals("Operador Aritmetico")) { 
 					incremento();
 					token = s.nextToken();
 					if (token.equals(";")) {
+						token = s.nextToken();
 						return;
 					} else {
 						er.guardarErros(s.getLine(), " ;");
@@ -1037,7 +1039,6 @@ public class AnalisadorSintatico {
 					verBloco(bloco);
 				} else {
 					// ERROR
-					System.out.println("entrou aqui no erro");
 					er.guardarErros(s.getLine(), " Identificador");
 					hasError = true;
 					return;
@@ -1081,7 +1082,6 @@ public class AnalisadorSintatico {
 		if (token.trim().equals("=")) {
 			token = s.nextToken();
 			verificaCaso();
-			token = s.nextToken(); 
 			if (token.equals(";")) { 
 				token = s.nextToken();
 				return;

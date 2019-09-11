@@ -414,12 +414,13 @@ public class AnalisadorSemantico {
 				}
 				
 				if (s.lookAhead().trim().equals("=")) {
-					//atribuicaoDeVariavel();
+					atribuicaoDeVariavel();
 					//verBloco(bloco);
-				} else if (s.lookAhead().equals("Identificador")) { 
+				} else if (s.tokenType().equals("Identificador") || s.tokenType().equals("Operador Aritmetico")) { 
 					incremento();
 					token = s.nextToken();
 					if (token.equals(";")) {
+						token = s.nextToken();
 						return;
 					} 
 					//verBloco(bloco);
@@ -604,7 +605,7 @@ public class AnalisadorSemantico {
 		if (token.equals("(")) {
 			token = s.nextToken();
 			token = s.tokenType();
-			if (token.equals("Incrementador")) {
+			if (token.equals("Operador Aritmetico")) {
 				token = s.nextToken();
 				token = s.tokenType();
 				if (token.equals("Identificador")) {
@@ -618,11 +619,11 @@ public class AnalisadorSemantico {
 				vetor();
 				token = s.nextToken();
 				token = s.tokenType();
-				if (token.equals("incrementador")) {
+				if (token.equals("Operador Aritmetico")) {
 					return;
 				} 
 			}
-		} else if (token.equals("Incrementador")) {
+		} else if (token.equals("Operador Aritmetico")) {
 			token = s.nextToken();
 			token = s.tokenType();
 			if (token.equals("Identificador")) {
@@ -633,7 +634,7 @@ public class AnalisadorSemantico {
 			vetor();
 			token = s.nextToken();
 			token = s.tokenType();
-			if (token.equals("incrementador")) {
+			if (token.equals("Operador Aritmetico")) {
 				return;
 			}
 		} 
@@ -684,5 +685,29 @@ public class AnalisadorSemantico {
 	}
 	/* AQUI TERMINA A GRAMAATICA DE CHAAMDA DE METODO */
 	
-	
+	public void atribuicaoDeVariavel() {
+		// <atribuicaoDeVariavel> ::= Identificadores<Vetor> '=' <verificaCaso>';'
+		token = s.nextToken();
+		if (token.trim().equals("=")) {
+			token = s.nextToken();
+			verificaCaso();
+			if (token.equals(";")) { 
+				token = s.nextToken();
+				return;
+			} else if(s.tokenType().equals("Identificador") || s.tokenType().equals("Operador Aritmetico") || 
+					s.tokenType().equals("Numeral")){
+				token = s.nextToken(); 
+				
+				if(s.tokenType().equals("Identificador") || s.tokenType().equals("Numeral")){
+					token = s.nextToken(); 
+				}
+				
+				if (token.equals(";")) { 
+					token = s.nextToken();
+					return;
+				} 
+			} 
+		}
+
+	}
 }
