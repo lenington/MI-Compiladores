@@ -7,15 +7,17 @@ programa{
   	metodo soma(inteiro c, inteiro house): vazio{
   		
   		variaveis{
-  			inteiro b[5][6], casa;
+  			inteiro b[5], casa;
   			real boneca;
   		}
+  		
+  		b[5]++;
   	}
   	
   	metodo principal():vazio{
   		variaveis{
   			inteiro casa;
   		}
-  		casa = boneca;
+  		casa++;
   	}
 }

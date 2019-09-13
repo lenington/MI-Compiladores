@@ -33,7 +33,17 @@ public class TabelaSemantica {
 		if (tabelaConstVar.containsKey(cadeia) == false)
 			tabelaConstVar.put(cadeia, new AtributosConstVar(token, cat, tipo, valor, primeiroIndice, segundoIndice,
 					utilizado, metodoDaVariavel));
-
+		else {
+			String metodo = tabelaConstVar.get(cadeia).getmeetodoDaVariavel();
+			if (metodo.equals(metodoDaVariavel))
+				System.out.println("Variavel ja declarada para esse escopo");
+			else {
+				tabelaConstVar.remove(cadeia);
+				tabelaConstVar.put(cadeia, new AtributosConstVar(token, cat, tipo, valor, primeiroIndice, segundoIndice,
+						utilizado, metodoDaVariavel)); 
+				
+			}
+		}
 	}
 
 	/*
@@ -50,7 +60,28 @@ public class TabelaSemantica {
 		}
 		return false;
 	}
+	
+	/*
+	 * Verifica se eh possivel incrementar uma determinada variavel
+	 * */
+	public boolean podeIncrementar(String nomeVariavel, String nomeMetodo) {
 
+		if (tabelaConstVar.containsKey(nomeVariavel)) {
+			String tipo = tabelaConstVar.get(nomeVariavel).getTipo();
+			String cat = tabelaConstVar.get(nomeVariavel).getCategoria();
+			String nomeMet = tabelaConstVar.get(nomeVariavel).getmeetodoDaVariavel();
+			
+			if ((tipo.equals("real") || tipo.equals("inteiro")) && cat.equals("variavel") && nomeMet.equals(nomeMetodo))
+				return true;
+			else 
+				return false;
+		}
+		else
+			System.out.println("nao encontrou a chave");
+		return false;
+	}
+	
+	
 	/*
 	 * Verifica se o nome do metodo existe
 	 */

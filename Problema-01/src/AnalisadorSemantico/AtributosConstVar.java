@@ -55,7 +55,6 @@ public class AtributosConstVar {
 		return this.cat;
 	}
 	
-	
 	public void imprimirString() {
 		System.out.println(token + " " + cat + " " + tipo + " " + valor + " " + primeiroIndice + " " + " " + segundoIndice + " " + this.metodoDaVariavel+ "\n");
 	}

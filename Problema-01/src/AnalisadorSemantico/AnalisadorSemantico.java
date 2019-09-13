@@ -601,7 +601,7 @@ public class AnalisadorSemantico {
 		// | '('Identificadores<Vetor> Incrementador')'
 		// | Incrementador Identificadores<Vetor>
 		// | Identificadores<Vetor> Incrementador
-
+		System.out.println("chegou aqui!: "+token);
 		if (token.equals("(")) {
 			token = s.nextToken();
 			token = s.tokenType();
@@ -616,25 +616,33 @@ public class AnalisadorSemantico {
 					} 
 				} 
 			} else if (token.equals("Identificador")) {
+				String atual = s.getAtualToken();
 				vetor();
 				token = s.nextToken();
 				token = s.tokenType();
 				if (token.equals("Operador Aritmetico")) {
+					if (tabSem.podeIncrementar(atual, vcm.getNomeMetodo()) == false)
+						System.out.println("Error! A variavel nao existe no escopo ou o tipo nao eh real/inteiro ou nao esta inserida nesse escpo");
 					return;
 				} 
 			}
-		} else if (token.equals("Operador Aritmetico")) {
+		} else if (s.tokenType().equals("Operador Aritmetico")) {
 			token = s.nextToken();
 			token = s.tokenType();
 			if (token.equals("Identificador")) {
+				if (tabSem.podeIncrementar(s.getAtualToken(), vcm.getNomeMetodo()) == false)
+					System.out.println("Error! A variavel nao existe no escopo ou o tipo nao eh real/inteiro ou nao esta inserida nesse escpo");
 				vetor();
 				return;
 			}
-		} else if (token.equals("Identificador")) {
+		} else if (s.tokenType().equals("Identificador")) {
+			String atual = s.getAtualToken();
 			vetor();
 			token = s.nextToken();
 			token = s.tokenType();
 			if (token.equals("Operador Aritmetico")) {
+				if (tabSem.podeIncrementar(atual, vcm.getNomeMetodo()) == false)
+					System.out.println("Error! A variavel nao existe no escopo ou o tipo nao eh real/inteiro ou nao esta inserida nesse escpo");
 				return;
 			}
 		} 
