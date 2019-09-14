@@ -31,7 +31,7 @@ public class VerificadorCasos {
 
 	
 	/*Verifica a semantica da parte do vetor*/
-	public boolean sematicaVetor() {
+	public boolean sematicaVetor() { 
 		if (this.valorVetorSegundo.equals(" ")) {
 			if (this.valorVetorPrimeiro.contains(".") == false) {
 				return true;

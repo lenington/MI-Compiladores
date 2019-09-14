@@ -180,7 +180,7 @@ public class AnalisadorSemantico {
 								token = s.nextToken();
 								if (token.equals("{")) {
 									token = s.nextToken();
-									declaracaoVariaveis();
+									declaracaoVariaveis(); 
 									 escopoMetodo();
 									if (token.equals("}")) {
 										vcm.oRetornoAparaceu();//verifica se o metodo eh diferente de vazio e se o retorno apareceu
@@ -259,7 +259,7 @@ public class AnalisadorSemantico {
 				System.out.println("erro semantico. Ja possui uma constante ou variavel com esse nome ou esta declarada no escopo do metodo. Aqui ta dentro de variaveis" );
 			
 			token = s.nextToken();
-			vetor();
+			vetor(); 
 			variavelMesmoTipo();
 		}
 	}
@@ -278,6 +278,8 @@ public class AnalisadorSemantico {
 					token = s.nextToken();
 					matriz();
 				}
+				else
+					token = s.nextToken(); //voltar
 			}
 		} else {
 			return; // aqui eh onde trata o vazio
@@ -302,7 +304,7 @@ public class AnalisadorSemantico {
 	private void OpI2() {
 		// <OpI2> ::= Numeros | Identificadores
 
-		token = s.tokenType();
+		token = s.tokenType(); 
 
 		if (token.equals("Numero")) {
 			if(vc.sematicaVetor() == false)
@@ -372,6 +374,15 @@ public class AnalisadorSemantico {
 		comandos("metodo");
 	}
 	
+	public void verBloco(String bloco) {
+		if (bloco.equals("se")) 
+			//blocoSe();
+		if (bloco.equals("enquanto"))
+			//conteudoLaco();
+		if (bloco.equals("metodo"))
+			escopoMetodo();
+	}
+	
 	public void comandos(String bloco) {
 		// <comandos> ::= <leia> | <escreva> | <se> | <enquanto> |
 		// <atribuicaoDeVariavel> | <chamadaDeMetodo> ';' | <incrementador> |
@@ -396,34 +407,41 @@ public class AnalisadorSemantico {
 			
 			token = s.nextToken();
 			retorno();
-			//verBloco(bloco);
-		} else if (s.tokenType().equals("Identificador")) { 
+			verBloco(bloco);
+		} else if (s.tokenType().equals("Identificador") || s.tokenType().equals("Operador Aritmetico")) { 
 			//token = s.nextToken();
 			if (s.lookAhead().equals("(")) {
 				// <chamadaDeMetodo> ::= Identificadores'('<var>')'
 				tabSem.metodoExiste(token); //verifica se o metodo sendo chamado existe
 				token = s.nextToken();
 				novoMetodo(); // chamada de metodo
-				//verBloco(bloco);
+				verBloco(bloco);
 			} else {
 				// <incrementador> ::= Identificadores<Vetor> Incrementador ';'
 				// <atribuicaoDeVariavel> ::= Identificadores<Vetor> '=' <verificaCaso>';'
-				if(s.lookAhead().equals("[")) {
+				if(s.lookAhead().equals("[")) { 
 					token = s.nextToken();
 					vetor();
 				}
 				
 				if (s.lookAhead().trim().equals("=")) {
-					atribuicaoDeVariavel();
-					//verBloco(bloco);
-				} else if (s.tokenType().equals("Identificador") || s.tokenType().equals("Operador Aritmetico")) { 
+					
+					if (tabSem.temConstVar(s.getAtualToken()) ==  false) {
+						atribuicaoDeVariavel(); //PAREI AQUI!!!!!!!!!!!!!
+						verBloco(bloco);
+					}
+				} else if (s.tokenType().equals("Identificador") || s.tokenType().equals("Operador Aritmetico") || s.tokenType().equals("Operador Aritmetico")) { 
 					incremento();
+					if (token.equals(";") || s.getAtualToken().equals("Delimitador")) { //pois pode voltar com o ; logo para casos com vetor
+						token = s.nextToken();
+						return;
+					}
 					token = s.nextToken();
 					if (token.equals(";")) {
 						token = s.nextToken();
 						return;
 					} 
-					//verBloco(bloco);
+					verBloco(bloco);
 				} 
 			}
 		} else if(s.tokenType().equals("Comentario de Linha") || s.tokenType().equals("Comentario de Bloco")) {
@@ -601,7 +619,6 @@ public class AnalisadorSemantico {
 		// | '('Identificadores<Vetor> Incrementador')'
 		// | Incrementador Identificadores<Vetor>
 		// | Identificadores<Vetor> Incrementador
-		System.out.println("chegou aqui!: "+token);
 		if (token.equals("(")) {
 			token = s.nextToken();
 			token = s.tokenType();
@@ -695,6 +712,8 @@ public class AnalisadorSemantico {
 	
 	public void atribuicaoDeVariavel() {
 		// <atribuicaoDeVariavel> ::= Identificadores<Vetor> '=' <verificaCaso>';'
+		//System.out.println("Token == "+token+", "+vcm.getNomeMetodo()+", ---->"+tabSem.varConstDeclaradaMetodo(vcm.getNomeMetodo(), s.getAtualToken()));
+		
 		token = s.nextToken();
 		if (token.trim().equals("=")) {
 			token = s.nextToken();

@@ -394,7 +394,7 @@ public class AnalisadorSintatico {
 		token = s.tokenType();
 		if (token.equals("Identificador")) {
 			token = s.nextToken();
-			vetor();
+			vetor(); 
 			variavelMesmoTipo();
 		}
 		else {
@@ -412,7 +412,7 @@ public class AnalisadorSintatico {
 			// <OpI2><OpIndice>
 			token = s.nextToken();
 			OpI2();
-			OpIndice();
+			OpIndice(); 
 			if (token.equals("]")) {
 				if(s.lookAhead().equals("[") || s.lookAhead().equals(";") ) {
 					token = s.nextToken();
@@ -493,7 +493,7 @@ public class AnalisadorSintatico {
 	}
 
 	public void variavelMesmoTipo() {
-		if (token.equals(",")) {
+		if (token.equals(",")) { 
 			token = s.nextToken();
 			complementoV();
 		}
@@ -665,7 +665,6 @@ public class AnalisadorSintatico {
 		// | '('Identificadores<Vetor> Incrementador')'
 		// | Incrementador Identificadores<Vetor>
 		// | Identificadores<Vetor> Incrementador
-		System.out.println("token type: " + s.tokenType() + " token: " + s.getAtualToken());
 		if (token.equals("(")) {
 			token = s.nextToken();
 			token = s.tokenType();
@@ -701,6 +700,11 @@ public class AnalisadorSintatico {
 			}
 		} else if (s.tokenType().equals("Operador Aritmetico")) {
 			token = s.nextToken();
+			
+			if(token.equals(";")){
+				return;
+			}
+			
 			token = s.tokenType();
 			if (token.equals("Identificador")) {
 				vetor();
@@ -1005,9 +1009,8 @@ public class AnalisadorSintatico {
 			token = s.nextToken();
 			retorno();
 			verBloco(bloco);
-		} else if (s.tokenType().equals("Identificador")) { 
+		} else if (s.tokenType().equals("Identificador") || s.tokenType().equals("Operador Aritmetico")) { 
 			//token = s.nextToken();
-			System.out.println("Printando: "+s.lookAhead()+" e "+s.lookAheadType());
 			if (s.lookAhead().equals("(")) {
 				// <chamadaDeMetodo> ::= Identificadores'('<var>')'
 				token = s.nextToken();
@@ -1016,18 +1019,22 @@ public class AnalisadorSintatico {
 			} else {
 				// <incrementador> ::= Identificadores<Vetor> Incrementador ';'
 				// <atribuicaoDeVariavel> ::= Identificadores<Vetor> '=' <verificaCaso>';'
-				
 
 				if(s.lookAhead().equals("[")) {
 					token = s.nextToken();
-					vetor();
+					vetor(); 
 				}
 				
 				if (s.lookAhead().trim().equals("=")) {
 					atribuicaoDeVariavel();
 					verBloco(bloco); 
-				} else if (s.tokenType().equals("Identificador") || s.tokenType().equals("Operador Aritmetico")) { 
-					incremento();
+				} else if (s.tokenType().equals("Identificador") || s.tokenType().equals("Operador Aritmetico") || s.tokenType().equals("Operador Aritmetico")) { 
+
+					incremento(); 
+					if (token.equals(";")) { //pois pode voltar com o ; logo para casos com vetor
+						token = s.nextToken();
+						return;
+					}
 					token = s.nextToken();
 					if (token.equals(";")) {
 						token = s.nextToken();

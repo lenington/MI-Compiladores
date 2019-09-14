@@ -150,6 +150,7 @@ public class TabelaSemantica {
 
 	/* Verifica se a variavel ja esta declarada dentro do metodo que ela esta */
 	public boolean varConstDeclaradaMetodo(String nomeMetodo, String nomeParametro) {
+		System.out.println(nomeMetodo+" e "+nomeParametro);
 		return tabelaMetodos.get(nomeMetodo).containsVar(nomeParametro);
 	}
 
