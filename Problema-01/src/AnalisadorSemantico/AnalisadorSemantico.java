@@ -86,7 +86,7 @@ public class AnalisadorSemantico {
 			vc.setNomeConstante(s.getAtualToken()); // inserindo o nome da variavel dentro da classe para depois inserir na tabela
 			
 			if (tabSem.temConstVar(s.getAtualToken()))
-				System.out.println("Error Semantico. Possui duas variaveis ou constantes identificas");
+				System.out.println("Error Semantico. Possui duas variaveis ou constantes identicas");
 			
 			token = s.nextToken().trim();
 			if (token.equals("=")) {
@@ -181,7 +181,7 @@ public class AnalisadorSemantico {
 								if (token.equals("{")) {
 									token = s.nextToken();
 									declaracaoVariaveis(); 
-									 escopoMetodo();
+									escopoMetodo();
 									if (token.equals("}")) {
 										vcm.oRetornoAparaceu();//verifica se o metodo eh diferente de vazio e se o retorno apareceu
 										token = s.nextToken();
@@ -426,10 +426,11 @@ public class AnalisadorSemantico {
 				
 				if (s.lookAhead().trim().equals("=")) {
 					
-					if (tabSem.temConstVar(s.getAtualToken()) ==  false) {
-						atribuicaoDeVariavel(); //PAREI AQUI!!!!!!!!!!!!!
+					if (tabSem.temVar(s.getAtualToken())) {
+						atribuicaoDeVariavel(); 
 						verBloco(bloco);
-					}
+					} else 
+						System.out.println("Error Semantico. A variavel "+s.getAtualToken()+" nao foi declarada!");
 				} else if (s.tokenType().equals("Identificador") || s.tokenType().equals("Operador Aritmetico") || s.tokenType().equals("Operador Aritmetico")) { 
 					incremento();
 					if (token.equals(";") || s.getAtualToken().equals("Delimitador")) { //pois pode voltar com o ; logo para casos com vetor
@@ -710,13 +711,34 @@ public class AnalisadorSemantico {
 	}
 	/* AQUI TERMINA A GRAMAATICA DE CHAAMDA DE METODO */
 	
+	//NAO SEI SE VAI FUNCIONAR MESMO
+	//CONSERTAR AINDA!!!!!
+	public String getTipo(String obj) {
+		if(obj.matches("^[a-z A-Z]*$")) {
+			if(obj.equals("verdadeiro") || obj.equals("falso")) {
+				return "boleano";
+			} else {
+				return "texto";
+			}
+		} else if(obj.matches("^[0-9]*$")) {
+			return "inteiro";
+		} else if(obj.contains(".")) {
+			return "real";
+		} else 
+		return obj;
+	}
+	
 	public void atribuicaoDeVariavel() {
 		// <atribuicaoDeVariavel> ::= Identificadores<Vetor> '=' <verificaCaso>';'
-		//System.out.println("Token == "+token+", "+vcm.getNomeMetodo()+", ---->"+tabSem.varConstDeclaradaMetodo(vcm.getNomeMetodo(), s.getAtualToken()));
 		
+		String token_aux = token;
 		token = s.nextToken();
 		if (token.trim().equals("=")) {
-			token = s.nextToken();
+			token = s.nextToken(); 
+			if(tabSem.validaTipoVariavel(token_aux, getTipo(token)) == false) {
+				System.out.println("Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
+				return;
+			}
 			verificaCaso();
 			if (token.equals(";")) { 
 				token = s.nextToken();

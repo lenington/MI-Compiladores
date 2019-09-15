@@ -164,6 +164,26 @@ public class TabelaSemantica {
 		} else
 			return false;
 	}
+	
+	/* Verifica se uma determinada variavel existe na tabela */
+	public boolean temVar(String cadeia) {
+		if (tabelaConstVar.containsKey(cadeia)) {
+			String s = tabelaConstVar.get(cadeia).getCategoria();
+			if (s.equals("variavel"))
+				return true;
+			return false;
+		} else
+			return false;
+	}
+	
+	public boolean validaTipoVariavel(String cadeia, String tipo) {
+		if(tabelaConstVar.containsKey(cadeia)) {
+			if(tabelaConstVar.get(cadeia).getTipo().equals(tipo)) {
+				return true;
+			} else return false;
+		} else return false;
+	}
+	
 
 	/*
 	 * Verifica se o valor dentro do vetor [->2<-] eh inteiro ou se eh uma constante
