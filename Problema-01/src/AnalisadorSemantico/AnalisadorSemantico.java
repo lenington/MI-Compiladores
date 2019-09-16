@@ -711,21 +711,20 @@ public class AnalisadorSemantico {
 	}
 	/* AQUI TERMINA A GRAMAATICA DE CHAAMDA DE METODO */
 	
-	//NAO SEI SE VAI FUNCIONAR MESMO
-	//CONSERTAR AINDA!!!!!
+	/*
+	 * Parte que verifica o tipo do atributo [x = 1, verifica se 1 eh inteiro, real, booleano ou texto
+	 * */
 	public String getTipo(String obj) {
-		if(obj.matches("^[a-z A-Z]*$")) {
-			if(obj.equals("verdadeiro") || obj.equals("falso")) {
-				return "boleano";
-			} else {
-				return "texto";
-			}
+		if(obj.equals("verdadeiro") || obj.equals("falso")) {
+			return "boleano";
+		} else if(obj.startsWith("\"") && obj.endsWith("\"")){
+			return "texto";
 		} else if(obj.matches("^[0-9]*$")) {
 			return "inteiro";
 		} else if(obj.contains(".")) {
 			return "real";
 		} else 
-		return obj;
+		return "error";
 	}
 	
 	public void atribuicaoDeVariavel() {

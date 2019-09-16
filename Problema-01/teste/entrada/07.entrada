@@ -12,7 +12,7 @@ programa{
   		}
   		
   		//b[5]++;
-  		casa = 1;
+  		casa = "teste";
   	}
   	
   	metodo principal():vazio{
