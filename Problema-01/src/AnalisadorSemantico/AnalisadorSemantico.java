@@ -158,8 +158,10 @@ public class AnalisadorSemantico {
 		 * | <> <maisParametros> ::= ','<listaParametros> | <>
 		 */
 		vcm.inicializaAtributos();
+		
 		if (token.trim().equals("metodo")) {
 			token = s.nextToken();
+			System.out.println("Token de metodos: " + token);
 			if (s.tokenType().equals("Identificador") || token.equals("principal")) {
 				vcm.setNomeMetodo(token.trim()); //insere o nome do metodo na classe de verificacao do semantico
 				token = s.nextToken();
@@ -413,7 +415,7 @@ public class AnalisadorSemantico {
 			//token = s.nextToken();
 			if (s.lookAhead().equals("(")) {
 				// <chamadaDeMetodo> ::= Identificadores'('<var>')'
-				tabSem.metodoExiste(token); //verifica se o metodo sendo chamado existe
+				//tabSem.metodoExiste(token); //verifica se o metodo sendo chamado existe
 				token = s.nextToken();
 				novoMetodo(); // chamada de metodo
 				verBloco(bloco);
@@ -510,7 +512,7 @@ public class AnalisadorSemantico {
 	}
 	
 	private void novoMetodo() {
-
+		tabSem.zerarCountParametro();
 		if (token.equals("(")) {
 			token = s.nextToken();	
 			var();
