@@ -175,7 +175,8 @@ public class AnalisadorSemantico {
 								vcm.setTipoRetorno(token.trim()); //insere o tipo de retorno na classe que verifica a semantica da tabela
 								//esse if verifica o erro semantico de que o metodo principal nao pode ter parametros e deve ser unico
 								if (vcm.semanticaMetodo() == false)
-									tabSem.inserirTabelaMetodos(vcm.getNomeMetodo(), vcm.getTipoRetorno(), vcm.getNomeParametro(), vcm.getTipoPrametro());
+									if (tabSem.inserirTabelaMetodos(vcm.getNomeMetodo(), vcm.getTipoRetorno(), vcm.getNomeParametro(), vcm.getTipoPrametro()) == false)
+										System.out.println("Sobrescrita de metodos detectado");
 								
 								token = s.nextToken();
 								if (token.equals("{")) {

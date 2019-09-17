@@ -13,12 +13,12 @@ public class TabelaSemantica {
 	private int countParametro;
 
 	HashMap<String, AtributosConstVar> tabelaConstVar;
-	HashMap<String, AtributosMetodos> tabelaMetodos;
+	LinkedList<AtributosMetodos> tabelaMetodos;
 
 	public TabelaSemantica() {
 		this.countParametro = -1;
 		tabelaConstVar = new HashMap<String, AtributosConstVar>();
-		tabelaMetodos = new HashMap<String, AtributosMetodos>();
+		tabelaMetodos = new LinkedList<AtributosMetodos>();
 	}
 
 	/*
@@ -40,8 +40,8 @@ public class TabelaSemantica {
 			else {
 				tabelaConstVar.remove(cadeia);
 				tabelaConstVar.put(cadeia, new AtributosConstVar(token, cat, tipo, valor, primeiroIndice, segundoIndice,
-						utilizado, metodoDaVariavel)); 
-				
+						utilizado, metodoDaVariavel));
+
 			}
 		}
 	}
@@ -54,42 +54,80 @@ public class TabelaSemantica {
 	 */
 	public boolean inserirTabelaMetodos(String nomeMetodo, String tipoRetorno, LinkedList<String> listaParametros,
 			LinkedList<String> tipoParametros) {
-		if (tabelaMetodos.containsKey(nomeMetodo) == false) {
-			tabelaMetodos.put(nomeMetodo, new AtributosMetodos(tipoRetorno, listaParametros, tipoParametros, false));
+			
+		int length = tabelaMetodos.size();
+			
+			AtributosMetodos novaEntrada = new AtributosMetodos(nomeMetodo, tipoRetorno, listaParametros, tipoParametros, false);
+			
+			for (int i = 0; i < length; i++) {
+				AtributosMetodos entradaGuardada = tabelaMetodos.get(i);
+				
+				if (entradaGuardada.getNomeMetodo().equals(nomeMetodo)) {
+					 if (sobreEscrita(novaEntrada, entradaGuardada)) {
+						return false; //nao eh possivel add sobrescrita de metodos
+					}
+					 else {
+						 tabelaMetodos.add(novaEntrada);
+						 return true;
+					 }
+				}
+				}
+			
+			tabelaMetodos.add(novaEntrada);
 			return true;
+			
 		}
-		return false;
+	/*
+	 * Verifica a sobrescrita de metodos
+	 * se tipo retorna true entao tem sobreescrita
+	 * */
+	private boolean sobreEscrita(AtributosMetodos novaEntrada, AtributosMetodos entradaGuardada) {
+		
+		if (novaEntrada.getNomeMetodo().equals(entradaGuardada.getNomeMetodo())) {
+			if (novaEntrada.getTipoRetorno().equals(entradaGuardada.getTipoRetorno())) {
+				LinkedList<String> eTipo = novaEntrada.getTipoParametros();
+				LinkedList<String> gTipo = entradaGuardada.getTipoParametros();
+				
+				int lengtheTipo = eTipo.size();
+				
+				for (int i = 0; i < lengtheTipo; i++) {
+					if (eTipo.get(i).equals(gTipo.get(i)) == false)
+						return false; //tipos diferentes
+				}
+ 			}
+		}
+		
+		return true;
 	}
-	
+
 	/*
 	 * Verifica se eh possivel incrementar uma determinada variavel
-	 * */
+	 */
 	public boolean podeIncrementar(String nomeVariavel, String nomeMetodo) {
 
 		if (tabelaConstVar.containsKey(nomeVariavel)) {
 			String tipo = tabelaConstVar.get(nomeVariavel).getTipo();
 			String cat = tabelaConstVar.get(nomeVariavel).getCategoria();
 			String nomeMet = tabelaConstVar.get(nomeVariavel).getmeetodoDaVariavel();
-			
+
 			if ((tipo.equals("real") || tipo.equals("inteiro")) && cat.equals("variavel") && nomeMet.equals(nomeMetodo))
 				return true;
-			else 
+			else
 				return false;
-		}
-		else
+		} else
 			System.out.println("nao encontrou a chave");
 		return false;
 	}
-	
-	
+
 	/*
 	 * Verifica se o nome do metodo existe
 	 */
 	public boolean metodoExiste(String nomeMetodo) {
+		int length = tabelaMetodos.size();
 
-		if (this.tabelaMetodos.containsKey(nomeMetodo) == false) {
-			System.out.println("Essa metodo ainda nao foi declarado!");
-			return false;
+		for (int i = 0; i < length; i++) {
+			if (this.tabelaMetodos.get(i).getNomeMetodo().equals(nomeMetodo))
+				return true;
 		}
 		return true;
 	}
@@ -97,50 +135,50 @@ public class TabelaSemantica {
 	/*
 	 * Verifica se os atribuitos dos metodos estao corretos metodo soma(inteiro a)
 	 * soma (a). a eh inteiro tambem?
+	 * Tambem verifica a a sobrecarga de metodos
 	 */
 
 	public boolean checaAtributoChamadaMetodo(String nomeAtributo, String tipoAtributo, String nomeMetodo) {
-
-		this.countParametro++;
-
-		if (this.tabelaConstVar.containsKey(nomeAtributo)) {
-			String s = this.tabelaConstVar.get(nomeAtributo).getmeetodoDaVariavel();
-			String cat = this.tabelaConstVar.get(nomeAtributo).getCategoria();
-
-			if (s.equals(nomeMetodo) || cat.equals("constante")) {
-				AtributosConstVar acv = this.tabelaConstVar.get(nomeAtributo);
-				AtributosMetodos am = this.tabelaMetodos.get(nomeMetodo);
-
-				try {
-					if (acv.getTipo().equals(am.tipoParametro(this.countParametro))) {
-						return true;
-					} else {
-						// error
-						System.out.println("Error! Incompativeis parametros");
-					}
-				} catch (Exception e) {
-					System.out.println("error! Parametros em excesso");
-				}
-
-			} else {
-				// error
-				System.out.println("Error! Variavel nao faz parte do metodo eu eh uma constante.");
-				return false;
-			}
-		} else if (tipoAtributo.equals("Numero") || tipoAtributo.equals("verdadeiro") || tipoAtributo.equals("falso")
-				|| tipoAtributo.equals("Cadeia de Caractere")) {
-			AtributosMetodos am = this.tabelaMetodos.get(nomeMetodo);
-			tipoAtributo = this.converteVar(tipoAtributo, nomeAtributo);
-			if (tipoAtributo.equals(am.tipoParametro(this.countParametro))) {
-				return true;
-			} else {
-				// error
-				System.out.println("Error! Tipos incompativeis. Entrada direta>> " + tipoAtributo);
-				return false;
-			}
-
+		
+		String tipoMetodo;
+		String tipoChamada;
+		
+		LinkedList<AtributosMetodos> listMetodos = new LinkedList<AtributosMetodos>();
+		
+		int length = tabelaMetodos.size();
+		
+		//guarda o metodo requisitado em uma lista para poder verificar a sobrecarga
+		for (int i = 0; i < length; i++) {
+			AtributosMetodos metodo = tabelaMetodos.get(i);
+			if (metodo.getNomeMetodo().equals(nomeMetodo))
+				listMetodos.add(metodo);
 		}
-
+		
+		length = listMetodos.size();
+		
+		for (int i = 0; i < length; i++) {
+			AtributosMetodos metodo = listMetodos.get(i);
+			
+			tipoMetodo = metodo.getTipoParametros().get(this.countParametro);
+			
+			if (tipoAtributo.equals("Identificador")) {
+				if (this.tabelaConstVar.containsKey(nomeAtributo)) {
+					tipoChamada = this.tabelaConstVar.get(nomeAtributo).getTipo();
+					if (tipoChamada.equals(tipoMetodo)) {
+						this.countParametro++;
+						return true;
+					}
+				}
+				
+			}else {
+				tipoChamada = converteVar(nomeAtributo, tipoAtributo);
+				if (tipoChamada.equals(tipoMetodo)) {
+					this.countParametro++;
+					return true;
+				}
+			}
+		}
+		
 		return true;
 	}
 
@@ -150,8 +188,15 @@ public class TabelaSemantica {
 
 	/* Verifica se a variavel ja esta declarada dentro do metodo que ela esta */
 	public boolean varConstDeclaradaMetodo(String nomeMetodo, String nomeParametro) {
-		System.out.println(nomeMetodo+" e "+nomeParametro);
-		return tabelaMetodos.get(nomeMetodo).containsVar(nomeParametro);
+		System.out.println(nomeMetodo + " e " + nomeParametro);
+		int length = tabelaMetodos.size();
+
+		for (int i = 0; i < length; i++) {
+			if (tabelaMetodos.get(i).getNomeMetodo().equals(nomeMetodo)) {
+				return tabelaMetodos.get(i).containsVar(nomeParametro);
+			}
+		}
+		return false;
 	}
 
 	/* Verifica se uma determinada constante ou variavel existe na tabela */
@@ -164,7 +209,7 @@ public class TabelaSemantica {
 		} else
 			return false;
 	}
-	
+
 	/* Verifica se uma determinada variavel existe na tabela */
 	public boolean temVar(String cadeia) {
 		if (tabelaConstVar.containsKey(cadeia)) {
@@ -175,15 +220,16 @@ public class TabelaSemantica {
 		} else
 			return false;
 	}
-	
+
 	public boolean validaTipoVariavel(String cadeia, String tipo) {
-		if(tabelaConstVar.containsKey(cadeia)) {
-			if(tabelaConstVar.get(cadeia).getTipo().equals(tipo)) {
+		if (tabelaConstVar.containsKey(cadeia)) {
+			if (tabelaConstVar.get(cadeia).getTipo().equals(tipo)) {
 				return true;
-			} else return false;
-		} else return false;
+			} else
+				return false;
+		} else
+			return false;
 	}
-	
 
 	/*
 	 * Verifica se o valor dentro do vetor [->2<-] eh inteiro ou se eh uma constante

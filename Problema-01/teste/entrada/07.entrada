@@ -12,7 +12,11 @@ programa{
   		}
   		
   		//b[5]++;
-  		casa = "teste";
+  		casa = 1;
+  	}
+  	
+  	metodo soma (inteiro a, real b): vazio {
+  	
   	}
   	
   	metodo principal():vazio{
