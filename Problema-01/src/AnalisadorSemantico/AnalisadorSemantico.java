@@ -512,6 +512,7 @@ public class AnalisadorSemantico {
 	}
 	
 	private void novoMetodo() {
+		System.out.println("Entrou em chamada de metodo");
 		tabSem.zerarCountParametro();
 		if (token.equals("(")) {
 			token = s.nextToken();	
@@ -674,7 +675,7 @@ public class AnalisadorSemantico {
 	private void var() {
 
 		if (s.tokenType().equals("Identificador")) {
-			tabSem.checaAtributoChamadaMetodo(token, s.tokenType(), vcm.getNomeMetodo());
+			tabSem.checaAtributoChamadaMetodo(token, s.tokenType(), vcm.getNomeMetodo()); //aqui faz a verificacao dos atributos do metodo
 			token = s.nextToken();
 			fatVar();
 		} else if (s.tokenType().equals("Numero") || token.equals("verdadeiro") || token.equals("falso")
@@ -742,6 +743,7 @@ public class AnalisadorSemantico {
 				return;
 			}
 			verificaCaso();
+			
 			if (token.equals(";")) { 
 				token = s.nextToken();
 				return;

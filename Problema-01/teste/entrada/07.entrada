@@ -11,7 +11,11 @@ programa{
   			real boneca;
   		}
   		
-  		soma(1, 5.6);
+  		casa = 1;
+  		
+  		soma("casa", 5.6);
+  		
+  		
   		
   	}
   	
