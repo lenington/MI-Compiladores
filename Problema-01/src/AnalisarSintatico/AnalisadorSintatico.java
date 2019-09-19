@@ -1341,15 +1341,24 @@ public class AnalisadorSintatico {
 			}
 		} else {
 			complementoOperador();
+			
+			if(token.equals(")")) {
+				return;
+			}
+			
 			token = s.nextToken();
 			complementoOperador();
+			
+			if(token.equals("&&") || token.equals("||")) {
+				token = s.nextToken();
+				operacaoRelacional();
+			}
 		}
 
 	}
 
 	private void complementoOperador() {
-		//System.out.println("Complemento >>" +token);
-		token = s.tokenType(); //System.out.println("TYPE >>> "+token);
+		token = s.tokenType(); 
 		if (token.equals("Identificador")) {
 			token = s.nextToken();
 			vetor();
@@ -1359,7 +1368,7 @@ public class AnalisadorSintatico {
 		} else if (token.equals("Cadeia caractere")) {
 			token = s.nextToken();
 			return;
-		} else if (token.equals("boleano")) {
+		} else if (token.equals("Boleano") || s.getAtualToken().equals("verdadeiro") || s.getAtualToken().equals("falso")) {
 			token = s.nextToken();
 			return;
 		} else {

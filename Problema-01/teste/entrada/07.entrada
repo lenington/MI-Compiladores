@@ -4,19 +4,22 @@ programa{
       	inteiro a = 3, c = 4, d = 1;
   	}
   	
-  	metodo soma(inteiro c, real house): vazio{
+  	metodo soma(inteiro c, real house): inteiro{
   		
   		variaveis{
   			inteiro b[5], casa, loja;
   			real boneca;
   		}
   		
-  		casa = 1;
+  		enquanto(casa == 1 || boneca != 1.0){
+  			resultado casa; 
+  		}
   		
-  		soma("casa", 5.6);
+  		se(casa == 1) entao{
   		
+  		}
   		
-  		
+  		resultado boneca;
   	}
   	
   	metodo soma(inteiro c, real house, texto a): vazio{

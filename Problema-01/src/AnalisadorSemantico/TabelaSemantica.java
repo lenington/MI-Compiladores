@@ -242,6 +242,13 @@ public class TabelaSemantica {
 		} else
 			return false;
 	}
+	
+	public String getTipoVar(String cadeia) {//System.out.println("Cadeia >> "+cadeia);
+		if (tabelaConstVar.containsKey(cadeia)) {
+			return tabelaConstVar.get(cadeia).getTipo();
+		} else
+			return "error";
+	}
 
 	/*
 	 * Verifica se o valor dentro do vetor [->2<-] eh inteiro ou se eh uma constante
