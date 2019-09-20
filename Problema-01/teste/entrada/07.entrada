@@ -9,23 +9,14 @@ programa{
   		variaveis{
   			inteiro b[5], casa, loja;
   			real boneca;
+  			boleano carro;
   		}
   		
-  		enquanto(casa == 1 || boneca != 1.0){
-  			resultado casa; 
-  		}
+  		se(casa == loja) entao{
+  			boneca = 1.0;
+  		} 
   		
-  		se(casa == 1) entao{
-  		
-  		}
-  		
-  		resultado boneca;
-  	}
-  	
-  	metodo soma(inteiro c, real house, texto a): vazio{
-  	
-  		soma(1, 5.6);
-  	
+  		resultado 1;
   	}
   	
   	metodo principal():vazio{

@@ -1203,7 +1203,7 @@ public class AnalisadorSintatico {
 		// <cond> ::= <termo> OperadoresRelacionais <termo>
 		// | <negar> Identificadores<Vetor>
 		token = s.nextToken();
-		if (token.equals("!")) { // <negar>
+		if (token.trim().equals("!")) { // <negar>
 			token = s.nextToken();
 			token = s.tokenType();
 			if (token.equals("Identificador"))

@@ -12,6 +12,8 @@ public class AnalisadorSemantico {
 	private VerificadorCasos vc;
 	private VerificadorCasosMetodos vcm;
 	private String token;
+	private Erro_Semantico er;
+	private boolean hasError;
 
 	public AnalisadorSemantico(TokenReader s) {
 		this.s = s;
@@ -24,6 +26,13 @@ public class AnalisadorSemantico {
 		tipo.add("boleano");
 		tipo.add("texto");
 		tipo.add("vazio");
+		
+		er = new Erro_Semantico();
+		hasError = false;
+	}
+	
+	public LinkedList<String> getErro_Semantico() {
+		return er.getErrosList();
 	}
 
 	public void programa() {
@@ -39,7 +48,7 @@ public class AnalisadorSemantico {
 
 				if (token.equals("}"))
 					System.out.println("SUCESSO");
-				tabSem.printTabela();
+				//tabSem.printTabela();
 			}
 		}
 	}
@@ -85,8 +94,12 @@ public class AnalisadorSemantico {
 		if (token.equals("Identificador")) {
 			vc.setNomeConstante(s.getAtualToken()); // inserindo o nome da variavel dentro da classe para depois inserir na tabela
 			
-			if (tabSem.temConstVar(s.getAtualToken()))
-				System.out.println("Error Semantico. Possui duas variaveis ou constantes identicas");
+			if (tabSem.temConstVar(s.getAtualToken())) {
+				//System.out.println("Error Semantico. Possui duas variaveis ou constantes identicas");
+				er.guardarErros(s.getLine(), " Error Semantico. Possui duas variaveis ou constantes identicas");
+				hasError = true;
+				return;
+			}
 			
 			token = s.nextToken().trim();
 			if (token.equals("=")) {
@@ -100,9 +113,12 @@ public class AnalisadorSemantico {
 				constante();
 
 				// analisa a semantica das entradas e salva na tabela
-				if (!vc.semanticaConstante())
-					System.out.println("Tem erro semantico. Na constante");
-				else 
+				if (!vc.semanticaConstante()) {
+					//System.out.println("Tem erro semantico. Na constante");
+					er.guardarErros(s.getLine(), " Tem erro semantico. Na constante");
+					hasError = true;
+					return;
+				} else 
 					tabSem.inserirTabela(vc.getNomeConstante(), vc.getTokenType(), "constante", vc.getTipo(),vc.getValor(), "", "",false, "");
 					/////////////////////////////////////////////////////////////////////////////////////////
 				
@@ -161,7 +177,6 @@ public class AnalisadorSemantico {
 		
 		if (token.trim().equals("metodo")) {
 			token = s.nextToken();
-			System.out.println("Token de metodos: " + token);
 			if (s.tokenType().equals("Identificador") || token.equals("principal")) {
 				vcm.setNomeMetodo(token.trim()); //insere o nome do metodo na classe de verificacao do semantico
 				token = s.nextToken();
@@ -177,8 +192,12 @@ public class AnalisadorSemantico {
 								vcm.setTipoRetorno(token.trim()); //insere o tipo de retorno na classe que verifica a semantica da tabela
 								//esse if verifica o erro semantico de que o metodo principal nao pode ter parametros e deve ser unico
 								if (vcm.semanticaMetodo() == false)
-									if (tabSem.inserirTabelaMetodos(vcm.getNomeMetodo(), vcm.getTipoRetorno(), vcm.getNomeParametro(), vcm.getTipoPrametro()) == false)
-										System.out.println("Sobrescrita de metodos detectado");
+									if (tabSem.inserirTabelaMetodos(vcm.getNomeMetodo(), vcm.getTipoRetorno(), vcm.getNomeParametro(), vcm.getTipoPrametro()) == false) {
+										er.guardarErros(s.getLine(), " Sobrescrita de metodos detectado");
+										hasError = true;
+										return;
+									}
+									//System.out.println("Sobrescrita de metodos detectado");
 								
 								token = s.nextToken();
 								if (token.equals("{")) {
@@ -186,9 +205,20 @@ public class AnalisadorSemantico {
 									declaracaoVariaveis(); 
 									escopoMetodo();
 									if (token.equals("}")) {
-										vcm.oRetornoAparaceu();//verifica se o metodo eh diferente de vazio e se o retorno apareceu
-										token = s.nextToken();
-										return;
+										if(vcm.getTemResultado() && !vcm.getTipoRetorno().equals("vazio")) {
+											token = s.nextToken();
+											return;
+										} else if(vcm.getTemResultado() && vcm.getTipoRetorno().equals("vazio")){
+											er.guardarErros(s.getLine(), " Erro Semantico: O metodo nao permite retorno");
+											//System.out.println("Erro Semantico: O metodo nao permite retorno");
+											hasError = true;
+											return;
+										} else if(!vcm.getTipoRetorno().equals("vazio") && !vcm.getNomeMetodo().equals("principal")){
+											//System.out.println("Error Semantico: Esse metodo necessita de um resultado.");
+											er.guardarErros(s.getLine(), " Error Semantico: Esse metodo necessita de um resultado.");
+											hasError = true;
+											return;
+										}
 									}
 								}
 							}
@@ -206,8 +236,10 @@ public class AnalisadorSemantico {
 			token = s.tokenType();
 			if (token.equals("Identificador")) {
 				
-				if (vcm.duplicateParametro(s.getAtualToken())) //verificar se tem parametros duplicados. Exemplo.: metodo soma(inteiro casa, real casa)
-					System.out.println("Erro semantico! Nao eh permitido o parametros com o mesmo nome: " + s.getAtualToken());
+				if (vcm.duplicateParametro(s.getAtualToken())) {
+					//verificar se tem parametros duplicados. Exemplo.: metodo soma(inteiro casa, real casa)
+					er.guardarErros(s.getLine(), "Erro semantico! Nao eh permitido o parametros com o mesmo nome: " + s.getAtualToken());
+				}
 				
 				vcm.setNomeParametro(s.getAtualToken()); //insere o nome do parametro na lista
 				token = s.nextToken();
@@ -259,7 +291,8 @@ public class AnalisadorSemantico {
 			vc.setNomeConstante(s.getAtualToken());
 			
 			if (tabSem.temConstVar(s.getAtualToken()) || tabSem.varConstDeclaradaMetodo(vcm.getNomeMetodo(), s.getAtualToken()))
-				System.out.println("erro semantico. Ja possui uma constante ou variavel com esse nome ou esta declarada no escopo do metodo. Aqui ta dentro de variaveis" );
+				er.guardarErros(s.getLine(), "Erro Semantico. Ja possui uma constante ou variavel com esse nome ou esta declarada no escopo do metodo. Aqui ta dentro de variaveis");
+				//System.out.println("Erro Semantico. Ja possui uma constante ou variavel com esse nome ou esta declarada no escopo do metodo. Aqui ta dentro de variaveis" );
 			
 			token = s.nextToken();
 			vetor(); 
@@ -311,12 +344,14 @@ public class AnalisadorSemantico {
 
 		if (token.equals("Numero")) {
 			if(vc.sematicaVetor() == false)
-				System.out.println("Possui erro sematico. Numero possui pontos!");
+				er.guardarErros(s.getLine(), "Error Sematico: Numero possui pontos!");
+				//System.out.println("Possui erro sematico. Numero possui pontos!");
 			token = s.nextToken();
 			return;
 		}else if (token.equals("Identificador")) {
 			if (tabSem.validaIdentificadorVetor(s.getAtualToken()) == false)
-				System.out.println("Possui erro sematico. Identificador nao declarado");
+				er.guardarErros(s.getLine(), "Error Sematico:. Identificador nao declarado");
+				//System.out.println("Possui erro sematico. Identificador nao declarado");
 			token = s.nextToken();
 			return;
 		}
@@ -379,9 +414,9 @@ public class AnalisadorSemantico {
 	
 	public void verBloco(String bloco) {
 		if (bloco.equals("se")) 
-			//blocoSe();
+			blocoSe();
 		if (bloco.equals("enquanto"))
-			//conteudoLaco();
+			conteudoLaco();
 		if (bloco.equals("metodo"))
 			escopoMetodo();
 	}
@@ -400,13 +435,14 @@ public class AnalisadorSemantico {
 			leia();
 			verBloco(bloco);
 		} else if (token.equals("se")) { 
-			se();
+			se(); 
 			verBloco(bloco);
 		} else if (token.equals("enquanto")) {
 			token = s.nextToken();
 			enquanto();
 			verBloco(bloco);
-		} else if (token.equals("resultado")) {
+		} else if (token.equals("resultado")) { 
+			vcm.setTemResultado(true); //marca como metodo com resultado
 			token = s.nextToken();
 			retorno();
 			verBloco(bloco);
@@ -432,7 +468,8 @@ public class AnalisadorSemantico {
 						atribuicaoDeVariavel(); 
 						verBloco(bloco);
 					} else 
-						System.out.println("Error Semantico. A variavel "+s.getAtualToken()+" nao foi declarada!");
+						er.guardarErros(s.getLine(), "Error Semantico. A variavel \"+s.getAtualToken()+\" nao foi declarada!");
+						//System.out.println("Error Semantico. A variavel "+s.getAtualToken()+" nao foi declarada!");
 				} else if (s.tokenType().equals("Identificador") || s.tokenType().equals("Operador Aritmetico") || s.tokenType().equals("Operador Aritmetico")) { 
 					incremento();
 					if (token.equals(";") || s.getAtualToken().equals("Delimitador")) { //pois pode voltar com o ; logo para casos com vetor
@@ -456,7 +493,30 @@ public class AnalisadorSemantico {
 		}
 	}
 	
-	public void retorno() {
+	public void retorno() { 
+		if(s.tokenType().equals("Identificador")) {
+			if(tabSem.getTipoVar(token).equals("error")) {
+				er.guardarErros(s.getLine(), "Error Semantico: Variavel nao declarada!");
+				//System.out.println("Error Semantico: Variavel nao declarada!");
+				hasError = true;
+				return;
+			} 
+			
+			if(!vcm.getTipoRetorno().equals(tabSem.getTipoVar(token))) {
+				er.guardarErros(s.getLine(), "Error Semantico: Tipo de retorno do metodo "+vcm.getNomeMetodo()+" nao eh do tipo "+tabSem.getTipoVar(token)+"!");
+				//System.out.println("Error Semantico: Tipo de retorno do metodo "+vcm.getNomeMetodo()+" nao eh do tipo "+tabSem.getTipoVar(token)+"!");
+				hasError = true;
+				return;
+			}
+		} else {
+			if(!vcm.getTipoRetorno().equals(getTipo(token))) {
+				er.guardarErros(s.getLine(), "Error Semantico: Tipo de retorno do metodo "+vcm.getNomeMetodo()+" nao eh do tipo "+getTipo(token)+"!");
+				//System.out.println("Error Semantico: Tipo de retorno do metodo "+vcm.getNomeMetodo()+" nao eh do tipo "+getTipo(token)+"!");
+				hasError = true;
+				return;
+			}
+		}
+		
 		verificaCaso(); 
 		//token = s.nextToken(); 
 		if (token.equals(";")) {
@@ -510,7 +570,7 @@ public class AnalisadorSemantico {
 	}
 	
 	private void novoMetodo() {
-		System.out.println("Entrou em chamada de metodo");
+		//System.out.println("Entrou em chamada de metodo");
 		tabSem.zerarCountParametro();
 		if (token.equals("(")) {
 			token = s.nextToken();	
@@ -642,7 +702,8 @@ public class AnalisadorSemantico {
 				token = s.tokenType();
 				if (token.equals("Operador Aritmetico")) {
 					if (tabSem.podeIncrementar(atual, vcm.getNomeMetodo()) == false)
-						System.out.println("Error! A variavel nao existe no escopo ou o tipo nao eh real/inteiro ou nao esta inserida nesse escpo");
+						er.guardarErros(s.getLine(), "Error Semantico: A variavel nao existe no escopo ou o tipo nao eh real/inteiro ou nao esta inserida nesse escpo");
+						//System.out.println("Error! A variavel nao existe no escopo ou o tipo nao eh real/inteiro ou nao esta inserida nesse escpo");
 					return;
 				} 
 			}
@@ -651,7 +712,8 @@ public class AnalisadorSemantico {
 			token = s.tokenType();
 			if (token.equals("Identificador")) {
 				if (tabSem.podeIncrementar(s.getAtualToken(), vcm.getNomeMetodo()) == false)
-					System.out.println("Error! A variavel nao existe no escopo ou o tipo nao eh real/inteiro ou nao esta inserida nesse escpo");
+					er.guardarErros(s.getLine(), "Error Semantico: A variavel nao existe no escopo ou o tipo nao eh real/inteiro ou nao esta inserida nesse escpo");
+					//System.out.println("Error! A variavel nao existe no escopo ou o tipo nao eh real/inteiro ou nao esta inserida nesse escpo");
 				vetor();
 				return;
 			}
@@ -662,7 +724,8 @@ public class AnalisadorSemantico {
 			token = s.tokenType();
 			if (token.equals("Operador Aritmetico")) {
 				if (tabSem.podeIncrementar(atual, vcm.getNomeMetodo()) == false)
-					System.out.println("Error! A variavel nao existe no escopo ou o tipo nao eh real/inteiro ou nao esta inserida nesse escpo");
+					er.guardarErros(s.getLine(), "Error Semantico: A variavel nao existe no escopo ou o tipo nao eh real/inteiro ou nao esta inserida nesse escpo");
+					//System.out.println("Error! A variavel nao existe no escopo ou o tipo nao eh real/inteiro ou nao esta inserida nesse escpo");
 				return;
 			}
 		} 
@@ -731,15 +794,27 @@ public class AnalisadorSemantico {
 	
 	public void atribuicaoDeVariavel() {
 		// <atribuicaoDeVariavel> ::= Identificadores<Vetor> '=' <verificaCaso>';'
-		
 		String token_aux = token; //variavel da atribuicao
 		token = s.nextToken();
 		if (token.trim().equals("=")) {
-			token = s.nextToken(); 
-			if(tabSem.validaTipoVariavel(token_aux, getTipo(token)) == false) {
-				System.out.println("Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
-				return;
+			token = s.nextToken();
+			
+			if(!s.tokenType().equals("Identificador")) {
+				if(!tabSem.validaTipoVariavel(token_aux, getTipo(token))) {
+					er.guardarErros(s.getLine(), "Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
+					//System.out.println("Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
+					hasError = true;
+					return;
+				}
+			} else {
+				if(!tabSem.getTipoVar(token_aux).equals(tabSem.getTipoVar(token))) {
+					er.guardarErros(s.getLine(), "Error Semantico. Variavel "+token_aux+" nao eh do tipo "+tabSem.getTipoVar(token));
+					//System.out.println("Error Semantico. Variavel "+token_aux+" nao eh do tipo "+tabSem.getTipoVar(token));
+					hasError = true;
+					return;
+				}
 			}
+			
 			verificaCaso(); 
 			
 			if (token.equals(";")) { 
@@ -749,12 +824,16 @@ public class AnalisadorSemantico {
 					s.tokenType().equals("Numeral")){
 				
 				if(s.tokenType().equals("Identificador") && !tabSem.getTipoVar(token_aux).equals(tabSem.getTipoVar(token))) {
-					System.out.println("Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
+					er.guardarErros(s.getLine(), "Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
+					//System.out.println("Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
+					hasError = true;
 					return;
 				} 
 				
 				if(s.tokenType().equals("Numeral") && !tabSem.validaTipoVariavel(token_aux, getTipo(token))) {
-					System.out.println("Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
+					er.guardarErros(s.getLine(), "Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
+					//System.out.println("Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
+					hasError = true;
 					return;
 				}
 				
@@ -762,12 +841,16 @@ public class AnalisadorSemantico {
 				
 				if(s.tokenType().equals("Identificador") || s.tokenType().equals("Numeral")){
 					if(s.tokenType().equals("Identificador") && !tabSem.getTipoVar(token_aux).equals(tabSem.getTipoVar(token))) {
-						System.out.println("Error Semantico. Variavel "+token_aux+" nao eh do tipo "+tabSem.getTipoVar(token));
+						er.guardarErros(s.getLine(), "Error Semantico. Variavel "+token_aux+" nao eh do tipo "+tabSem.getTipoVar(token));
+						//System.out.println("Error Semantico. Variavel "+token_aux+" nao eh do tipo "+tabSem.getTipoVar(token));
+						hasError = true;
 						return;
 					} 
 					
 					if(s.tokenType().equals("Numeral") && !tabSem.validaTipoVariavel(token_aux, getTipo(token))) {
-						System.out.println("Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
+						er.guardarErros(s.getLine(), "Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
+						//System.out.println("Error Semantico. Variavel "+token_aux+" nao eh do tipo "+getTipo(token));
+						hasError = true;
 						return;
 					}
 					
@@ -822,10 +905,15 @@ public class AnalisadorSemantico {
 		//System.out.println("operacaoRelacional >>" +token);
 		if (token.trim().equals("!")) {
 			token = s.nextToken();
-			String tokenType = s.tokenType();
-			if (tokenType.equals("Identificador")) {
+
+			if (s.tokenType().equals("Identificador") && tabSem.temVar(token)) {
 				token = s.nextToken();
 				vetor();
+			} else {
+				er.guardarErros(s.getLine(), "Erro Semantico: Variavel nao foi declarada!");
+				//System.out.println("Erro Semantico: Variavel nao foi declarada!");
+				hasError = true;
+				return;
 			}
 		} else {
 			String complemento = token;
@@ -839,13 +927,17 @@ public class AnalisadorSemantico {
 			
 			//verifica se as variaveis sao de tipos diferentes para IDENTIFICADORES
 			if(s.tokenType().equals("Identificador") && !tabSem.getTipoVar(complemento).equals(tabSem.getTipoVar(token))) {
-				System.out.println("Erro Semantico: Variaveis de tipos diferentes!");
+				er.guardarErros(s.getLine(), "Erro Semantico: Variaveis de tipos diferentes!");
+				//System.out.println("Erro Semantico: Variaveis de tipos diferentes!");
+				hasError = true;
 				return;
 			}
 			
 			//verifica se as variaveis sao de tipos diferentes para atributos
 			if(!s.tokenType().equals("Identificador") && !tabSem.getTipoVar(complemento).equals(getTipo(token))) {
-				System.out.println("Erro Semantico: Variavel "+complemento+" nao eh do tipo "+getTipo(token));
+				er.guardarErros(s.getLine(), "Erro Semantico: Variavel "+complemento+" nao eh do tipo "+getTipo(token));
+				//System.out.println("Erro Semantico: Variavel "+complemento+" nao eh do tipo "+getTipo(token));
+				hasError = true;
 				return;
 			}
 			
@@ -870,7 +962,9 @@ public class AnalisadorSemantico {
 		//System.out.println("Complemento >>" +token);
 		
 		if(s.tokenType().equals("Identificador") && !tabSem.temVar(token)) { //verifica se NAO tem a variavel na tabela
-			System.out.println("Erro Semantico: Variavel "+token+" nao foi declarada!");
+			er.guardarErros(s.getLine(), "Erro Semantico: Variavel "+token+" nao foi declarada!");
+			//System.out.println("Erro Semantico: Variavel "+token+" nao foi declarada!");
+			hasError = true;
 			return;
 		}
 		
@@ -933,17 +1027,58 @@ public class AnalisadorSemantico {
 	public void cond() {
 		// <cond> ::= <termo> OperadoresRelacionais <termo>
 		// | <negar> Identificadores<Vetor>
-		token = s.nextToken();
-		if (token.equals("!")) { //<negar>
-			token = s.nextToken();
-			token = s.tokenType();
-			if (token.equals("Identificador"))
+		
+		token = s.nextToken(); 
+		if (token.trim().equals("!")) { //<negar>
+			token = s.nextToken(); 
+
+			if (s.tokenType().equals("Identificador") && tabSem.temVar(token)) {
 				vetor();
+			} else {
+				er.guardarErros(s.getLine(), "Erro Semantico: Variavel nao foi declarada!");
+				//System.out.println("Erro Semantico: Variavel nao foi declarada!");
+				hasError = true;
+				return;
+			}
 		} else {
-			termo();
-			token = s.tokenType(); 
-			if (token.equals("Operador Relacional") || token.equals("Operador Logico") ) {
-				termo();
+			String variavel_token;
+			if(s.tokenType().equals("Identificador") && tabSem.temVar(token)) {
+				variavel_token = s.getAtualToken();
+			} else {
+				er.guardarErros(s.getLine(), "Erro Semantico: Variavel "+s.getAtualToken()+" nao foi declarada!");
+				//System.out.println("Erro Semantico: Variavel "+s.getAtualToken()+" nao foi declarada!");
+				hasError = true;
+				return;
+			}
+			
+			termo(); 
+			token = s.tokenType();  
+			
+			if (s.tokenType().equals("Operador Relacional") || s.tokenType().equals("Operador Logico") ) {
+				termo(); 
+				
+				if(s.tokenType().equals("Identificador")) {
+					if(!tabSem.temVar(s.getAtualToken())) {
+						er.guardarErros(s.getLine(), "Erro Semantico: Variavel "+s.getAtualToken()+" nao foi declarada!");
+						//System.out.println("Erro Semantico: Variavel "+s.getAtualToken()+" nao foi declarada!");
+						hasError = true;
+						return;
+					} else {
+						if(!tabSem.getTipoVar(s.getAtualToken()).equals(tabSem.getTipoVar(variavel_token))) {
+							er.guardarErros(s.getLine(), "Erro Semantico: Variavel "+variavel_token+" nao eh do tipo "+tabSem.getTipoVar(s.getAtualToken()));
+							//System.out.println("Erro Semantico: Variavel "+variavel_token+" nao eh do tipo "+tabSem.getTipoVar(s.getAtualToken()));
+							hasError = true;
+							return;
+						}
+					}
+				} else {
+					if(!tabSem.validaTipoVariavel(variavel_token, getTipo(s.getAtualToken()))) {
+						er.guardarErros(s.getLine(), "Erro Semantico: Variavel "+variavel_token+" nao eh do tipo "+getTipo(s.getAtualToken()));
+						//System.out.println("Erro Semantico: Variavel "+variavel_token+" nao eh do tipo "+getTipo(s.getAtualToken()));
+						hasError = true;
+						return;
+					}
+				}				
 			} 
 		}
 	}
@@ -964,11 +1099,11 @@ public class AnalisadorSemantico {
 		// | Numeros
 		// | CadeiaCaracteres
 		// | TipoBooleano
-		// token = s.nextToken();
-		token = s.tokenType();
-		if (token.equals("Identificador")) {
+
+		token = s.tokenType(); 
+		if (s.tokenType().equals("Identificador")) {
 			vetor();
-		} else if (token.equals("Numeros") || token.equals("Cadeia de Caracteres") || token.equals("Booleano")) {
+		} else if (s.tokenType().equals("Numeros") || s.tokenType().equals("Cadeia de Caracteres") || s.tokenType().equals("Booleano")) {
 			return;
 		} 
 
@@ -976,10 +1111,11 @@ public class AnalisadorSemantico {
 
 	public void op() {
 		// <op> ::= OperadorAritmeticos <tipoTermo> <op>|<>
-		token = s.nextToken();
+
+		token = s.nextToken(); 
 		token = s.tokenType();
-		;
-		if (token.equals("Operador Aritmetico")) {
+		
+		if (s.tokenType().equals("Operador Aritmetico")) {
 			tipoTermo();
 			op();
 		} else

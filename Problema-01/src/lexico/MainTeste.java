@@ -6,9 +6,9 @@ import java.util.LinkedList;
 
 import AnalisadorSemantico.AnalisadorSemantico;
 import AnalisarSintatico.AnalisadorSintatico;
-import AnalisarSintatico.Erro_Sintatico;
 import AnalisarSintatico.ErrorFileSaver;
 import AnalisarSintatico.TokenReader;
+import AnalisadorSemantico.ErrorFileSaverSemantico;
 
 public class MainTeste {
 	public static void main(String[] args) {
@@ -54,7 +54,9 @@ public class MainTeste {
             System.out.println("***INICIALIZANDO O ANALISADOR SEMANTICO*****");
             AnalisadorSemantico asc = new AnalisadorSemantico(new TokenReader(lexico.getListTokens()));
             asc.programa();
-        
+            
+            new ErrorFileSaverSemantico(caminhoSaida + arquivo.replace("entrada", "saida"), asc.getErro_Semantico()).saveErrorInFile();
+            
         }
         else {
         	System.out.println("> O arquivo [ " + arquivo + " ] possui erros lexicos. Impossivel prosseguir");

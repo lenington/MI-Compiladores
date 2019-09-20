@@ -78,11 +78,18 @@ public class VerificadorCasosMetodos {
 				return false;
 			}
 		}
-		System.out.println("Error! Esse metodo necessita de um resultado.");
+		//System.out.println("Error! Esse metodo necessita de um resultado.");
 		return false;
 	}
 	
+	public void setTemResultado(boolean temResultado) {
+		this.temResultado = temResultado;
+	}
 	
+	public boolean getTemResultado() {
+		//System.out.println("AQUI >> "+nomeMetodo+" >> "+temResultado+" >> FIM");
+		return this.temResultado;
+	}
 
 	/*
 	 * metodo para verificar se tem parametros duplicados. Exemplo.: metodo
